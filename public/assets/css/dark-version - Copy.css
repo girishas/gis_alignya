@@ -1,0 +1,144 @@
+html {
+  scroll-behavior: smooth;
+
+  /* reset for dark version */
+  --dark-main-color: #2b2d5c;
+  --dark-second-color: #303265;
+  --dark-heading-color: #ffffff;
+  --dark-para-color: #e7e7f4;
+}
+.main-dark-verson{
+  background-color: var(--dark-main-color);
+}
+.main-dark-verson p{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .caption h1{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .caption h5{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .caption-btn a{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .navbar-nav .nav-link{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .core-feat-single h6{
+  color: var(--dark-para-color);
+}
+.main-dark-verson #header.sticky{
+  background-color: var(--dark-main-color);
+}
+/* .main-dark-verson #strm-flatfrm{
+  background-color: var(--dark-main-color);
+} */
+.main-dark-verson #feat-area{
+  background-color: var(--dark-main-color);
+}
+.main-dark-verson .sec-heading h2{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .sec-heading h5{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .feat-cont h3{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .feat-cont p{
+  color: var(--dark-para-color);
+}
+.cmn-btn{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .strm-cont h2{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .strm-cont h5{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .flatfrm-list h5 a{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .flatfrm-list li a{
+  background-color: var(--dark-second-color);
+}
+.main-dark-verson .platform-item{
+  background-color: var(--dark-second-color);
+}
+.main-dark-verson .platform-item .title{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .platform-item p{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .add-item{
+  background-color: var(--dark-second-color);
+}
+.main-dark-verson .add-item .title{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .pricing-tbl-single{
+  background-color: var(--dark-second-color);
+}
+.main-dark-verson .price-details li{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .pricing-tbl-single h4{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .contact-cont h2{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .contact-cont p{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .contact-form{
+  background-color: var(--dark-main-color);
+}
+.main-dark-verson .contact-title h4{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .contact-title h5{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .contact-form input,.main-dark-verson .contact-form textarea{
+  background-color: var(--dark-second-color);
+  border-bottom: 1px solid var(--dark-second-color);
+}
+.main-dark-verson .chanl-single-logo a{
+  background-color: var(--dark-second-color);
+}
+.main-dark-verson .card{
+  background-color: var(--dark-main-color);
+}
+.main-dark-verson .card-header a{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .card-body{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .schedule-search{
+  background-color: var(--dark-second-color);
+}
+.main-dark-verson .search-left select{
+  background-color: var(--dark-main-color);
+  color: var(--dark-para-color);
+}
+.main-dark-verson .selc-sports select{
+  background-color: var(--dark-main-color);
+  color: var(--dark-para-color);
+}
+.main-dark-verson .selc-sports span{
+  color: var(--dark-para-color);
+}
+.main-dark-verson .calendr-item{
+  background-color: var(--dark-main-color);
+}
+.main-dark-verson .calendr-item h3{
+  color: var(--dark-heading-color);
+}
+.main-dark-verson .calendr-item p{
+  color: var(--dark-para-color);
+}
