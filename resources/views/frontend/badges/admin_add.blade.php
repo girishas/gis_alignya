@@ -13,7 +13,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <h1>{!! getLabels('add_new_badge') !!}</h1>
+                    <h1>{!! getLabels('add_new_badge') !!} Kapil</h1>
 					<div class="text-zero top-right-button-container">
 						<a href="{!! url($route_prefix, 'badges1234') !!}" class="steamerst_link btn btn-primary btn-lg top-right-button mr-1">{!! getLabels('badges_list') !!}</a>
                     </div>
