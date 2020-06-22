@@ -15,7 +15,7 @@
                 <div class="col-12">
                     <h1>{!! getLabels('add_new_badge') !!}</h1>
 					<div class="text-zero top-right-button-container">
-						<a href="{!! url($route_prefix, 'badges') !!}" class="steamerst_link btn btn-primary btn-lg top-right-button mr-1">{!! getLabels('badges_list') !!}</a>
+						<a href="{!! url($route_prefix, 'badges1234') !!}" class="steamerst_link btn btn-primary btn-lg top-right-button mr-1">{!! getLabels('badges_list') !!}</a>
                     </div>
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                         <ol class="breadcrumb pt-0">
