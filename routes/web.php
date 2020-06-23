@@ -31,8 +31,10 @@ Route::any('initiatives', array('as'=>'admin.initiatives', 'uses'=>'ObjectiveCon
 
 Route::any('reports', array('as'=>'users.reports', 'uses'=>'TeamController@reports'));
 Route::any('ideas', array('as'=>'users.ideas', 'uses'=>'TeamController@ideas'));
-Route::any('department', array('as'=>'users.department', 'uses'=>'DepartmentController@department'));
-Route::any('profile', array('as'=>'users.profile', 'uses'=>'DepartmentController@profile'));
+Route::any('department/{id?}', array('as'=>'users.admin_index', 'uses'=>'DepartmentController@admin_index'));
+Route::any('profile', array('as'=>'users.profile', 'uses'=>'UserController@profile'));
+Route::any('addDepartmentForm', array('as'=>'users.addDepartmentForm', 'uses'=>'DepartmentController@addDepartmentForm'));
+Route::any('getprofiledata', array('as'=>'users.getprofiledata', 'uses'=>'UserController@getprofiledata'));
 Route::any('update-profile', array('as'=>'users.update_profile', 'uses'=>'UserController@update_profile'));
 Route::any('subscription', array('as'=>'users.subscription', 'uses'=>'DepartmentController@subscription'));
 Route::any('invoice', array('as'=>'users.invoice', 'uses'=>'DepartmentController@invoice'));

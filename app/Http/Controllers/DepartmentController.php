@@ -43,36 +43,73 @@ class DepartmentController extends Controller
     }
 	
 	
-	public function admin_index($role_id = null){
+	public function admin_index($id=null){
 		$page_title  = getLabels("Departments");
-		
-		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
-			$_POST = $this->request->session()->get('usearch');
-		}else{
-			$this->request->session()->forget('usearch');
-		}
-		
-		$data  = Department::sortable()->leftjoin('al_department_member','al_department_member.department_id','=','al_comp_departments.id')->leftjoin('users','users.id','=','al_department_member.member_id');
-		
-		if(! empty($_POST)){
-			if(isset($_POST['department_name']) and $_POST['department_name'] !=''){
-				$department_name = $_POST['department_name'];
-				$this->request->session()->put('usearch.department_name', $department_name);
-				$data = $data->whereRaw('al_comp_departments.department_name like ?', "%{$department_name}%");
+		if($this->request->isMethod('post')){
+			$formData = $this->request->except('member_ids','department_head');
+			$formData['status'] = 1;
+			$formData['company_id'] = Auth::User()->company_id;
+			if($id){
+				$u_data = Department::find($id);
+				$updatedepartment = $u_data->update($formData);
+			}else{
+				$adddepartment = Department::create($formData);
 			}
-			
+			if($this->request->get('member_ids')){
+				if($id){
+					$prev_members = DepartmentMember::where('department_id',$id)->where('is_head',0)->get();
+					if(!empty($prev_members)){
+						$deletedepartment = DepartmentMember::where('department_id',$id)->where('is_head',0)->delete();
+					}
+				}
+				$member_ids = $this->request->get('member_ids');
+				foreach ($member_ids as $key => $value) {
+					$departmentmembers = array();
+					$departmentmembers['member_id'] = $value;
+					if($id){
+						$departmentmembers['department_id'] = $id;
+					}else{
+						$departmentmembers['department_id'] = $adddepartment->id;
+					}
+					$departmentmembers['is_head'] = 0;
+					DepartmentMember::create($departmentmembers);
+				}
+			}
+			if($this->request->get('department_head')){
+				if($id){
+					$prev_members = DepartmentMember::where('department_id',$id)->where('is_head',1)->get();
+					if(!empty($prev_members)){
+						$deletedepartment = DepartmentMember::where('department_id',$id)->where('is_head',1)->delete();
+					}
+				}
+				$departmentmembers = array();
+				$departmentmembers['member_id'] = $this->request->get('department_head');
+				if($id){
+					$departmentmembers['department_id'] = $id;
+				}else{
+					$departmentmembers['department_id'] = $adddepartment->id;
+				}
+				$departmentmembers['is_head'] = 1;
+				DepartmentMember::create($departmentmembers);
+			}
+			return redirect()->back();
+		}
+		if($id){
+			$parent_department = Department::where('id',$id)->orderBy('id','asc')->first();
 		}else{
-			$this->request->session()->forget('usearch');
+			$parent_department = Department::orderBy('id','asc')->first();
 		}
-		
-		
-		$data  = $data->where('al_department_member.is_head',1)->select('al_comp_departments.*',DB::raw("CONCAT_WS(', ',users.first_name,users.designation) AS department_head_name"))->orderBy('al_comp_departments.parent_department_id', 'asc')->paginate(config('constants.PAGINATION'));
-		
-		if(isset($_GET['s']) and $_GET['s']){
-			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		if(!empty($parent_department)){
+			$hod = DepartmentMember::leftjoin('users','users.id','=','al_department_member.member_id')->where('al_department_member.department_id',$parent_department->id)->where('al_department_member.is_head',1)->select('users.first_name','users.last_name','users.designation','users.id')->first();
+			$members = DepartmentMember::leftjoin('users','users.id','=','al_department_member.member_id')->where('al_department_member.department_id',$parent_department->id)->where('al_department_member.is_head',0)->select('users.first_name','users.last_name','users.designation')->get();
+			$members_pluck = DepartmentMember::leftjoin('users','users.id','=','al_department_member.member_id')->where('al_department_member.department_id',$parent_department->id)->where('al_department_member.is_head',0)->select('users.first_name','users.last_name','users.designation','users.id')->pluck('users.id','users.first_name');
+			//pr($members_pluck->toArray());
 		}
+		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
+		$departments = Department::where('status',1)->pluck("department_name","id");
+		$data  = Department::get();
 		$page_title  = getLabels("Departments");
-		return view('frontend/departments/admin_index', compact('data','role_id','page_title'));
+		return view('frontend/departments/department', compact('data','role_id','page_title','parent_department','hod','members','departments','all_members','id','members_pluck'));
 	}
 	
 	
@@ -808,10 +845,7 @@ class DepartmentController extends Controller
        return $file_name;
 	}
 
-	public function department(){
-		$page_title = "Department";
-		return view("/frontend/departments/department",compact('page_title'));
-	}
+	
 	public function subscription(){
 		$page_title = "Subscription";
 		return view("/frontend/departments/subscription",compact('page_title'));
@@ -831,14 +865,19 @@ class DepartmentController extends Controller
 		$page_title = "Invoice";
 		return view("/frontend/departments/invoice",compact('page_title'));
 	}
-	public function profile(){
-		$page_title = "Profile";
-		return view("/frontend/departments/profile",compact('page_title'));
-	}public function supports(){
+	
+	public function supports(){
 		$page_title = "Supports";
 		return view("/frontend/departments/supports",compact('page_title'));
 	}public function notifications(){
 		$page_title = "Notifications";
 		return view("/frontend/departments/notifications",compact('page_title'));
+	}
+	public function addDepartmentForm(){
+		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
+		$departments = Department::where('status',1)->pluck("department_name","id");
+		//pr($departments);
+		
+		return view('Element/department/add_department',compact('all_members','departments'));
 	}
 }

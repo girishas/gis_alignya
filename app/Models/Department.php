@@ -17,11 +17,7 @@ class Department extends Model
     protected $fillable = [
         'parent_department_id', 'department_name', 'parent_level','status','company_id'];
 
-    public $timestamps = false;
-
-
-
-
+    
         public static function validate($input, $id = null){
 		$rules = array(
 		
