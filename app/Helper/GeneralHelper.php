@@ -11,10 +11,13 @@
 	use App\Models\SubscriptionPlan;
 	use App\Models\Subscription;
 	use App\Models\Notification;
-	use App\Models\Plans;
 	use App\Models\Post;
 	use App\Models\Follower;
+	use App\Models\Department;
 	use App\Models\Setting;
+	use App\Models\Company;
+	use App\Models\Plans;
+	use App\Models\Industries;
 	use Illuminate\Support\Facades\DB;
 	use Illuminate\Support\Facades\Auth;
 	use Illuminate\Support\Facades\Schema;
@@ -594,5 +597,24 @@
 		echo "<pre>"; print_r($arr); die;
 	}
 	
+	function getCompanyProfile($company_id=null){
+		$data = Company::where('id',$company_id)->first();
+		return $data;
+	}
+
+	function getPlanDetails($plan_id=null){
+		$data = Plans::where('id',$plan_id)->first();
+		return $data;
+	}
+
+	function getIndustryName($industry_id=null){
+		$data = Industries::where('id',$industry_id)->first();
+		return $data;
+	}
 	
+	function getSubDepartment($parent_id=null){
+		$data = Department::where('parent_department_id',$parent_id)->get();
+		return $data;
+	}
+
 	?>

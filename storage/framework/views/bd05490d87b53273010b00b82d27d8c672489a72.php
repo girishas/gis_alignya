@@ -1,6 +1,56 @@
 <?php use App\Traits\SortableTrait;  ?>
 
 <?php $__env->startSection('content'); ?>
+<style type="text/css">
+    
+.dropdown-submenu {
+    position: relative;
+}
+
+.dropdown-submenu>.dropdown-menu {
+    top: 0;
+    left: 100%;
+    margin-top: -6px;
+    margin-left: -1px;
+    -webkit-border-radius: 0 6px 6px 6px;
+    -moz-border-radius: 0 6px 6px;
+    border-radius: 0 6px 6px 6px;
+}
+
+.dropdown-submenu:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown-submenu>a:after {
+    display: block;
+    content: " ";
+    float: right;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+    border-width: 5px 0 5px 5px;
+    border-left-color: #ccc;
+    margin-top: 5px;
+    margin-right: -10px;
+}
+
+.dropdown-submenu:hover>a:after {
+    border-left-color: #fff;
+}
+
+.dropdown-submenu.pull-left {
+    float: none;
+}
+
+.dropdown-submenu.pull-left>.dropdown-menu {
+    left: -100%;
+    margin-left: 10px;
+    -webkit-border-radius: 6px 0 6px 6px;
+    -moz-border-radius: 6px 0 6px 6px;
+    border-radius: 6px 0 6px 6px;
+}
+</style>
   <main>
          <div class="container-fluid"> 
 							
@@ -16,7 +66,6 @@
                         
                     </nav>
                         <div class="float-md-right">
-							<button type="button" class="btn btn-outline-primary mb-1" id="myModal1">Add Department</button>
 							
   <script>
 $(document).ready(function(){
@@ -29,20 +78,42 @@ $(document).ready(function(){
   });
 })
 </script>
-                            <button type="button" class="btn btn-lg btn-outline-primary dropdown-toggle dropdown-toggle-split top-right-button top-right-button-single" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split top-right-button top-right-button-single" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                Choose Department
                             </button>
 							
 							<a href="<?php echo url('members'); ?>"><button type="button" class="btn btn-primary mb-1">Members</button></a>
 							<a href="<?php echo url('team'); ?>"><button type="button" class="btn btn-primary mb-1">Teams</button></a>
-							
-							
+							<button type="button" class="btn btn-primary mb-1" id="myModal1">Add Department</button>
+                            
+						
                             <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(874px, 43px, 0px);">
-                                <a class="dropdown-item" href="#">Finance</a>
-                                <a class="dropdown-item" href="#">Marketing</a>
-                                <a class="dropdown-item" href="#">Z- Zone</a>
-                                <a class="dropdown-item" href="#">Sales Department </a>
-                                 
+                               <li class="dropdown-item"><a href="#">Some action</a></li>
+                                <li class="dropdown-item"><a href="#">Some other action</a></li>
+                                <li class="dropdown-divider"></li>
+                                <li class="dropdown-submenu">
+                                  <a  class="dropdown-item" tabindex="-1" href="#">Hover me for more options</a>
+                                  <ul class="dropdown-menu">
+                                    <li class="dropdown-item"><a tabindex="-1" href="#">Second level</a></li>
+                                    <li class="dropdown-submenu">
+                                      <a class="dropdown-item" href="#">Even More..</a>
+                                      <ul class="dropdown-menu">
+                                          <li class="dropdown-item"><a href="#">3rd level</a></li>
+                                            <li class="dropdown-submenu"><a class="dropdown-item" href="#">another level</a>
+                                            <ul class="dropdown-menu">
+                                                <li class="dropdown-item"><a href="#">4th level</a></li>
+                                                <li class="dropdown-item"><a href="#">4th level</a></li>
+                                                <li class="dropdown-item"><a href="#">4th level</a></li>
+                                            </ul>
+                                          </li>
+                                            <li class="dropdown-item"><a href="#">3rd level</a></li>
+                                      </ul>
+                                    </li>
+                                    <li class="dropdown-item"><a href="#">Second level</a></li>
+                                    <li class="dropdown-item"><a href="#">Second level</a></li>
+                                  </ul>
+                                </li>
+                                                 
                             </div>
                         </div>
                     <div class="separator mb-5"></div>

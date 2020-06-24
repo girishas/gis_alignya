@@ -26,4 +26,6 @@ return array(
 	"SiteValue" 				=> array('paypal_mode'=>'sandbox', 'paypal_api_username'=>'gaurav2212016-facilitator_api1.outlook.com','paypal_api_password'=>'FWLUFB9PHDMB8FEK','paypal_api_signature'=>'ABhCI5kfIeM7nPsgeZJqsnMV8P31A4uQZkk.5ga1YIzaRNeUXsTUjdYJ'),
 	"Quarter" => array(0=>'FULL',1=>'Q1',2=>'Q2',3=>'Q3',4=>'Q4',5=>'H1',6=>'H2'),
 	"PAGE_PRODUCT_ID" 			=> "prod_DeLuHBDVQAx40r",
+	"PLAN_PERIOD" => array(1=>'Monthly',2=>'Yearly'),
+	"COMPANY_FISCAL_MONTH" => array(1=>"January",2=>"February",3=>"March",4=>"April",5=>"May",6=>"June",7=>"July",8=>"Auguest",9=>"September",10=>"October",11=>"November",12=>"December"),
 );

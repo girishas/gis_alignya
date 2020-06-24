@@ -8,6 +8,11 @@ use App\Models\Notification;
 use App\Models\SubscriptionPlan;
 use App\Models\Objective;
 use App\Models\Measure;
+use App\Models\Department;
+use App\Models\Plans;
+use App\Models\Teams;
+use App\Models\Industries;
+use App\Models\Company;
 
 use App\Classes\Slim;
 
@@ -74,6 +79,8 @@ class UserController extends Controller
 
 	public function register(){
 		$page_title = getLabels('register');
+		$plans = Plans::where('status',1)->get();
+			// echo "<pre>";print_r($plans->toArray());die;
 		if ($this->request->isMethod('post')) {
 			$validator = User::register($this->request->all());
 			if ( $validator->fails() ) {
@@ -111,7 +118,7 @@ class UserController extends Controller
 			}
 		}
 		
-		return view('frontend.users.register', compact('page_title'));
+		return view('frontend.users.register', compact('page_title','plans'));
 	}
 	
 	public function account(){
@@ -258,7 +265,9 @@ class UserController extends Controller
 		$measure_count = Measure::where('category_type',1)->count();
 		$initiative_count = Measure::where('category_type',2)->count();
 		$kpi_count = Measure::where('category_type',3)->count();
-		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count'));
+		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
+		$departments = Department::where('status',1)->pluck("department_name","id");
+		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments'));
 	}
 	
 	
@@ -474,12 +483,34 @@ class UserController extends Controller
 	
 	
 	
-	public function profile($username = null){
-	
-		$data  = DB::table('users')->leftjoin('countries', 'countries.id', '=', 'users.country_id')->where('users.uniq_username', $username)->where('users.status', 1)->first(array('users.*', 'countries.name as country_name'));
-		$page_title = $data->first_name." ".$data->last_name;
-		
-		return view('frontend.users.profile', compact('page_title', 'data', 'following', 'followers', 'posts', 'myfollowers', 'plans'));
+	public function profile(){
+		$page_title = "Profile";
+		$company_details = getCompanyProfile(Auth::User()->company_id);
+		$plan_details = getPlanDetails(!empty($company_details)?$company_details->plan_id:"");
+		$total_members = User::where('company_id',Auth::User()->company_id)->count();
+		$total_departments = Department::where('company_id',Auth::User()->company_id)->count();
+		$total_teams = Teams::where('company_id',Auth::User()->company_id)->count();
+		$industries = Industries::pluck('name','id');
+		if($this->request->isMethod('post')){
+			$formData = $this->request->all();
+			$data = Company::find(Auth::User()->company_id);
+			$update = $data->update($formData);
+			if($update){
+				return redirect('profile');
+			}else{
+				return redirect('profile');
+			}
+		}
+		return view("/frontend/users/profile",compact('page_title','company_details','plan_details','total_members','total_departments','total_teams','industries'));
+	}
+	public function getprofiledata(){
+		$company_details = getCompanyProfile(Auth::User()->company_id);
+		$plan_details = getPlanDetails(!empty($company_details)?$company_details->plan_id:"");
+		$total_members = User::where('company_id',Auth::User()->company_id)->count();
+		$total_departments = Department::where('company_id',Auth::User()->company_id)->count();
+		$total_teams = Teams::where('company_id',Auth::User()->company_id)->count();
+		$industries = Industries::pluck('name','id');
+		return view("/Element/users/updateprofile",compact('company_details','plan_details','total_members','total_departments','total_teams','industries'));
 	}
 	
 	

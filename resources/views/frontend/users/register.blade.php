@@ -5,12 +5,7 @@
 
 @section('content')
 
-<script src="https://use.fontawesome.com/cf40e5bbe5.js"></script>
-
-{!! HTML::script('https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css') !!}
-{!! HTML::script('https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js') !!}
-{!! HTML::script('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css') !!}
-{!! HTML::script('https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js') !!}
+<link rel="stylesheet" href="{!!url('public/css/font-awesome/css/font-awesome.min.css')!!}">
 
 <style>
 * {
@@ -275,111 +270,121 @@ select.list-dt:focus {
                 <p>Please enter few details to onboard Alignya!</p>
                 <div class="row">
                     <div class="col-md-12 mx-0">
-                        <form id="msform">
+                       
+                            {!! Form::open(array('url' => url('/register'), 'class'=>'steamerstudio_form needs-validation tooltip-label-right', 'id'=>'msform', 'files' => true))!!}
                             <!-- progressbar -->
                             <ul id="progressbar">
                                 <li class="active" id="personal"><strong>Personal</strong></li>
                                 <li id="account"><strong>Company</strong></li>
-                                <li id="payment"><strong>Payment</strong></li>
-                                <li id="confirm"><strong>Finish</strong></li>
+                                <li id="confirm"><strong>Others</strong></li>
+                                <li id="payment"><strong>Choose Plan</strong></li>
                             </ul> <!-- fieldsets -->
                             <fieldset>
                                 <div class="form-card">
-                                    <h2 class="fs-title">Personal Information</h2> <input type="text" name="fname" placeholder="First Name" /> <input type="text" name="lname" placeholder="Last Name" /> <input type="text" name="phno" placeholder="Contact No." /> <input type="text" name="phno_2" placeholder="Alternate Contact No." />
-                                </div> <input type="button" name="previous" class="previous action-button-previous" value="Previous" /> <input type="button" name="next" class="next action-button" value="Next Step" />
+                                    <h2 class="fs-title">Personal Information</h2>
+                                    <div class="row" >
+                                        <div class="col-md-5">
+
+                                        <div class="first_name_error" style="color: red"></div>
+                                        <input type="text" name="first_name" placeholder="First Name" id = "first_name"  />
+                                        
+                                        </div>
+
+                                        <div class="col-md-1"></div>
+                                        <input type="text" name="last_name" placeholder="Last Name" class="col-md-5" />
+                                        <input type="hidden" name="plan_id" id="hiddenFields">
+                                    </div>
+                                   
+                                    <div class="row">
+                                        <div class="col-md-5">
+
+                                        <div class="email_error" style="color: red"></div>
+
+                                        <input type="text" name="email" placeholder="Email" id="email"  />
+                                    </div>
+                                        <div class="col-md-1"></div>
+                                        <input type="text" name="mobile" placeholder="Phone" class="col-md-5" />
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+
+                                        <div class="password_error" style="color: red"></div>
+                                        <input type="password" name="password" id = "password" placeholder="Password"  />
+                                    </div>
+                                        <div class="col-md-1"></div>
+                                        
+
+                                        <input type="password" name="confirm_password" id = "confirm_password" placeholder="Confirm Password" class="col-md-5" />
+                                 
+                                    </div>
+                                </div> 
+                                
+                                <input type="button" name="next" class="next action-button" id = "step1" value="Next Step" />
                             </fieldset>
                             <fieldset>
                                 <div class="form-card">
-                                    <h2 class="fs-title">Company Information</h2> <input type="email" name="email" placeholder="Email Id" /> <input type="text" name="uname" placeholder="UserName" /> <input type="password" name="pwd" placeholder="Password" /> <input type="password" name="cpwd" placeholder="Confirm Password" />
-                                </div> <input type="button" name="next" class="next action-button" value="Next Step" />
+                                    <h2 class="fs-title">Company Information</h2>
+                                    <div class="col-md-12">
+                                        <div class="company_name_error" style="color: red"></div>
+                                        <input type="text" name="company_name" id="company_name" placeholder="Company Name" />
+                                    </div>
+                                    <div class="col-md-12">
+                                    <input type="text" name="slogan" placeholder="Description" />
+                                    </div>
+                                </div>
+                                <input type="button" name="previous" class="previous action-button-previous" value="Previous" />
+                                 <input type="button" name="next" class="next action-button" id = "step2" value="Next Step" />
                             </fieldset>
                             
 							<fieldset>
                                 <div class="form-card">
-                                    <h2 class="fs-title">Payment Information</h2>
-                                    <div class="radio-group">
-                                        <div class='radio' data-value="credit"><img src="https://i.imgur.com/XzOzVHZ.jpg" width="200px" height="100px"></div>
-                                        <div class='radio' data-value="paypal"><img src="https://i.imgur.com/jXjwZlj.jpg" width="200px" height="100px"></div> <br>
-                                    </div> <label class="pay">Card Holder Name*</label> <input type="text" name="holdername" placeholder="" />
-                                    <div class="row">
-                                        <div class="col-9"> <label class="pay">Card Number*</label> <input type="text" name="cardno" placeholder="" /> </div>
-                                        <div class="col-3"> <label class="pay">CVC*</label> <input type="password" name="cvcpwd" placeholder="***" /> </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-3"> <label class="pay">Expiry Date*</label> </div>
-                                        <div class="col-9"> <select class="list-dt" id="month" name="expmonth">
-                                                <option selected>Month</option>
-                                                <option>January</option>
-                                                <option>February</option>
-                                                <option>March</option>
-                                                <option>April</option>
-                                                <option>May</option>
-                                                <option>June</option>
-                                                <option>July</option>
-                                                <option>August</option>
-                                                <option>September</option>
-                                                <option>October</option>
-                                                <option>November</option>
-                                                <option>December</option>
-                                            </select> <select class="list-dt" id="year" name="expyear">
-                                                <option selected>Year</option>
-                                            </select> </div>
-                                    </div>
-                                </div> <input type="button" name="previous" class="previous action-button-previous" value="Previous" /> <input type="button" name="make_payment" class="next action-button" value="Confirm" />
+                                    <h2 class="fs-title">Others</h2>
+                                     <input type="text" name="com_vision" placeholder="Company Vision" />
+                                    <input type="text" name="com_values" placeholder="Company Values" />
+                                    <input type="text" name="com_mission" placeholder="Company Mission" />
+                                </div> 
+                                <input type="button" name="previous" class="previous action-button-previous" value="Previous" /> <input type="button" name="make_payment" class="next action-button" id = "step3" value="Next" />
                             </fieldset>
                             <fieldset>
-                                <div class="form-card">
-                                    <h2 class="fs-title text-center">Success !</h2> <br><br>
-                                    <div class="row justify-content-center">
-                                        <div class="col-3"> <img src="https://img.icons8.com/color/96/000000/ok--v2.png" class="fit-image"> </div>
-                                    </div> <br><br>
-                                    <div class="row justify-content-center">
-                                        <div class="col-7 text-center">
-                                            <h5>You Have Successfully Signed Up</h5>
+                                 <div class="row equal-height-container">
+
+                        <div class="col-12 mb-4 ">
+                           Please choose subscription for membership plan!!
+                        </div>
+
+                        @foreach($plans as $key => $values)
+                        <div class="col-md-12 col-lg-4 mb-4 col-item">
+                            <div class="card">
+                                <div
+                                    class="card-body pt-5 pb-5 d-flex flex-lg-column flex-md-row flex-sm-row flex-column">
+                                    <div class="price-top-part">
+                                        <h5 class="mb-0 font-weight-semibold color-theme-1 mb-4">{!!$values->heading!!}</h5>
+                                        <p class="text-large mb-2 text-default">${!!$values->plan_fee!!}</p>
+                                        <p class="text-muted text-small">Upto {!!$values->emp_limit!!} Members</p>
+                                    </div>
+                                    <div class="pl-3 pr-3 pt-3 pb-0 d-flex price-feature-list flex-column flex-grow-1">
+                                        <ul class="list-unstyled">
+                                            {!!$values->summary!!}
+                                        </ul>
+                                        <div class="text-center">
+                                            <a href="javascript:void(0);" rel="1" class="btn btn-link btn-empty btn-lg" onclick="submitForm(1)">PURCHASE <i
+                                                    class="simple-icon-arrow-right"></i></a>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>  
+                            
                             </fieldset>
-                        </form>
+                        {!! Form::Close() !!}
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-                        <!-- <div class="form-side">
-							<a class="steamerst_link" href="{!! url($route_prefix, 'login') !!}">
-								{!! HTML::image("public/images/logo.png", "Logo", array("class"=>"", 'style'=>"width:250px;margin-bottom:40px;")) !!}
-							</a>
-                            <h6 class="mb-4">{!! getLabels('register') !!}</h6>
-                           {!! Form::open(array('url' => url('/register'), 'class'=>'steamerstudio_form needs-validation tooltip-label-right', 'id'=>'login', 'files' => true))!!}
-								<label class="form-group has-float-label position-relative error-l-100 mb-4">
-                                   {!! Form::text("first_name", null, array("class"=>"form-control")) !!}
-								   <div class="invalid-tooltip"></div>
-                                    <span>{!! getLabels('first_name') !!}*</span>
-                                </label>
-								<label class="form-group has-float-label mb-4 position-relative error-l-100">
-                                   {!! Form::text("last_name", null, array("class"=>"form-control")) !!}
-								   <div class="invalid-tooltip"></div>
-                                    <span>{!! getLabels('last_name') !!}</span>
-                                </label>
-                                <label class="form-group has-float-label mb-4 position-relative error-l-100">
-                                   {!! Form::text("email", null, array("class"=>"form-control")) !!}
-								   <div class="invalid-tooltip"></div>
-                                    <span>{!! getLabels('email') !!}*</span>
-                                </label>
-
-                                <label class="form-group has-float-label mb-4 position-relative error-l-100">
-									{!! Form::password("password",array("class"=>"form-control")) !!}
-									<div class="invalid-tooltip"></div>
-                                    <span>{!! getLabels('password') !!}*</span>
-                                </label>
-                                <div class="d-flex justify-content-end align-items-center">
-                                    <button class="btn btn-primary btn-lg btn-shadow text-uppercase" type="submit">{!! getLabels('register') !!}</button>
-                                </div>
-							{!! Form::Close() !!}
-                        </div> -->
-                   <!-- </div> -->
                 </div>
             </div>
         </div>
@@ -397,7 +402,36 @@ select.list-dt:focus {
 		var opacity;
 
 		$(".next").click(function(){
-
+        $(".first_name_error").html('');
+        $(".email_error").html('');
+        $(".password_error").html('');
+        var first_name = $("#first_name").val();
+        var email = $("#email").val();
+        var password = $("#password").val();
+        var confirm_password = $("#confirm_password").val();
+        var company_name = $("#company_name").val();
+        var step = $(this).attr('id');
+        var ret = true;
+        if(first_name == "" && step == "step1"){
+            $(".first_name_error").html('First name required');
+            return false;
+        }
+        if(email == "" && step == "step1"){
+            $(".email_error").html('Email required');
+            return false;
+        }
+        if(password == "" && step == "step1"){
+            $(".password_error").html('Password required');
+            return false;
+        }
+        if((confirm_password != password) && step == "step1"){
+            $(".password_error").html('Password & Confirm Password are different');
+            return false;
+        }
+        if(company_name == "" && step == "step2"){
+            $(".company_name_error").html('Company name required.');
+            return false;
+        }
 		current_fs = $(this).parent();
 		next_fs = $(this).parent().next();
 
@@ -454,11 +488,12 @@ select.list-dt:focus {
 		$(this).addClass('selected');
 		});
 
-		$(".submit").click(function(){
-		return false;
-		})
+		
 
 		});
-		
+		function submitForm(id){
+            $("#hiddenFields").val(id);
+            $("form").submit();
+        }
 	</script>
 @stop
