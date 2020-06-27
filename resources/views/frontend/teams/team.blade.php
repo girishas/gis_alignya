@@ -5,7 +5,7 @@
   <main>
         <div class="container-fluid"> 
                             
-
+            
             <div class="row">
             
         
@@ -17,13 +17,18 @@
                         
                     </nav>
                         <div class="float-md-right">
-                            <button type="button" class="btn btn-outline-primary mb-1" id="myModal1">Add Team</button>
+                            <button type="button" class="btn btn-primary mb-1" id="myModal1">Add Team</button>
 
                          @extends('Element/team/add_team')
 
   
   <script>
 $(document).ready(function(){
+
+    var addteamerror = "{!!session('errormessageadd')?session('errormessageadd'):''!!}";
+    if(addteamerror != ""){
+        $("#myModalAddTeam").modal('show');
+    }
     $("#myModal1").click(function(){
     $("#myModalAddTeam").modal('show');
   
@@ -31,9 +36,12 @@ $(document).ready(function(){
     $("#popupaddhideteam").click(function(){
     $("#myModalAddTeam").modal('hide');
   });
+   $("#popupupdatehideteam").click(function(){
+    $("#myModalUpdateTeam").modal('hide');
+  });
 })
 </script>
-                            <button type="button" class="btn btn-lg btn-outline-primary dropdown-toggle dropdown-toggle-split top-right-button top-right-button-single" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split top-right-button top-right-button-single" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                Choose Team
                             </button> 
                             
@@ -42,20 +50,23 @@ $(document).ready(function(){
                             
                             
                             <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(874px, 43px, 0px);">
-                                <a class="dropdown-item" href="#">Finance Team</a>
-                                <a class="dropdown-item" href="#">Marketing Team</a>
-                                <a class="dropdown-item" href="#">Z- Zone</a>
-                                <a class="dropdown-item" href="#">Sales Team </a>
-                                 
+                                @if(!empty($data))
+                                @foreach($data as $k => $v)
+                                <a class="dropdown-item" href="{!!url('team/'.$v->id)!!}">{!!$v->team_name!!}</a>
+                                @endforeach
+                                @endif
                             </div>
                         </div>
                     <div class="separator mb-5"></div>
                 </div>
             </div>
 
-             
-            
-            
+           @if(session('message'))
+            <div class="alert alert-success" role="alert" style="z-index: unset;">
+                {!! session('message') !!}
+            </div>
+            @endif
+            @if(!empty($team_detail))
             
               <div class="row">
               
@@ -64,28 +75,34 @@ $(document).ready(function(){
                                 <div class="card col-lg-12 col-12 mb-4 ">
                                    
                                         <div class="position-absolute card-top-buttons">
-                                            <button class="btn btn-header-light icon-button">
+                                            @if($id)
+                                            <button class="btn btn-header-light icon-button" onclick="updateTeam()">
                                                 <i class="simple-icon-pencil"></i>
                                             </button>
-                                            
-                                             <button class="btn btn-header-light icon-button">
-                                                <i class="iconsminds-folder-delete"></i>
-                                            </button>
-                                            
+                                            <?php
+                                                $remove_url = url($route_prefix."/team/remove/".$id); 
+                                                $remove_msg = getLabels('are_you_sure'); ?>
+                                                <a onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);">
+                                                    <button class="btn btn-header-light icon-button">
+                                                        <i class="simple-icon-trash"></i>
+                                                    </button>
+                                                    </a>
+                                            @endif
                                         </div>
                                         <div class="card-body">
-                                            <p class="list-item-heading mb-4">Finance Team</p> 
+                                            <p class="list-item-heading mb-4">{!!$team_detail->team_name!!}</p> 
                                            
                                                <div
                                                 class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <a href="#">
-                                                    <img src="{!!url('public/img/profile-pic-l-2.jpg')!!}" alt="Philip Nelms"
-                                                        class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />
-                                                </a>
+                                                @if ($team_detail->photo and file_exists('public/upload/users/profile-photo/'. $team_detail->photo) )
+                                                     <img src="{!!url('public/upload/users/profile-photo/'.$team_detail->photo)!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />            
+                                                @else
+                                                     <img src="{!!url('/img/no_images.png')!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />  
+                                                @endif
                                                 <div class="pl-3 flex-fill">
                                                     <a href="#">
-                                                        <p class="font-weight-medium mb-0">Philip Nelms ( Team Leader )</p>
-                                                        <p class="text-muted mb-0 text-small">Last login  12:45</p>
+                                                        <p class="font-weight-medium mb-0">{!!$team_detail->team_head_name!!} ( Team Leader )</p>
+                                                        <p class="text-muted mb-0 text-small">{!!$team_detail->designation!!}</p>
                                                     </a>
                                                 </div> 
                                             </div>
@@ -98,92 +115,30 @@ $(document).ready(function(){
                 <div class="card mb-4 col-lg-4 col-4">
                                         <div class="card-body">
                                             <h5 class="card-title">All Members</h5>
-
+                                            @if(!empty($team_members))
+                                            @foreach($team_members as $h => $j)
                                             <div
                                                 class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <a href="#">
-                                                    <img src="{!!url('public/img/profile-pic-l-2.jpg')!!}" alt="Philip Nelms"
-                                                        class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />
+                                                <a href="javascript:void(0)">
+                                                     @if ($j->photo and file_exists('public/upload/users/profile-photo/'. $j->photo) )
+                                                     <img src="{!!url('public/upload/users/profile-photo/'.$j->photo)!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />            
+                                                @else
+                                                     <img src="{!!url('/img/no_images.png')!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />  
+                                                @endif
                                                 </a>
                                                 <div class="pl-3 flex-fill">
-                                                    <a href="#">
-                                                        <p class="font-weight-medium mb-0">Philip Nelms</p>
-                                                        <p class="text-muted mb-0 text-small">09.08.2019 - 12:45</p>
+                                                    <a href="javascript:void(0)">
+                                                        <p class="font-weight-medium mb-0">{!!$j->first_name.' '.$j->last_name!!}</p>
+                                                        <p class="text-muted mb-0 text-small">{!!$team_detail->designation!!}</p>
                                                     </a>
                                                 </div>
                                                 <div>
-                                                    <a class="btn btn-outline-primary btn-xs" href="#">Reports</a>
+                                                    <a class="btn btn-outline-primary btn-xs" href="javascript:void(0)">Reports</a>
                                                 </div>
                                             </div>
-
-                                            <div
-                                                class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <a href="#">
-                                                    <img src="{!!url('public/img/profile-pic-l-4.jpg')!!}" alt="Mimi Carreira"
-                                                        class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />
-                                                </a>
-                                                <div class="pl-3 flex-fill">
-                                                    <a href="#">
-                                                        <p class="font-weight-medium mb-0">Mimi Carreira</p>
-                                                        <p class="text-muted mb-0 text-small">14.08.2019 - 10:10</p>
-                                                    </a>
-                                                </div>
-                                                <div>
-                                                    <a class="btn btn-outline-primary btn-xs" href="#">Reports</a>
-                                                </div>
-                                            </div>
-
-                                            <div
-                                                class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <a href="#">
-                                                    <img src="{!!url('public/img/profile-pic-l-3.jpg')!!}" alt="Brynn Bragg"
-                                                        class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />
-                                                </a>
-                                                <div class="pl-3 flex-fill">
-                                                    <a href="#">
-                                                        <p class="font-weight-medium mb-0">Brynn Bragg</p>
-                                                        <p class="text-muted mb-0 text-small">23.07.2019 - 16:10</p>
-                                                    </a>
-                                                </div>
-                                                <div>
-                                                    <a class="btn btn-outline-primary btn-xs" href="#">Reports</a>
-                                                </div>
-                                            </div>
-
-                                            <div
-                                                class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <a href="#">
-                                                    <img src="{!!url('public/img/profile-pic-l-7.jpg')!!}" alt="Rasheeda Vaquera"
-                                                        class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />
-                                                </a>
-                                                <div class="pl-3 flex-fill">
-                                                    <a href="#">
-                                                        <p class="font-weight-medium mb-0">Rasheeda Vaquera</p>
-                                                        <p class="text-muted mb-0 text-small">18.07.2019 - 12:00</p>
-                                                    </a>
-                                                </div>
-                                                <div>
-                                                    <a class="btn btn-outline-primary btn-xs" href="#">Reports</a>
-                                                </div>
-                                            </div>
-
-                                            <div
-                                                class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <a href="#">
-                                                    <img src="{!!url('public/img/profile-pic-l-8.jpg')!!}" alt="Mayra Sibley"
-                                                        class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />
-                                                </a>
-                                                <div class="pl-3 flex-fill">
-                                                    <a href="#">
-                                                        <p class="font-weight-medium mb-0">Esperanza Lodge</p>
-                                                        <p class="text-muted mb-0 text-small">13.07.2019 - 13:00</p>
-                                                    </a>
-                                                </div>
-                                                <div>
-                                                    <a class="btn btn-outline-primary btn-xs" href="#">Reports</a>
-                                                </div>
-                                            </div>
-
+                                            @endforeach
+                                            @endif
+                                            
                                         </div>
                                     </div>
 
@@ -386,8 +341,19 @@ $(document).ready(function(){
                     </div>
                 </div>
             </div>
-                    
+              @else
+              no record found
+              @endif
            </div>
 
     </main>
+     @extends('Element/team/update_team')
+
+    <script type="text/javascript">
+        
+        function updateTeam(){
+            $("#myModalUpdateTeam").modal('show');
+        }
+
+    </script>
 @stop

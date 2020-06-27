@@ -12,6 +12,7 @@ use App\Models\Department;
 use App\Models\Plans;
 use App\Models\Teams;
 use App\Models\Industries;
+use App\Models\Subscription;
 use App\Models\Company;
 
 use App\Classes\Slim;
@@ -39,7 +40,9 @@ class UserController extends Controller
 	public function __construct()
     {
        Parent::__construct();
-		$this->middleware('auth', ['except' => ['resizeProfileImageGoogle', 'resizeProfileImage', 'profile', 'resizeProfileImageFacebook', 'verifyMail', 'findOrCreateUser', 'redirectToProvider', 'handleProviderCallback', 'admin_login', 'admin_register', 'login', 'register', 'forgot_password', 'resetpassword', 'admin_forgot_password']]);
+		$this->middleware('auth', ['except' => ['resizeProfileImageGoogle', 'resizeProfileImage', 'profile', 'resizeProfileImageFacebook', 'verifyMail', 'findOrCreateUser', 'redirectToProvider', 'handleProviderCallback', 'admin_login', 'admin_register', 'login', 'register', 'forgot_password', 'resetpassword', 'admin_forgot_password','checkemailexist']]);
+		
+		
     }
 	
 	
@@ -80,46 +83,55 @@ class UserController extends Controller
 	public function register(){
 		$page_title = getLabels('register');
 		$plans = Plans::where('status',1)->get();
-			// echo "<pre>";print_r($plans->toArray());die;
 		if ($this->request->isMethod('post')) {
+			$input = $this->request->all();
+			$company = array();
+			$company['company_name'] = $input['company_name'];
+			$company['slogan'] = $input['slogan'];
+			$company['com_vision'] = $input['com_vision'];
+			$company['com_values'] = $input['com_values'];
+			$company['com_mission'] = $input['com_mission'];
+			$company['email'] = $input['email'];
+			$company['plan_id'] = $input['plan_id'];
+			$createcompany = Company::create($company);
+			$subscription = stripeSubscription($input['stripeToken'],$input['email'],$input['price_id']);
 			$validator = User::register($this->request->all());
-			if ( $validator->fails() ) {
-				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('profile_not_registered')]);
-			}else{
-				$data                = $this->request->except('password');
-				$data['password']    = Hash::make($this->request->get('password'));
-				$data['role_id']     = 2;
-				$data['status']      = 0;
-				$user = User::create($data);
-				
-				if($user){
-					$last_id = $user->id;
-					$uniq_username = User::createUsername($last_id);
-					$varify_hash = base64_encode($last_id.$uniq_username);
-					User::where('id', $user->id)->update(array('varify_hash'=>$varify_hash ));
-					
-					$mail_data  	=     getEmailTemplate('user-registration'); //DB::table('templates')->where('slug', '=', 'user-registration')->first();
-					if($mail_data){
-						$usr_name       = $user->first_name." ".$user->last_name;
-						$email          = $user->email; 
-						$link           = config('constants.SITE_URL').'verify-mail?q='.$varify_hash;                       
-						$site_name      = config('constants.SITE_TITLE');
-						$admin_email    = config('constants.SITE_EMAIL'); 
-						$message        = str_replace(array('{NAME}', '{EMAIL}', '{LINK}', '{SITE}'), array($usr_name, $email, $link, $site_name), $mail_data['content']);
-						$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data['subject']);
-						//return view('frontend.my_email')->with('data',$message);
-						Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
-							$message->from($admin_email, $site_name);
-							$message->to($email, $usr_name)->subject($subject);
-						}); 
-						return response()->json(array("type" => "success", "url" => url('login'), "message" => getLabels('registered_successfully')));
-					}
-				}
-			}
+			$data                = $this->request->except('password');
+			$data['password']    = Hash::make($this->request->get('password'));
+			$data['role_id']     = 2;
+			$data['status']      = 1;
+			$data['stripe_customer_id'] = $subscription['customer_id'];
+			$data['company_id'] = $createcompany->id;
+			$data['full_name'] = $input['first_name'].' '.$input['last_name'];
+			$data['trial_expiry_date'] = $subscription['subscription']->trial_end;
+			$data['user_ip'] = $_SERVER['REMOTE_ADDR'];
+			$data['last_activity'] = date('Y-m-d h:i:s');
+			$data['trial_expiry_date'] = $subscription['subscription']->trial_end;
+			$data['current_membership_plan'] = $input['plan_id'];
+			$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+			$user = User::create($data);
+			$update_emp_code = User::where('id',$user->id)->update(array('emp_code'=>"EMP-".$user->id."-".$createcompany->id));
+			$subscriptioncreate = array();
+			$subscriptioncreate['user_id'] = $user->id;
+			$subscriptioncreate['company_id'] = $createcompany->id;
+			$subscriptioncreate['plan_fee'] = $input['plan_amount'];
+			$subscriptioncreate['total_stripe_payment'] = $input['plan_amount'];
+			$subscriptioncreate['period'] = 1;
+			$subscriptioncreate['stripe_subscription_id'] = $subscription['subscription']->id;
+			$subscriptioncreate['stripe_plan_id'] = $input['price_id'];
+			$subscriptioncreate['plan_id'] = $input['plan_id'];
+			$subscriptioncreate['start_date'] = $subscription['subscription']->trial_start;
+			$subscriptioncreate['end_date'] = $subscription['subscription']->trial_end;
+			$subscriptioncreate['stripe_status'] = $subscription['subscription']->status;
+			$subscriptioncreate['stripe_dump'] = json_encode($subscription);
+			$subscriptions = Subscription::create($subscriptioncreate);
+			return redirect('login')->with("message","register successfully");
 		}
-		
+	
 		return view('frontend.users.register', compact('page_title','plans'));
 	}
+
+	
 	
 	public function account(){
 		$page_title = "Account";
@@ -241,7 +253,7 @@ class UserController extends Controller
 					
 					if(Auth::user()->role_id == 1 and $url_prefix !=""){
 						return json_encode(array("status" => "success", "header" => view('frontend/layouts/header')->render(), "navigation" => view('frontend/layouts/navigation')->render()));
-					}elseif(Auth::user()->role_id == 2 and $url_prefix ==""){
+					}elseif((Auth::user()->role_id == 2 || Auth::user()->role_id == 3 || Auth::user()->role_id == 4) and $url_prefix ==""){
 						return json_encode(array("status" => "success", "header" => view('frontend/layouts/header')->render(), "navigation" => view('frontend/layouts/navigation')->render()));
 					}else{
 						Auth::logout();
@@ -265,9 +277,11 @@ class UserController extends Controller
 		$measure_count = Measure::where('category_type',1)->count();
 		$initiative_count = Measure::where('category_type',2)->count();
 		$kpi_count = Measure::where('category_type',3)->count();
-		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
-		$departments = Department::where('status',1)->pluck("department_name","id");
-		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments'));
+		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('role_id',5)->pluck('full_name','id');
+		$departments = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck("department_name","id");
+		$teamleads = User::where('role_id',4)->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		
+		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads'));
 	}
 	
 	
@@ -285,7 +299,7 @@ class UserController extends Controller
 			$this->request->session()->forget('usearch');
 		}
 		
-		$data  = User::sortable()->where('users.role_id', $role_id)->leftjoin('countries', 'countries.id', '=', 'users.country_id');
+		$data  = User::sortable()->where('users.company_id', Auth::User()->company_id)->leftjoin('countries', 'countries.id', '=', 'users.country_id');
 		
 		if(! empty($_POST)){
 			if(isset($_POST['first_name']) and $_POST['first_name'] !=''){
@@ -347,9 +361,9 @@ class UserController extends Controller
 			$validator = User::validate($this->request->all());
 			
 			if ( $validator->fails() ) {
-				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('member_not_saved_errors')]);
+				return redirect()->back()->with('errormessageadd',getLabels('member_not_saved_errors'))->withErrors($validator->errors());
 			} else {
-				$formData              	= $this->request->except('password','photo', 'cover_photo');
+				$formData              	= $this->request->except('password','photo');
 				$formData['password'] 	= Hash::make($this->request->get('password'));
 				if ( $this->request->photo){
 					// Pass Slim's getImages the name of your file input, and since we only care about one image, use Laravel's head() helper to get the first element
@@ -375,30 +389,16 @@ class UserController extends Controller
 					}
 				}
 				
-				if ( $this->request->cover_photo){
-					$image = head(Slim::getImages('cover_photo'));
-
-					if ( isset($image['output']['data']) ){
-						$name = $image['output']['name'];
-						$dataImage = $image['output']['data'];
-						$path = base_path() . '/public/upload/users/cover_photo/';
-
-						// Save the file to the server
-						$file = Slim::saveFile($dataImage, $name, $path);
-						
-						$formData['cover_photo'] 	= $file['name'];
-					}
-				}  
 				
-				$formData['role_id']	= 2;
+				
 				$formData['status']	= 1;
-				$formData['block_ip_end'] = $_SERVER['REMOTE_ADDR'];
+				$formData['company_id']	= Auth::User()->company_id;
+				$formData['user_ip'] = $_SERVER['REMOTE_ADDR'];
 				$user  = User::create($formData);
 				if($user){
-					$uniq_username = User::createUsername($user->id);
-					return response()->json(['type' => 'success', 'url'=> url(env('ADMIN_PREFIX'), 'members'), 'message' => getLabels('Member Saved Successfully')]);
+					return redirect()->back()->with('message', getLabels('Member Saved Successfully'));
 				}else{
-					return response()->json(['type' => 'error', 'url'=> url(env('ADMIN_PREFIX'), 'members'), 'message' => getLabels('something_wrong_try_again')]);
+					return response()->json(['type' => 'error', 'url'=> url('members'), 'message' => getLabels('something_wrong_try_again')]);
 				}
 			}
 		}
@@ -411,70 +411,45 @@ class UserController extends Controller
 	public function admin_edit($id = null){ 
 		
 		$data   = User::find($id);
-		$uniq_username_old  = !empty($data->uniq_username)?$data->uniq_username:"";
 		$page_title = getLabels("Update Member");
 		$countries  = Country::where('status', 1)->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
 		if($this->request->isMethod('post')){
-			$validator = User::validate($this->request->all(), $id);
+			$formData              	= $this->request->except('photo');
 			
-			if ( $validator->fails() ) {
-				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('user_not_saved_errors')]);
-			} else {
-				$formData              	= $this->request->except('password','photo', 'cover_photo');
-				
-				if ( $this->request->photo){
-					// Pass Slim's getImages the name of your file input, and since we only care about one image, use Laravel's head() helper to get the first element
-					$image = head(Slim::getImages('photo'));
+			if ( $this->request->photo){
+				// Pass Slim's getImages the name of your file input, and since we only care about one image, use Laravel's head() helper to get the first element
+				$image = head(Slim::getImages('photo'));
 
-					// Grab the ouput data (data modified after Slim has done its thing)
-					if ( isset($image['output']['data']) ){
-						// Original file name
-						$name = $image['output']['name'];
+				// Grab the ouput data (data modified after Slim has done its thing)
+				if ( isset($image['output']['data']) ){
+					// Original file name
+					$name = $image['output']['name'];
 
-						// Base64 of the image
-						$dataImage = $image['output']['data'];
+					// Base64 of the image
+					$dataImage = $image['output']['data'];
 
-						// Server path
-						$path = base_path() . '/public/upload/users/profile-photo/';
+					// Server path
+					$path = base_path() . '/public/upload/users/profile-photo/';
 
-						// Save the file to the server
-						$file = Slim::saveFile($dataImage, $name, $path);
-						if($id and $data->photo !="" and file_exists('public/upload/users/profile-photo/'. $data->photo)){
-							unlink('public/upload/users/profile-photo/'. $data->photo);
-						}
-						$formData['photo'] 	= $file['name'];
-						// Get the absolute web path to the image
-						//$imagePath = asset('tmp/' . $file['name']);
+					// Save the file to the server
+					$file = Slim::saveFile($dataImage, $name, $path);
+					if($id and $data->photo !="" and file_exists('public/upload/users/profile-photo/'. $data->photo)){
+						unlink('public/upload/users/profile-photo/'. $data->photo);
 					}
-				}
-				
-				if ( $this->request->cover_photo){
-					$image = head(Slim::getImages('cover_photo'));
-
-					if ( isset($image['output']['data']) ){
-						$name = $image['output']['name'];
-						$dataImage = $image['output']['data'];
-						$path = base_path() . '/public/upload/users/cover_photo/';
-
-						// Save the file to the server
-						$file = Slim::saveFile($dataImage, $name, $path);
-						if($id and $data->cover_photo !="" and file_exists('public/upload/users/cover_photo/'. $data->cover_photo)){
-							unlink('public/upload/users/cover_photo/'. $data->cover_photo);
-						}
-						$formData['cover_photo'] 	= $file['name'];
-					}
-				} 
-				
-				$user  = $data->update($formData);
-				if($user){
-					if(!empty($formData['uniq_username']) and ($uniq_username_old != $formData['uniq_username'])){
-						changeuniqusername($uniq_username_old, $formData['uniq_username']);
-					}
-					return response()->json(['type' => 'success', 'url'=> url(env('ADMIN_PREFIX'), 'members'), 'message' => getLabels('Member Update Successfully')]);
-				}else{
-					return response()->json(['type' => 'error', 'url'=> url(env('ADMIN_PREFIX'), 'members'), 'message' => getLabels('something_wrong_try_again')]);
+					$formData['photo'] 	= $file['name'];
+					// Get the absolute web path to the image
+					//$imagePath = asset('tmp/' . $file['name']);
 				}
 			}
+			
+			
+			$user  = $data->update($formData);
+			if($user){
+				return redirect()->back()->with('message', getLabels('Member Update Successfully'));
+			}else{
+				return response()->json(['type' => 'error', 'url'=> url('members'), 'message' => getLabels('something_wrong_try_again')]);
+			}
+	
 		}
 		
 		return view('frontend/users/admin_edit', compact('data', 'id', 'countries', 'page_title'));
@@ -628,7 +603,7 @@ class UserController extends Controller
 	
 	
 	
-	public function change_password($uniq_username = null){
+	public function change_password($id = null){
 		if($this->request->ajax()){
 			$id = Auth::id();
 			$users =  User::find($id);
@@ -1070,4 +1045,24 @@ class UserController extends Controller
 		*/
        return $file_name;
 	}
+
+	public function checkemailexist(){
+		$email = User::where('email',$this->request->get('email'))->first();
+		if(!empty($email)){
+			return json_encode(array("success"=>"true"));
+		}
+	}
+
+	public function setuserdatasession(){
+		$input = $this->request->all();
+		$data = User::find($input['id']);
+		return view('Element/users/updatemember',compact('data'));
+	}
+
+	public function viewmember(){
+		$inputs = $this->request->all();
+		$data = User::find($inputs['id']);
+		return view('Element/users/viewmember',compact('data'));
+	} 
+	
 }

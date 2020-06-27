@@ -1,6 +1,6 @@
 <?php
 return array( 
-	"SITE_URL" 					=> "http://localhost/alignya_laravel/",
+	"SITE_URL" 					=> "http://localhost/gis_alignya/",
 	"SITE_TITLE" 				=> "Alignya",
 	"SITE_EMAIL" 				=> "noreply@chameleon.love",
 	'SITE_MODE'					=> "live", //change "local" to "live" on server
@@ -14,7 +14,7 @@ return array(
 	"PAGINATION_GROUPS"   		=> 20,
 	"YES_NO" 					=> array(1=>'Yes', 0=>'No'),
 	"GENDER" 					=> array(1=>'Male',  2=>'Female'),
-	"STATUS" 					=> array(1=>'Active', 0=>'Inactive'),
+	"STATUS" 					=> array(1=>'Active', 0=>'Inactive',2=>'Blocked'),
 	"USER_THUMB_WIDTH"			=> 60,
 	"USER_MEDIUM_WIDTH"			=> 124,
 	"TAX_PER"					=> 0,
@@ -28,4 +28,5 @@ return array(
 	"PAGE_PRODUCT_ID" 			=> "prod_DeLuHBDVQAx40r",
 	"PLAN_PERIOD" => array(1=>'Monthly',2=>'Yearly'),
 	"COMPANY_FISCAL_MONTH" => array(1=>"January",2=>"February",3=>"March",4=>"April",5=>"May",6=>"June",7=>"July",8=>"Auguest",9=>"September",10=>"October",11=>"November",12=>"December"),
+	"USER_TYPES" => array(2=>"Company Owner", 3=>"Hod",4=>"Team Lead",5=>"Member"),
 );

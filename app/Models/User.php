@@ -38,7 +38,7 @@ class User extends Authenticatable
 		'reddit_profile_link','discordapp_profile_link','tumblr_profile_link','google_plus_profile_link','vk_profile_link','meetup_profile_link',
 		'youtube_profile_link','pinterest_profile_link','ask_fm_profile_link','flicker_profile_link','classmates_profile_link',
 		'referral_code','referral_by','block_ip_start','block_ip_end','full_name','image_name','is_validate','active_status','payout_email','enable_subscription_admin',
-		'enable_subscription','domain_name_id','designation'
+		'enable_subscription','domain_name_id','designation','stripe_customer_id','token_code','company_id','user_agent','last_activity','emp_code','trial_expiry_date','current_membership_plan','user_ip'
     ];
 
     /**

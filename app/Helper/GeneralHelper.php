@@ -617,4 +617,25 @@
 		return $data;
 	}
 
+	function stripeSubscription($token,$email,$plan_id){
+		$data = array();
+		require (base_path()."/stripe-php/init.php"); 
+		
+		\Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
+		$customer = \Stripe\Customer::create(array(
+			'email' => $email,
+			'source'  => $token
+		));
+		$customer_id = $customer->id;
+		$subscription = \Stripe\Subscription::create(array(
+			'customer' => $customer_id,
+			'items' => array(array('price' => $plan_id)),
+			'trial_end' => strtotime('+30 days', time()),
+			
+		));
+		$data['customer_id'] = $customer_id;
+		$data['subscription'] = $subscription;
+		return $data;
+	}
+
 	?>

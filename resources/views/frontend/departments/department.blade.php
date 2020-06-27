@@ -79,13 +79,14 @@ $(document).ready(function(){
   });
 })
 </script>
+                            <button type="button" class="btn btn-primary mb-1" onclick = "addDepartment()">Add Department</button>
                             <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split top-right-button top-right-button-single" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                Choose Department
                             </button>
 							
 							<a href="{!!url('members')!!}"><button type="button" class="btn btn-primary mb-1">Members</button></a>
 							<a href="{!!url('team')!!}"><button type="button" class="btn btn-primary mb-1">Teams</button></a>
-							<button type="button" class="btn btn-primary mb-1" onclick = "addDepartment()">Add Department</button>
+							
                             
 						
                             <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(874px, 43px, 0px);">
@@ -147,24 +148,36 @@ $(document).ready(function(){
                                             <button class="btn btn-header-light icon-button" onclick="updateDepartment()">
                                                 <i class="simple-icon-pencil"></i>
                                             </button>
-											@endif
+											<?php
+                                                $remove_url = url($route_prefix."/department/remove/".$id); 
+                                                $remove_msg = getLabels('are_you_sure'); ?>
+                                                <a onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);">
+                                                    <button class="btn btn-header-light icon-button">
+                                                        <i class="simple-icon-trash"></i>
+                                                    </button>
+                                                    </a>
+                                            @endif
                                         </div>
                                         <div class="card-body">
                                             <p class="list-item-heading mb-4">{!!$parent_department->department_name!!}</p> 
-                                           
+                                            @if(!empty($hod))
                                                <div
                                                 class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <a href="#">
-                                                    <img src="{!!url('public/img/profile-pic-l-2.jpg')!!}" alt="Philip Nelms"
-                                                        class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />
-                                                </a>
+                                                @if ($hod->photo and file_exists('public/upload/users/profile-photo/'. $hod->photo) )
+                                                     <img src="{!!url('public/upload/users/profile-photo/'.$hod->photo)!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />            
+                                                @else
+                                                     <img src="{!!url('/img/no_images.png')!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />  
+                                                @endif
+                                                
+                                                
+                                                
                                                 <div class="pl-3 flex-fill">
-                                                    <a href="#">
                                                         <p class="font-weight-medium mb-0">{!!$hod->first_name.' '.$hod->last_name!!} ( Head of Department )</p>
                                                         <p class="text-muted mb-0 text-small">{!!$hod->designation!!}</p>
-                                                    </a>
+                                                    
                                                 </div> 
                                             </div>
+                                                @endif
                                            
                                         </div>
                                    
@@ -177,18 +190,21 @@ $(document).ready(function(){
                                             @foreach($members as $member)
                                             <div
                                                 class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <a href="#">
-                                                    <img src="{!!url('public/img/profile-pic-l-2.jpg')!!}" alt="Philip Nelms"
-                                                        class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />
+                                                <a href="javascript:void(0);">
+                                                     @if ($member->photo and file_exists('public/upload/users/profile-photo/'. $member->photo) )
+                                                         <img src="{!!url('public/upload/users/profile-photo/'.$member->photo)!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />            
+                                                    @else
+                                                         <img src="{!!url('/img/no_images.png')!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />  
+                                                    @endif
                                                 </a>
                                                 <div class="pl-3 flex-fill">
-                                                    <a href="#">
+                                                    <a href="javascript:void(0)">
                                                         <p class="font-weight-medium mb-0">{!!$member->first_name.' '.$member->last_name!!}</p>
                                                         <p class="text-muted mb-0 text-small">{!!$member->designation!!}</p>
                                                     </a>
                                                 </div>
                                                 <div>
-                                                    <a class="btn btn-outline-primary btn-xs" href="#">Reports</a>
+                                                    <a class="btn btn-outline-primary btn-xs" href="javascript:void(0)">Reports</a>
                                                 </div>
                                             </div>
                                             @endforeach
@@ -394,6 +410,12 @@ $(document).ready(function(){
     </main>
 
     <script type="text/javascript">
+        $(document).ready(function(){
+            var erroradddeprtment = "{!!session('errormessageadd')?session('errormessageadd'):''!!}";
+            if(erroradddeprtment != ''){
+                addDepartment();
+            }
+        });
         function addDepartment(){
             $("#myModalAddDepartment").modal('show');      
         }

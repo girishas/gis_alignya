@@ -346,7 +346,7 @@ select.list-dt:focus {
                                 <input type="button" name="previous" class="previous action-button-previous" value="Previous" /> <input type="button" name="make_payment" class="next action-button" id = "step3" value="Next" />
                             </fieldset>
                             <fieldset>
-                                 <div class="row equal-height-container">
+                                 <div class="row equal-height-container" style="padding: 10px;">
 
                         <div class="col-12 mb-4 ">
                            Please choose subscription for membership plan!!
@@ -365,16 +365,29 @@ select.list-dt:focus {
                                     <div class="pl-3 pr-3 pt-3 pb-0 d-flex price-feature-list flex-column flex-grow-1">
                                         <ul class="list-unstyled">
                                             {!!$values->summary!!}
+                                            <input type="hidden" name="price_id" value="{!!$values->plan_id!!}">
+                                            <input type="hidden" name="plan_amount" value="{!!$values->plan_fee!!}">
                                         </ul>
                                         <div class="text-center">
-                                            <a href="javascript:void(0);" rel="1" class="btn btn-link btn-empty btn-lg" onclick="submitForm(1)">PURCHASE <i
-                                                    class="simple-icon-arrow-right"></i></a>
+                                            <a href="javascript:void(0);" rel="1" class="btn btn-link btn-empty btn-lg" onclick="submitForm(1)">
+                                           <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                                            data-key="pk_test_XBiHnVt8ZN2PFMvDa0wG6sUP"
+                                            data-image=""
+                                            data-email="gaurav.sadda@outlook.com"
+                                            data-name="Company Registration"
+                                            data-description="{!!$values->heading!!}"
+                                            data-panel-label="Pay $<?php echo $values->plan_fee; ?>"
+                                            data-label="Pay $<?php echo $values->plan_fee; ?>"
+                                            data-locale="auto">
+                                            </script>
+            </a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         @endforeach
+
                     </div>  
                             
                             </fieldset>
@@ -420,6 +433,19 @@ select.list-dt:focus {
             $(".email_error").html('Email required');
             return false;
         }
+        var token = "{!!csrf_token()!!}";
+        $.ajax({
+            type:"POST",
+            url: "{!!url('/checkemailexist')!!}",
+            data:'_token='+token+'&email='+email,
+            success: function (response) {
+
+               if(JSON.parse(response).success == "true"){
+                $(".email_error").html('Email already exist');
+                return false;
+               }
+            }  
+        });
         if(password == "" && step == "step1"){
             $(".password_error").html('Password required');
             return false;
@@ -493,7 +519,9 @@ select.list-dt:focus {
 		});
 		function submitForm(id){
             $("#hiddenFields").val(id);
-            $("form").submit();
+          //  $("form").submit();
+
         }
 	</script>
+ 
 @stop

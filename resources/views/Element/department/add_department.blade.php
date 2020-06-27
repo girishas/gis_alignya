@@ -7,6 +7,11 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
+            @if(session('errormessageadd'))
+            <div class="alert alert-danger" role="alert">
+                {!! session('errormessageadd') !!}
+            </div>    
+            @endif
              {!! Form::open(array('url' => array($route_prefix.'/department'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                 
             <div class="modal-body">
@@ -18,6 +23,7 @@
                         <div class="form-group">
                         <label>Name</label>
                         {!! Form::text('department_name',null, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
+                         @if($errors->first('department_name'))<div class="error">{!!$errors->first('department_name')!!}</div>@endif
                     </div>
                     @if(isset($departments))
                     <div class="form-group ">
@@ -27,10 +33,10 @@
                         <div class="invalid-tooltip"></div>
                     </div>
                     @endif
-                    @if(isset($all_members))
+                    @if(isset($department_head))
                     <div class="form-group ">
                         <label>Choose Department Head</label>
-                        {!! Form::select('department_head', $all_members,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}                    
+                        {!! Form::select('department_head', $department_head,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}                    
                         <div class="invalid-tooltip"></div>
                     </div>
                     

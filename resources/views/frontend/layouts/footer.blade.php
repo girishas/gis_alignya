@@ -23,7 +23,7 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				{!! Form::open(array('url' => array($route_prefix.'/'.Auth::User()->uniq_username.'/change-password'), 'class' =>'steamerstudio_form needs-validation tooltip-label-right', 'name'=>'Search')) !!}
+				{!! Form::open(array('url' => array($route_prefix.'/change-password'), 'class' =>'steamerstudio_form needs-validation tooltip-label-right', 'name'=>'Search')) !!}
 					{!! Form::hidden("action_modal", "change-password", array("class"=>"form-control")) !!}
 					<div class="modal-body">
 						<div class="form-group  position-relative error-l-150">

@@ -167,16 +167,7 @@
 	@extends('Element/users/updateprofile')
 	<script type="text/javascript">
 		function updateProfile(){
-			$.ajax({
-				type:"POST",
-				url: "{!!url('/getprofiledata')!!}",
-				success: function (response) {
-					$("#updateprofileopen").modal('show');
-				},
-				error: function(xhr, ajaxOptions, thrownError) {
-				  alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-				}
-			});
+			$("#updateprofileopen").modal('show');
 		}
 		$("#updateprofilehide").click(function(){
 		    $("#updateprofileopen").modal('hide');

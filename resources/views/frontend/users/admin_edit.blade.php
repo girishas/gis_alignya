@@ -37,7 +37,7 @@
 			
            <div class="card mb-4">
 				<div class="card-body">
-					
+					<?php $data = array();?>
 	
 					{!! Form::model($data, array('url' => array($route_prefix.'/members/update/'.$data->id), 'class' =>'steamerstudio_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
 						<div class="form-row">

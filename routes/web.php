@@ -25,9 +25,13 @@ Route::any('departments', array('as'=>'admin.department', function(){
 
 Route::any('objectives', array('as'=>'admin.objectives', function(){ 
 							return App::make('App\Http\Controllers\ObjectiveController')->admin_index(2); }));
+Route::any('setuserdatasession', array('as'=>'users.setuserdatasession', 'uses'=>'UserController@setuserdatasession'));
+Route::any('add_teampopup', array('as'=>'users.add_teampopup', 'uses'=>'TeamController@add_teampopup'));
 Route::any('kpis', array('as'=>'admin.measures', 'uses'=>'ObjectiveController@measures' ));
 Route::any('measures', array('as'=>'admin.measure', 'uses'=>'ObjectiveController@measure' ));
 Route::any('initiatives', array('as'=>'admin.initiatives', 'uses'=>'ObjectiveController@initiatives'));
+Route::any('department/remove/{id?}', array('as'=>'admin.department_remove', 'uses'=>'DepartmentController@department_remove'));
+Route::any('team/remove/{id?}', array('as'=>'admin.team_remove', 'uses'=>'TeamController@team_remove'));
 
 Route::any('reports', array('as'=>'users.reports', 'uses'=>'TeamController@reports'));
 Route::any('ideas', array('as'=>'users.ideas', 'uses'=>'TeamController@ideas'));
@@ -37,15 +41,17 @@ Route::any('addDepartmentForm', array('as'=>'users.addDepartmentForm', 'uses'=>'
 Route::any('getprofiledata', array('as'=>'users.getprofiledata', 'uses'=>'UserController@getprofiledata'));
 Route::any('update-profile', array('as'=>'users.update_profile', 'uses'=>'UserController@update_profile'));
 Route::any('subscription', array('as'=>'users.subscription', 'uses'=>'DepartmentController@subscription'));
+Route::any('checkemailexist', array('as'=>'users.checkemailexist', 'uses'=>'UserController@checkemailexist'));
 Route::any('invoice', array('as'=>'users.invoice', 'uses'=>'DepartmentController@invoice'));
 Route::any('tree', array('as'=>'users.tree', 'uses'=>'DepartmentController@tree'));
 Route::any('timemap', array('as'=>'users.timemap', 'uses'=>'DepartmentController@timemap'));
 Route::any('departmental', array('as'=>'users.departmental', 'uses'=>'DepartmentController@departmental'));
 Route::any('supports', array('as'=>'users.supports', 'uses'=>'DepartmentController@supports'));
 Route::any('notifications', array('as'=>'users.notifications', 'uses'=>'DepartmentController@notifications'));
-Route::any('team', array('as'=>'users.team', 'uses'=>'TeamController@team'));
+Route::any('team/{id?}', array('as'=>'users.admin_index', 'uses'=>'TeamController@admin_index'));
 Route::any('scorecard', array('as'=>'users.scorecard', 'uses'=>'TeamController@scorecard'));
 Route::any('strategic-map', array('as'=>'users.startegic_map', 'uses'=>'TeamController@startegic_map'));
+Route::any('viewmember', array('as'=>'users.viewmember', 'uses'=>'UserController@viewmember'));
 
 Route::any('auth/{provider?}', 'UserController@redirectToProvider');
 Route::any('auth/{provider?}/callback', 'UserController@handleProviderCallback');
@@ -60,6 +66,7 @@ Route::any('verify-mail/{slug?}',array('uses'=>'UserController@verifyMail'));
 Route::any('search', array('as'=>'users.search', 'uses'=>'UserController@search'));
 Route::any('follow-user/{username?}', array('as'=>'users.follow_user', 'uses'=>'UserController@follow_user'));
 Route::any('unfollow-user/{username?}', array('as'=>'users.unfollow_user', 'uses'=>'UserController@unfollow_user'));
+Route::any('change-password/{id?}', array('as'=>'users.change_password', 'uses'=>'UserController@change_password'));
 
 
 Route::any('/{username}', array('as'=>'users.profile', 'uses'=>'UserController@profile'));

@@ -10,6 +10,7 @@ use App\Models\TeamsMembers;
 use App\Models\Objective;
 use App\Models\Post;
 use App\Models\Notification;
+use App\Models\Department;
 use App\Models\SubscriptionPlan;
 
 use App\Classes\Slim;
@@ -42,263 +43,91 @@ class TeamController extends Controller
 	
 	
 	
-	
-	public function verifyMail(){
-		$has_key =  $this->request->get('q');
-		$mes = '';
-		$user_check = User::where('varify_hash',$has_key)->count();
-
-		if($user_check){
-			$user_check_verifyed = User::where(['varify_hash'=>$has_key,'varify_account'=>0])->count();
-        
-			if($user_check_verifyed){
-                $userdata   = User::where(['varify_hash'=>$has_key,'varify_account'=>0])->first();
-                $useremail =    $userdata->email;
-                $created_date = $userdata->created_at;
-                $created_timestemp = strtotime($created_date);
-                $created_timestemp_addseven = strtotime('+7 day', $created_timestemp);
-                $currenttimestemp   =   strtotime('now');
-                
-				if($created_timestemp_addseven < $currenttimestemp){
-					return redirect('login')->with('errormessage', getLabels('verification_link_expired'));
-				}else{
-					User::where('varify_hash', $has_key)->update(array('varify_account' =>1, 'status' =>1));
-					return redirect('login')->with('message', getLabels('email_address_confirmed'));
-				}
-			}else{
-				return redirect('login')->with('errormessage', getLabels('account_already_verified'));
-			}
+	public function admin_index($id = null){
+		$data  = Teams::where('company_id',Auth::User()->company_id)->get();
+		if($id){
+			$team_detail = Teams::leftjoin('users','users.id','=','al_comp_teams.team_head')->where('al_comp_teams.company_id',Auth::User()->company_id)->where('al_comp_teams.id',$id)->select('al_comp_teams.*','users.first_name as team_head_name','users.photo','users.designation')->first();
+			$team_members = TeamsMembers::leftjoin('users','users.id','=','al_teams_members.member_id')->where('al_teams_members.team_id',$id)->where('is_head',0)->select('users.id','users.photo','users.first_name','users.last_name','users.designation')->get();
 		}else{
-			return redirect('login')->with('errormessage', getLabels('invalid_url'));
-		}
-	}	
-	
-	
-
-	public function register(){
-		$page_title = getLabels('register');
-		if ($this->request->isMethod('post')) {
-			$validator = User::register($this->request->all());
-			if ( $validator->fails() ) {
-				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('profile_not_registered')]);
-			}else{
-				$data                = $this->request->except('password');
-				$data['password']    = Hash::make($this->request->get('password'));
-				$data['role_id']     = 2;
-				$data['status']      = 0;
-				$user = User::create($data);
-				
-				if($user){
-					$last_id = $user->id;
-					$uniq_username = User::createUsername($last_id);
-					$varify_hash = base64_encode($last_id.$uniq_username);
-					User::where('id', $user->id)->update(array('varify_hash'=>$varify_hash ));
-					
-					$mail_data  	=     getEmailTemplate('user-registration'); //DB::table('templates')->where('slug', '=', 'user-registration')->first();
-					if($mail_data){
-						$usr_name       = $user->first_name." ".$user->last_name;
-						$email          = $user->email; 
-						$link           = config('constants.SITE_URL').'verify-mail?q='.$varify_hash;                       
-						$site_name      = config('constants.SITE_TITLE');
-						$admin_email    = config('constants.SITE_EMAIL'); 
-						$message        = str_replace(array('{NAME}', '{EMAIL}', '{LINK}', '{SITE}'), array($usr_name, $email, $link, $site_name), $mail_data['content']);
-						$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data['subject']);
-						//return view('frontend.my_email')->with('data',$message);
-						Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
-							$message->from($admin_email, $site_name);
-							$message->to($email, $usr_name)->subject($subject);
-						}); 
-						return response()->json(array("type" => "success", "url" => url('login'), "message" => getLabels('registered_successfully')));
-					}
-				}
-			}
+			$team_detail = Teams::leftjoin('users','users.id','=','al_comp_teams.team_head')->where('users.company_id',Auth::User()->company_id)->select('al_comp_teams.*','users.first_name as team_head_name','users.photo','users.designation')->first();
+			$team_members = TeamsMembers::leftjoin('users','users.id','=','al_teams_members.member_id')->where('al_teams_members.team_id',$team_detail->id)->where('is_head',0)->select('users.id','users.photo','users.first_name','users.last_name','users.designation','users.photo')->get();
 		}
 		
-		return view('frontend.users.register', compact('page_title'));
-	}
-	
-	public function account(){
-		$page_title = "Account";
-		return view('frontend.users.account', compact('page_title'));
-	}
-	
-	
-	public function forgot_password(){
-		$page_title = getLabels("forgot_password");
+		$team_members_pluck = TeamsMembers::leftjoin('users','users.id','=','al_teams_members.member_id')->where('al_teams_members.team_id',$id)->where('is_head',0)->select('users.id','users.photo','users.first_name','users.last_name','users.designation')->pluck('users.id','users.first_name');
+		$teamleads = User::where('role_id',4)->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('role_id',5)->pluck('full_name','id');
+		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
+		$page_title  = getLabels("Teams");
+
 		if($this->request->isMethod('post')){
-			$validator = User::validate_forgot_pass($this->request->all());
+			$validator = Teams::validate($this->request->all());
+			
 			if ( $validator->fails() ) {
-				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('provide_valid_registered_email')]);
+				return redirect()->back()->with('errormessageadd',getLabels('team_not_saved_errors'))->withErrors($validator->errors());
 			} else {
-				$email = $this->request->get("email");
-				$usr_data  = (array)DB::table('users')->where('email', $email)->whereIn('role_id', [1,2])->first();
-				
-				if($usr_data){
-					$mail_data  	= getEmailTemplate('forgot_password'); //DB::table('templates')->where('slug', '=', 'forgot_password')->first();
-					if($mail_data){
-						$number =   rand(0,100000);
-                    
-                        $varify_hash    =   base64_encode($usr_data['id'].$usr_data['uniq_username'].time());
-                        User::where('id', $usr_data['id'])->update(array('varify_hash'=>$varify_hash ));
-                        $usr_name       = $usr_data['first_name']." ".$usr_data['last_name'];
-                        $email          = $usr_data['email']; 
-                        $link           = config('constants.SITE_URL').'resetpassword/'.$number.'?q='.$varify_hash; 
-                        $site_name      = config('constants.SITE_TITLE');
-                        $admin_email    = config('constants.SITE_EMAIL'); 
-                        
-						if($email){
-							$message        = str_replace(array('{NAME}','{LINK}', '{SITE}'), array($usr_name, $link, $site_name),  $mail_data['content']);
-							$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data['subject']);
-							//return view('frontend.my_email')->with('data',$message);
-							Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
-								$message->from($admin_email, $site_name);
-								$message->to($email, $usr_name)->subject($subject);
-							}); 
-						}
-						return response()->json(array("type" => "success", "url" => url('login'), "message" => getLabels('email_sent_recover_pwd')));
-					}
+				$size = 0;
+				$formData = $this->request->except('member_ids');
+				$formData['status'] = 1;
+				$formData['company_id'] = Auth::User()->company_id;
+				if($id){
+					$u_data = Teams::find($id);
+					$updateteam = $u_data->update($formData);
+					$message = "Update Team Successfully";
 				}else{
-					return response()->json(array("type" => "error", "url" => url('login'), "message" => getLabels('email_not_exist')));
+					$addteam = Teams::create($formData);
+					$message = "Add Team Successfully";
 				}
-			}
-		}
-		return view('frontend.users.forgot_password', compact('page_title'));
-	}
-	
-	
-	
-	public function resetpassword($prefix=null,$verify_key=null){
-		$page_title = getLabels("reset_password");
-		if($this->request->get('q')){
-			$hash = $this->request->get('q');
-			if(Auth::check()){
-				return redirect('dashboard');
-			}else{
-				$user_detail = User::where('varify_hash',$hash)->first(['updated_at','email']);
-				
-				if(!empty($user_detail)){
-					$update 			=   $user_detail->updated_at;
-					$update_strto 		= strtotime('+24 hour', strtotime($update));
-					$current_time   	= time();
-					if($current_time > $update_strto){
-						return response()->json(array("type" => "error", "message" =>  getLabels('reset_password_link_expired')));
-					}
-					if($this->request->isMethod('post')){
-						$validator = User::admin_changepassword($this->request->all());
-
-						if ($validator->fails()) {	
-							return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('password_not_changed')]);
-						}else {
-							$password = Hash::make($this->request->get('new_password'));
-							User::where('varify_hash', $hash)->update(array('password'=>$password));
-							//$message =  'The password for ('.$user_detail->email.') has been successfully changed.  You can login now';
-							$message =  str_replace(array('{EMAIL}'), array($user_detail->email), getLabels('password_changed_successfully'));
-							return response()->json(array("type" => "success", "url" => url('login'), "message" => $message));
+				if($this->request->get('member_ids')){
+					if($id){
+						$prev_members = TeamsMembers::where('team_id',$id)->where('is_head',0)->get();
+						if(!empty($prev_members)){
+							$deleteteam = TeamsMembers::where('team_id',$id)->where('is_head',0)->delete();
 						}
 					}
-				}
-				return view('frontend.users.resetpassword',['page_title'=>$page_title, 'prefix'=>$prefix, 'hash'=>$hash]);
-			}
-		}
-	}
-	
-	
-	
-	
-	public function login(){
-		$page_title = getLabels('login');
-		
-		/* 
-		if (Auth::check())
-		{ 
-			if(Auth::User()->role_id == 1 or Auth::User()->role_id == 2){
-				return redirect('admin/dashboard');
-			}else{
-				return redirect('/admin/logout');
-			}
-		} */
-		if(Auth::check()){
-			if(!$this->request->ajax()){
-				return redirect("dashboard");
-			}
-		}
-		if($this->request->isMethod('post')){
-			
-			$url_prefix = ($this->request->route()->getPrefix() == env('ADMIN_PREFIX'))?env('ADMIN_PREFIX').'/':'';
-			
-			$validation = User::validate_login($this->request->all());
-
-			if ($validation->fails()) {	
-				return json_encode(array("status" => "error", "message" => getLabels('credentials_not_valid')));
-			}else {
-				$credentials = array('email' => $this->request->get('email'), 'password' => $this->request->get('password2'),'status' =>1 );
-			
-				if (Auth::attempt($credentials, true)) {
+					$member_ids = $this->request->get('member_ids');
 					
-					if(Auth::user()->role_id == 1 and $url_prefix !=""){
-						return json_encode(array("status" => "success", "header" => view('frontend/layouts/header')->render(), "navigation" => view('frontend/layouts/navigation')->render()));
-					}elseif(Auth::user()->role_id == 2 and $url_prefix ==""){
-						return json_encode(array("status" => "success", "header" => view('frontend/layouts/header')->render(), "navigation" => view('frontend/layouts/navigation')->render()));
+					foreach ($member_ids as $key => $value) {
+						$teammembers = array();
+						$teammembers['member_id'] = $value;
+						if($id){
+							$teammembers['team_id'] = $id;
+						}else{
+							$teammembers['team_id'] = $addteam->id;
+						}
+						$teammembers['is_head'] = 0;
+						TeamsMembers::create($teammembers);
+						$size++;
+					}
+				}
+				if($this->request->get('team_head')){
+					if($id){
+						$prev_members = TeamsMembers::where('team_id',$id)->where('is_head',1)->get();
+						if(!empty($prev_members)){
+							$deletedepartment = TeamsMembers::where('team_id',$id)->where('is_head',1)->delete();
+						}
+					}
+					$teammembers = array();
+					$teammembers['member_id'] = $this->request->get('team_head');
+					if($id){
+						$teammembers['team_id'] = $id;
 					}else{
-						Auth::logout();
-						return json_encode(array("status" => "error", "message" => getLabels('credentials_not_valid')));
-					} 
-				}else {	
-					return json_encode(array("status" => "error",  "message" => getLabels('incorrect_username_pwd')));	
+						$teammembers['team_id'] = $addteam->id;
+					}
+					$teammembers['is_head'] = 1;
+					TeamsMembers::create($teammembers);
+					$size = $size+1;
+				}
+				if($id){
+					$u_data = Teams::find($id);
+					$updateteam = $u_data->update(array('size'=>$size));
+				}else{
+					$u_data = Teams::find($addteam->id);
+					$updateteam = $u_data->update(array('size'=>$size));
 				}
 			}
+			return redirect()->back()->with('message',$message);
 		}
-		
-		return view('frontend.users.login', compact('page_title'));
-	}
-	
-	
-	
-	
-	public function dashboard(){
-		$page_title = getLabels('Dashboard');
-		$posts = Post::with(['postUser', 'postFiles', 'postLike', 'postComments'])->where("posts.user_id", Auth::id())->orderBy('created_at', 'DESC')->paginate(1)->map(function ($query) {
-            $query->setRelation('postComments', $query->postComments->take(config('constants.PAGINATION_COMMENTS')));
-            return $query;
-        });
-		return view('frontend.users.dashboard', compact('page_title', 'posts'));
-	}
-	
-	
-	public function logout(){
-		Auth::logout();
-	}
-	
-	
-	public function admin_index($role_id = null){
-		$page_title  = getLabels("Teams");
-		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
-			$_POST = $this->request->session()->get('usearch');
-		}else{
-			$this->request->session()->forget('usearch');
-		}
-		
-		$data  = Teams::sortable()->leftjoin('users', 'users.id', '=', 'al_comp_teams.team_head');
-		
-		if(! empty($_POST)){
-			if(isset($_POST['team_name']) and $_POST['team_name'] !=''){
-				$team_name = $_POST['team_name'];
-				$this->request->session()->put('usearch.team_name', $team_name);
-				$data = $data->whereRaw('al_comp_teams.team_name like ?', "%{$team_name}%");
-			}
-			
-		}else{
-			$this->request->session()->forget('usearch');
-		}
-		
-		
-		$data  = $data->select('al_comp_teams.*',DB::raw("CONCAT_WS(' ',users.first_name,users.last_name) AS team_head_name"), 'users.designation')->orderBy('al_comp_teams.id', 'desc')->paginate(config('constants.PAGINATION'));
-		
-		if(isset($_GET['s']) and $_GET['s']){
-			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
-		}
-		$page_title  = getLabels("Teams");
-		return view('frontend/teams/admin_index', compact('data','role_id','page_title'));
+		return view('frontend/teams/team', compact('data','page_title','teamleads','all_members','departments','team_detail','team_members','id','team_members_pluck'));
 	}
 	
 	
@@ -1089,20 +918,31 @@ class TeamController extends Controller
 		$page_title = "Ideas";
 		return view('frontend/teams/ideas',compact('page_title'));
 	}
-	public function team(){
-		$page_title = "Teams";
-		return view('frontend/teams/team',compact('page_title'));
-	}
+	
 	public function scorecard(){
 		$page_title = "Scorecard";
 		return view('frontend/teams/scorecard',compact('page_title'));
 	}
 	public function startegic_map(){
 		$page_title = "Startegic Map";
-		$financial = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.project_status_id')->where('al_objectives.perspective_id',1)->select('al_objectives.*','al_master_status.bg_color')->get();
-		$customer = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.project_status_id')->where('al_objectives.perspective_id',2)->select('al_objectives.*','al_master_status.bg_color')->get();
-		$process = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.project_status_id')->where('al_objectives.perspective_id',3)->select('al_objectives.*','al_master_status.bg_color')->get();
-		$people = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.project_status_id')->where('al_objectives.perspective_id',4)->select('al_objectives.*','al_master_status.bg_color')->get();
+		$financial = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.perspective_id',1)->select('al_objectives.*','al_master_status.bg_color')->get();
+		$customer = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.perspective_id',2)->select('al_objectives.*','al_master_status.bg_color')->get();
+		$process = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.perspective_id',3)->select('al_objectives.*','al_master_status.bg_color')->get();
+		$people = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.perspective_id',4)->select('al_objectives.*','al_master_status.bg_color')->get();
 		return view('frontend/teams/strategic_map',compact('page_title','financial','customer','process','people'));
+	}
+
+	public function add_teampopup(){
+		return view('Element/team/add_team',compact('teamleads','members','departments'));
+	}
+
+	public function team_remove($id = null){
+		$data			 = Teams::destroy($id);
+		if($data){
+			$results = array("type" => "success", "url" => url('team'), "message" => getLabels('team_removed'));
+		}else{
+			$results = array("type" => "error", "url" => url('team'), "message" => getLabels('team_not_removed'));
+		}
+		return json_encode($results);
 	}
 }

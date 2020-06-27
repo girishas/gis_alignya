@@ -7,58 +7,38 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
+                                        @if(session('errormessageadd'))
+                                        <div class="alert alert-danger" role="alert">
+                                          {!!session('errormessageadd')!!}
+                                        </div>
+                                        @endif
+                                         {!! Form::open(array('url' => array($route_prefix.'/team'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                                         <div class="modal-body">
                                             
-                                            <form>
-                                                <div class="container-fluid">
+                                            <div class="container-fluid">
                                                 <div class="row">
                                                     
-                                                <div class="col-lg-8">
+                                                <div class="col-lg-12">
                                                     <div class="form-group">
                                                     <label>Name</label>
-                                                    <input type="text" class="form-control" placeholder="">
+                                                    {!! Form::text('team_name',null, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
+                                                    @if($errors->first('team_name'))<div class="error">{!!$errors->first('team_name')!!}</div>@endif
                                                 </div>
                                                  <div class="form-group ">
                                                       <label>Choose Team Lead</label>
-                                <select class="form-control select2-single" name="department_head" data-width="100%">
-                                    <option label="&nbsp;"></option>
-                                    <option value="1" >Jhon</option>
-                                    <option value="1" >Jolley</option>
-                                    <option value="1" >Emma</option>
-                                    <option value="1" >Garry</option>
-                                    <option value="1" >Innar</option>
-                                    
-                                    
-                                </select>                       
+                                                {!! Form::select('team_head', $teamleads,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
+                                            
                                 <div class="invalid-tooltip"></div>
                             </div>
                                 <div class="form-group ">
                                                       <label>Choose Department</label>
-                                <select class="form-control select2-single" name="department_head" data-width="100%">
-                                    <option label="&nbsp;"></option>
-                                    <option value="1" >HR</option>
-                                    <option value="1" >Account</option>
-                                    <option value="1" >Technical</option>
-                                    <option value="1" >Sales</option>
-                                    <option value="1" >Support</option>
-                                    
-                                    
-                                </select>                       
+                               {!! Form::select('department_id', $departments,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}                  
                                 <div class="invalid-tooltip"></div>
                             </div>
 
                             <div class="form-group ">
                                                       <label>Choose Members</label>
-                                <select class="form-control select2-multiple" multiple="multiple" name="department_head" data-width="100%">
-                                   <option label="&nbsp;"></option>
-                                    <option value="1" >Jhon</option>
-                                    <option value="1" >Jolley</option>
-                                    <option value="1" >Emma</option>
-                                    <option value="1" >Garry</option>
-                                    <option value="1" >Innar</option>
-                                    
-                                    
-                                </select>                       
+                               {!! Form::select('member_ids[]', $all_members,null, array('class' => 'form-control select2-multiple', 'id' => 'inputFirstname',  "multiple" => 'multiple'))!!}                      
                                 <div class="invalid-tooltip"></div>
                             </div>
                                                 
@@ -69,12 +49,14 @@
                                                
                                                 </div>
                                                 </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                           <button type="button" class="btn btn-primary">Submit</button>
                                             
                                         </div>
+                                        <div class="modal-footer">
+                                           <button type="submit" class="btn btn-primary">Submit</button>
+                                            
+                                        </div>
+                                        
+                                         {!! Form::close() !!}
                                     </div>
                                 </div>
                             </div>

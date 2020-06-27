@@ -11,7 +11,7 @@
                     {!! Form::open(array('url' => array($route_prefix.'/profile'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                         
                         <div class="form-row">
-                            
+                                
                             <div class="form-group  position-relative error-l-100 col-md-4">
                                 <label for="inputFirstname">{!! getLabels('company_name') !!}</label>
                                 {!! Form::text('company_name', $company_details->company_name, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}

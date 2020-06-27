@@ -129,7 +129,6 @@
 					@if(Auth::check())
 						<div class="dropdown-menu dropdown-menu-right mt-3">
 							<a class="dropdown-item steamerst_link" href="{!!url('profile')!!}">{!! getLabels('my_profile') !!}</a>
-							<a class="dropdown-item " href="{!! url($route_prefix.'/update-profile') !!}">{!! getLabels('update_profile') !!}</a>
 							<a class="dropdown-item " href="javascript:void(0);" onclick="showChangePasswordModal()">{!! getLabels('Change_Password') !!}</a>
 							<a class="dropdown-item" href="javascript:void(0);" onclick="logout();">{!! getLabels('sign_out') !!}</a>
 						</div>

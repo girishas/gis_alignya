@@ -51,7 +51,7 @@ class ObjectiveController extends Controller
 			$this->request->session()->forget('usearch');
 		}
 		
-		$data  = Objective::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_objectives.project_status_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id');
+		$data  = Objective::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id');
 		
 		if(! empty($_POST)){
 			if(isset($_POST['team_name']) and $_POST['team_name'] !=''){
@@ -111,7 +111,7 @@ class ObjectiveController extends Controller
 			$this->request->session()->forget('usearch');
 		}
 		
-		$data  = Measure::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_measures.project_status_id')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.category_type',1);
+		$data  = Measure::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.category_type',1);
 		if(! empty($_POST)){
 			if(isset($_POST['team_name']) and $_POST['team_name'] !=''){
 				$team_name = $_POST['team_name'];
