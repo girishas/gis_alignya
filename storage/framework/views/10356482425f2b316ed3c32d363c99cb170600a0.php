@@ -90,20 +90,14 @@ $(document).ready(function(){
 						
                             <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(874px, 43px, 0px);">
                                 <?php if(!empty($data)): ?>
-                                 <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $department): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <?php if(!empty(getSubDepartment($department->id))): ?>
-                                    <li class="dropdown-submenu">
-                                        <a  class="dropdown-item" tabindex="-1" href="<?php echo url('department/'.$department->id); ?>"><?php echo $department->department_name; ?></a>
-                                        <ul class="dropdown-menu">
-                                            <?php $__currentLoopData = getSubDepartment($department->id); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key1 => $sub_dept): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                            <li class="dropdown-item"><a tabindex="-1" href="<?php echo url('department/'.$department->id); ?>"><?php echo $sub_dept->department_name; ?></a></li>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                        </ul>
-                                    </li>
-                                    <?php else: ?>
-                                    <li class="dropdown-item"><a href="<?php echo url(''); ?>"><?php echo $department->department_name; ?></a></li>
-                                    <?php endif; ?>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?> 
+                                    <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $department): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <?php if(empty(getSubDepartment($department->id))): ?>
+                                        <li class="dropdown-item"><a href="<?php echo url('department/'.$department->id); ?>"><?php echo $department->department_name; ?></a></li>
+                                        <?php else: ?>
+                                            <?php echo $__env->make('frontend/departments/submenu', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                                        <?php endif; ?>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                     
                                 <?php endif; ?> 
                                <!--  <li class="dropdown-item"><a href="#">Some action</a></li>
                                 <li class="dropdown-item"><a href="#">Some other action</a></li>

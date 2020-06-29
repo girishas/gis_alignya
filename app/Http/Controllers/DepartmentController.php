@@ -115,7 +115,7 @@ class DepartmentController extends Controller
 		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('role_id',5)->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
 		$department_head = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('role_id',3)->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
 		$departments = Department::where('status',1)->pluck("department_name","id");
-		$data  = Department::where('company_id',Auth::User()->company_id)->get();
+		$data  = Department::where('company_id',Auth::User()->company_id)->where('parent_department_id',null)->get();
 		$page_title  = getLabels("Departments");
 		return view('frontend/departments/department', compact('data','role_id','page_title','parent_department','hod','members','departments','all_members','id','members_pluck','department_head'));
 	}

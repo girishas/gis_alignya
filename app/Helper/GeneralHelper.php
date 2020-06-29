@@ -613,7 +613,7 @@
 	}
 	
 	function getSubDepartment($parent_id=null){
-		$data = Department::where('parent_department_id',$parent_id)->get();
+		$data = Department::where('parent_department_id',$parent_id)->get()->toArray();
 		return $data;
 	}
 

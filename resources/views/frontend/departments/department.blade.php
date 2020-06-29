@@ -91,20 +91,14 @@ $(document).ready(function(){
 						
                             <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(874px, 43px, 0px);">
                                 @if(!empty($data))
-                                 @foreach($data as $key => $department)
-                                    @if(!empty(getSubDepartment($department->id)))
-                                    <li class="dropdown-submenu">
-                                        <a  class="dropdown-item" tabindex="-1" href="{!!url('department/'.$department->id)!!}">{!!$department->department_name!!}</a>
-                                        <ul class="dropdown-menu">
-                                            @foreach(getSubDepartment($department->id) as $key1 => $sub_dept)
-                                            <li class="dropdown-item"><a tabindex="-1" href="{!!url('department/'.$department->id)!!}">{!!$sub_dept->department_name!!}</a></li>
-                                            @endforeach
-                                        </ul>
-                                    </li>
-                                    @else
-                                    <li class="dropdown-item"><a href="{!!url('')!!}">{!!$department->department_name!!}</a></li>
-                                    @endif
-                                @endforeach 
+                                    @foreach($data as $key => $department)
+                                        @if(empty(getSubDepartment($department->id)))
+                                        <li class="dropdown-item"><a href="{!!url('department/'.$department->id)!!}">{!!$department->department_name!!}</a></li>
+                                        @else
+                                            @include('frontend/departments/submenu')
+                                        @endif
+                                    @endforeach
+                                     
                                 @endif 
                                <!--  <li class="dropdown-item"><a href="#">Some action</a></li>
                                 <li class="dropdown-item"><a href="#">Some other action</a></li>
