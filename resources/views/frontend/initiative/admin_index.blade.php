@@ -17,8 +17,6 @@
 
 </script>
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
   <main>
         <div class="container-fluid">
             <div class="row">
@@ -27,65 +25,18 @@
                     <div class="text-zero top-right-button-container">
                         <a href="javascript:void(0);" class=" btn btn-primary btn-sm top-right-button mr-1" id="add_objectiveBtn">{!! getLabels('add_initiative') !!}</a>
                     </div>
+                    @include('Element/initiative/add_initiative')
+                    @include('Element/initiative/view_initiative')
+                    @include('Element/initiative/add_milestone')
+                    @include('Element/initiative/update_milestone')
+                    @include('Element/initiative/update_initiative')
+                    @include('Element/measure/task')
                     
-  <!-- Modal -->
-                           @include('Element/initiative/add_initiative')
-                           @include('Element/initiative/view_initiative')
-                           @include('Element/initiative/add_milestone')
-                           @include('Element/initiative/update_milestone')
-                           @include('Element/initiative/update_initiative')
-                           @include('Element/measure/task')
-                            <div class="modal modal-right" id="myModal1" role="dialog" >
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Add Task</h5>
-                                            <button type="button" class="close" id="popup2hide" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            
-                                            <form>
-                                                <div class="container-fluid">
-                                                <div class="row">
-                                                    
-                                                <div class="col-lg-8">
-                                                    <div class="form-group">
-                                                    <label>Title</label>
-                                                    <input type="text" class="form-control" placeholder="">
-                                                </div>
-                                                
-                                                    <div class="form-group ">
-                                                                              <label>Due Date</label>
-                                                                          <input class="form-control datepicker" placeholder="">
-                                                        <div class="invalid-tooltip"></div>
-                                                    </div>
-                                                    <div class="form-group ">
-                                                        <button type="button" class="btn btn-primary">Submit</button>
-                                                                    
-                                                        <div class="invalid-tooltip"></div>
-                                                    </div>
-
-                                                </div>
-                                               
-                                                </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                           
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                         <ol class="breadcrumb pt-0">
                             <li class="breadcrumb-item">
                                 <a class="steamerst_link" href="{!! url($route_prefix, 'dashboard') !!}">{!! getLabels('Dashboard') !!}</a>
                             </li>
-                            
                             <li class="breadcrumb-item active" aria-current="page">{!! getLabels('Initiatives') !!}</li>
                         </ol>
                     </nav>

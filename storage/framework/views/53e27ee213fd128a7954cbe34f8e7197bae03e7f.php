@@ -30,6 +30,7 @@
                             <input type="hidden" name="measure_team_type" id="measure_team_type" value="department">
                             <input type="hidden" name="owner_user_id" id="owner_user_id">
                             <input type="hidden" name="measure_department_id" id="measure_department_id">
+                            <input type="hidden" name="measure_team_id" id="measure_team_id">
                             <input type="hidden" name="objective_id" id="objectiveId">
                         </div>
                        

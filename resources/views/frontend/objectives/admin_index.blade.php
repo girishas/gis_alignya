@@ -666,6 +666,9 @@ $(document).ready(function(){
    $("#popupaddhideinitiative").click(function(){
     $("#myModalAddInitiative").modal('hide');
   });
+   $("#popupaddhideMeasure").click(function(){
+    $("#myModalAddMeasure").modal("hide");
+   })
 });
 </script>
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
@@ -902,6 +905,10 @@ $(document).ready(function(){
         var token = "{!!csrf_token()!!}";
         var company_id = "{!!Auth::User()->company_id!!}"; 
         $("#measurelistvieww").html("");
+        $("#tasklistid").html("");
+        $("#objective_name_view").html("");
+        $("#initiativelistobj").html("");
+        $("#alignedobjectivelist").html("");
         $.ajax({
             type:"POST",
             url: "{!!url('/viewobjective')!!}",
