@@ -638,4 +638,29 @@
 		return $data;
 	}
 
+	function dateDiff($date1, $date2) {
+	  $date1_ts = strtotime($date1);
+	  $date2_ts = strtotime($date2);
+	  $diff = $date2_ts - $date1_ts;
+	  return round($diff / 86400);
+	}
+
+	function getWeek($date){
+		$sdate = new DateTime($date);
+		$week = $sdate->format("W");
+		return $week;
+	}
+
+	function getDayNumber($date){
+		$day_num = date('w', strtotime($date));
+		return $day_num;
+	}
+
+	function week_between_two_dates($date1, $date2){
+	    $first = DateTime::createFromFormat('m/d/Y', $date1);
+	    $second = DateTime::createFromFormat('m/d/Y', $date2);
+	    if($date1 > $date2) return week_between_two_dates($date2, $date1);
+	    return floor($first->diff($second)->days/7);
+	}
+
 	?>

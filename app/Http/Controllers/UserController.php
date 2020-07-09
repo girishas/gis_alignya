@@ -8,6 +8,8 @@ use App\Models\Notification;
 use App\Models\SubscriptionPlan;
 use App\Models\Objective;
 use App\Models\Measure;
+use App\Models\GoalCycles;
+use App\Models\Perspective;
 use App\Models\Department;
 use App\Models\Plans;
 use App\Models\Teams;
@@ -273,15 +275,20 @@ class UserController extends Controller
 	
 	public function dashboard(){
 		$page_title = getLabels('Dashboard');
-		$objectives_count = Objective::count();
-		$measure_count = Measure::where('category_type',1)->count();
+		$objectives_count = Objective::where('company_id',Auth::User()->company_id)->count();
+		$measure_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',1)->count();
 		$initiative_count = Measure::where('category_type',2)->count();
 		$kpi_count = Measure::where('category_type',3)->count();
 		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('role_id',5)->pluck('full_name','id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck("department_name","id");
 		$teamleads = User::where('role_id',4)->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->pluck('cycle_name','id');
+		$perspectives = Perspective::pluck('name','id');
+		$contributers = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
+		$objlist = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color','o.heading as parent_objective','al_goal_cycles.cycle_name','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
 		
-		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads'));
+		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist'));
 	}
 	
 	
@@ -305,7 +312,7 @@ class UserController extends Controller
 			if(isset($_POST['first_name']) and $_POST['first_name'] !=''){
 				$first_name = $_POST['first_name'];
 				$this->request->session()->put('usearch.first_name', $first_name);
-				$data = $data->whereRaw('concat(users.first_name," ",users.last_name) like ?', "%{$first_name}%");
+				$data = $data->whereRaw('CONCAT_WS("",users.first_name,users.last_name) like ?', "%{$first_name}%");
 			}
 			if(isset($_POST['email']) and $_POST['email'] !=''){
 				$email = $_POST['email'];
@@ -1064,5 +1071,11 @@ class UserController extends Controller
 		$data = User::find($inputs['id']);
 		return view('Element/users/viewmember',compact('data'));
 	} 
+
+	public function getmembers(){
+		$input = $this->request->all();
+		$members = User::where('company_id',$input['company_id'])->pluck('first_name','id');
+		return json_encode($members);
+	}
 	
 }

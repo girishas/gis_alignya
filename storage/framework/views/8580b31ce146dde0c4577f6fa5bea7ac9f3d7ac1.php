@@ -22,7 +22,7 @@
              
             <div class="row mb-4">
                 <div class="col-lg-12 col-md-12 mb-4">
-                <div class="card mb-4">
+                <!-- <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="mb-4">Filters</h5>
                         <div class="row">
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     </div>
-                </div>
+                </div>-->
                     <div class="card">
                         <div class="card-body">
                            
@@ -74,13 +74,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <?php if(!empty($financial)): ?>
+                                    <?php $__currentLoopData = $financial; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
+                                        <?php if($key == '0'): ?>
                                         <th scope="row">Financial</th>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Increase Share Holder Value</td>
+                                        <?php else: ?>
+                                        <th scope="row"></th>
+                                        <?php endif; ?>
+                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> <?php echo $value->heading; ?></td>
                                         <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Revenue</td>
                                         <td></td>
                                     </tr>
-                                    <tr>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
+                                   <!--  <tr>
                                         <th ></th>
                                         <td></td>
                                         <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Net Profit</td>
@@ -92,6 +100,7 @@
                                         <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Expenses</td>
                                         <td></td>
                                     </tr>
+                                     -->
                                     <tr>
                                         <th scope="row">Customer</th>
                                         <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Frequent Reliable Departures</td>

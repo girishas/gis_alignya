@@ -29,4 +29,9 @@ return array(
 	"PLAN_PERIOD" => array(1=>'Monthly',2=>'Yearly'),
 	"COMPANY_FISCAL_MONTH" => array(1=>"January",2=>"February",3=>"March",4=>"April",5=>"May",6=>"June",7=>"July",8=>"Auguest",9=>"September",10=>"October",11=>"November",12=>"December"),
 	"USER_TYPES" => array(2=>"Company Owner", 3=>"Hod",4=>"Team Lead",5=>"Member"),
+	"SCORECARD_STATUS" => array(1=>"Active",0=>"Inactive"),
+	"FREQUENCY" => array('1'=>'Daily',2=>'Weekly',3=>'Monthly'),
+	"MEASURE_TYPE" => array("binary"=>"Binary","value"=>"Value","currency"=>"Currency","percentage"=>"Percentage","revenue"=>"Revenue"),
+	"GOAL_VISIBILITY" => array("public"=>"Public","private"=>"Private","restricted"=>"Restricted"),
+	"CONFIDANCE_LEVEL" => array("At Risk"=>"At Risk","No Issues"=>"No Issues","Ahead of Plan"=>"Ahead of Plan"),
 );

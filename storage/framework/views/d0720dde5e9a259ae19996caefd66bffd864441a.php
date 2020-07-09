@@ -112,7 +112,7 @@ $(document).ready(function(){
                                 </div>
                                 
                 
-                <div class="card mb-4 col-lg-4 col-4">
+                                    <div class="card mb-4 col-lg-4 col-4">
                                         <div class="card-body">
                                             <h5 class="card-title">All Members</h5>
                                             <?php if(!empty($team_members)): ?>
@@ -133,7 +133,7 @@ $(document).ready(function(){
                                                     </a>
                                                 </div>
                                                 <div>
-                                                    <a class="btn btn-outline-primary btn-xs" href="javascript:void(0)">Reports</a>
+                                                    <a class="btn btn-outline-primary btn-xs" href="javascript:void(0)" onclick="getReprts('<?php echo $j->team_lead_id; ?>')">Reports</a>
                                                 </div>
                                             </div>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -151,26 +151,22 @@ $(document).ready(function(){
                                 <thead>
                                     <tr>
                                         <th>Projects</th> 
-                                        <th></th> 
-                                        <th></th>
+                                        <th>Type</th> 
+                                        <th>Status</th>
                                         <th>Progress</th>
                                     </tr>
                                 </thead> 
                                 
-                                
-                                
-                                
-                                <tbody>
+                                <tbody id = "getinsights">
+                                    <?php if(!empty($objectives)): ?>
+                                    <?php $__currentLoopData = $objectives; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k => $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <tr>
                                         <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
+                                            <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="javascript:void(0);">
+                                                <span class="align-middle d-inline-block"><?php echo $obj->heading; ?></span>
+                                            </a>
                                         </td>
-                                        
-                                         
-                                         <td> 
+                                        <td> 
                                             <p class="text-semi-muted mb-2">Objective</p>  
                                         </td>
                                           <td> 
@@ -184,156 +180,8 @@ $(document).ready(function(){
                                         </td>
                                        
                                     </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                      
                                 </tbody>
                             </table>
@@ -350,7 +198,24 @@ $(document).ready(function(){
      
 
     <script type="text/javascript">
-        
+        function getReprts(id){
+            $("#getinsights").html("");
+            var token = "<?php echo csrf_token(); ?>";
+            var company_id = "<?php echo Auth::User()->company_id; ?>";
+            $.ajax({
+                type:"POST",
+                url: "<?php echo url('/getprojectinsightsobjective'); ?>",
+                data:'_token='+token+'&company_id='+company_id+'&id='+id,
+                dataType:'JSON',
+                success: function (response) {
+                    for (var i = 0; i < response.length; i++) {
+                        $("#getinsights").append('<tr><td><a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="javascript:void(0);"><span class="align-middle d-inline-block">'+response[i].heading+'</span></a></td><td> <p class="text-semi-muted mb-2">Objective</p></td><td><span class="badge badge-pill badge-secondary">ON HOLD</span></td><td><div role="progressbar" class="progress-bar-circle position-relative"data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"aria-valuenow="40" data-show-percent="true"></div></td></tr>');
+                        
+                    }
+                }  
+            });
+
+        }
         function updateTeam(){
             $("#myModalUpdateTeam").modal('show');
         }

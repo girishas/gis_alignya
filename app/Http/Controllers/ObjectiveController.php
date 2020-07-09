@@ -6,11 +6,18 @@ use App\User;
 use App\Models\Country;
 use App\Models\Template;
 use App\Models\Teams;
+use App\Models\GoalCycles;
+use App\Models\Perspective;
+use App\Models\Department;
+use App\Models\DepartmentMember;
 use App\Models\TeamsMembers;
+use App\Models\Status;
 use App\Models\Objective;
 use App\Models\Measure;
 use App\Models\Follower;
-use App\Models\Post;
+use App\Models\Scorecard;
+use App\Models\Theme;
+use App\Models\Tasks;
 use App\Models\Notification;
 use App\Models\SubscriptionPlan;
 
@@ -51,13 +58,23 @@ class ObjectiveController extends Controller
 			$this->request->session()->forget('usearch');
 		}
 		
-		$data  = Objective::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id');
+		$data  = Objective::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id);
 		
 		if(! empty($_POST)){
-			if(isset($_POST['team_name']) and $_POST['team_name'] !=''){
-				$team_name = $_POST['team_name'];
-				$this->request->session()->put('usearch.team_name', $team_name);
-				$data = $data->whereRaw('al_comp_teams.team_name like ?', "%{$team_name}%");
+			if(isset($_POST['heading']) and $_POST['heading'] !=''){
+				$heading = $_POST['heading'];
+				$this->request->session()->put('usearch.heading', $heading);
+				$data = $data->whereRaw('al_objectives.heading like ?', "%{$heading}%");
+			}
+			if(isset($_POST['cycle_id']) and $_POST['cycle_id'] !=''){
+				$cycle_id = $_POST['cycle_id'];
+				$this->request->session()->put('usearch.cycle_id', $cycle_id);
+				$data = $data->whereRaw('al_objectives.cycle_id like ?', "%{$cycle_id}%");
+			}
+			if(isset($_POST['status']) and $_POST['status'] !=''){
+				$status = $_POST['status'];
+				$this->request->session()->put('usearch.status', $status);
+				$data = $data->whereRaw('al_objectives.status like ?', "%{$status}%");
 			}
 			
 		}else{
@@ -65,13 +82,21 @@ class ObjectiveController extends Controller
 		}
 		
 		
-		$data  = $data->select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color','o.heading as parent_objective')->paginate(config('constants.PAGINATION'));
+		$data  = $data->select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color','o.heading as parent_objective','al_goal_cycles.cycle_name','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->paginate(config('constants.PAGINATION'));
 		
 		if(isset($_GET['s']) and $_GET['s']){
 			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
 		}
+		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->pluck('cycle_name','id');
+		$perspectives = Perspective::pluck('name','id');
+		$contributers = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$page_title  = getLabels("Objectives");
-		return view('frontend/objectives/admin_index', compact('data','role_id','page_title'));
+		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
+		
+		$status = Status::where('is_obj',1)->pluck('name','id');
+
+		return view('frontend/objectives/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives'));
 	}
 
 	public function measures($role_id = null){
@@ -164,782 +189,171 @@ class ObjectiveController extends Controller
 	}
 	
 	
-	public function admin_status($role_id = null, $id = null){
-		if(Auth::check() and Auth::User()->role_id != 1){
-			return back();
-		}
-		$user			 = User::find($id);
-		$status          = $user->status == 1?0:1;
-		$userUpdate 	 = $user->update(array('status' => $status));
-		
-		if($userUpdate){
-			$results = array("type" => "success", "url" => url(env('ADMIN_PREFIX'), 'teams'), "message" => getLabels('status_changed_successfully'));
-		}else{
-			$results = array("type" => "error", "url" => url(env('ADMIN_PREFIX'), 'teams'), "message" => getLabels('status_not_updated'));
-		}
-		return json_encode($results);
+	
+	public function getscorecards(){
+		$input = $this->request->all();
+		$scorecards = Scorecard::where('company_id',$input['company_id'])->pluck('name','id');
+		return json_encode($scorecards);
 	}
-	
-	
-	
-	
-	public function admin_add(){
+
+	public function submitscorecard(){
+		$input = $this->request->all();
+		$input['name'] = $input['scorecardname'];
+		$input['status'] = $input['scorecardstatus'];
+		$add = Scorecard::create($input);
+		if($add){
+			return json_encode("success");
+		}
+	}
+	public function submitaddtheme(){
+		$input = $this->request->all();
+		$input['theme_name'] = $input['themename'];
+		$input['theme_summary'] = $input['themesummary'];
+		$add = Theme::create($input);
+		if($add){
+			return json_encode("success");
+		}
+	}
+	public function submitaddcycle(){
+		$input = $this->request->all();
+		$input['cycle_name'] = $input['cyclename'];
+		$input['no_months'] = $input['numberofmonth'];
+		$add = GoalCycles::create($input);
+		if($add){
+			return json_encode("success");
+		}
+	}
+
+	public function getthemes(){
+		$input = $this->request->all();
+		$themes = Theme::where('company_id',$input['company_id'])->pluck('theme_name','id');
+		return json_encode($themes);
+	}
+
+	public function getCycles(){
+		$input = $this->request->all();
+		$cycles = GoalCycles::where('company_id',$input['company_id'])->pluck('cycle_name','id');
+		return json_encode($cycles);
+	}
+
+	public function addobjective(){
 		
+		$validator = Objective::validate($this->request->all());
+		if($validator->fails()){
+			return redirect()->back()->with('adderrormessage',getLabels('objective_saved_errors'))->withErrors($validator->errors());
+		}else{
+			$input = $this->request->except('contributers');
+			$input['user_id'] = Auth::User()->id;
+			$input['company_id'] = Auth::User()->company_id;
+			if($this->request->get('team_type') == 'team'){
+				$owner_user_id = TeamsMembers::where('team_id',$this->request->get('team_id'))->where('is_head',1)->value('member_id');
+				$input['owner_user_id'] = $owner_user_id;
+			}elseif($this->request->get('team_type') == 'department'){
+				$owner_user_id = DepartmentMember::where('department_id',$this->request->get('department_id'))->where('is_head',1)->value('member_id');
+				$input['owner_user_id'] = $owner_user_id;
+			}
+			if($this->request->get('contributers')){
+				$input['contributers'] = implode(',', $this->request->get('contributers'));
+			}
+			$objective = Objective::create($input);
+			
+			if($objective){
+				return redirect()->back()->with('message',getLabels('objective_saved_successfully'));
+			}else{
+				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+			}
+		}	 
+	}
+
+	public function viewobjective(){
 		$data = array();
-		
-		$page_title = getLabels("Add New Team");
-		$members  = User::select(DB::raw("CONCAT_WS(', ',first_name,designation) AS name"),'id')->where('role_id', 2)->orderBy('id', 'desc')->pluck('name', 'id')->toArray();
-		if($this->request->isMethod('post')){
-			$validator = Teams::validate($this->request->all());
-			
-			if ( $validator->fails() ) {
-				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('team_not_saved_errors')]);
-			} else {
-				$formData              	= $this->request->except('team_members');
-				$members_id = $this->request->get('team_members');
-				$formData['size'] = count($members_id);
-				
-				$formData['status']	= 1;
-				$teams  = Teams::create($formData);
-				if(count($members_id) > 0){
-					$member_arr = array();
-					foreach ($members_id as $key => $value) {
-						$member_arr['team_id'] = $teams->id;
-						$member_arr['member_id'] = $value;
-						$member_arr['is_head'] = 0;
-						TeamsMembers::create($member_arr);
-					}
-				}
-				if($this->request->get('team_head')){
-					$member_arr = array();
-					$member_arr['team_id'] = $teams->id;
-					$member_arr['member_id'] = $this->request->get('team_head');
-					$member_arr['is_head'] = 1;
-					TeamsMembers::create($member_arr);
-					
-				}
-				if($teams){
-					return response()->json(['type' => 'success', 'url'=> url(env('ADMIN_PREFIX'), 'teams'), 'message' => getLabels('Team Saved Successfully')]);
-				}else{
-					return response()->json(['type' => 'error', 'url'=> url(env('ADMIN_PREFIX'), 'teams'), 'message' => getLabels('something_wrong_try_again')]);
-				}
-			}
-		}
-		
-		return view('frontend/teams/admin_add', compact('data', 'members', 'page_title'));
-	}
-	
-	
-	
-	public function admin_edit($id = null){ 
-		
-		$data   = Teams::find($id);
-		$page_title = getLabels("Update Team");
-		if($this->request->isMethod('post')){
-			$validator = Teams::validate($this->request->all(), $id);
-			
-			if ( $validator->fails() ) {
-				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('team_not_saved_errors')]);
-			} else {
-				$formData = $this->request->except('team_members');
-				$members_id = $this->request->get('team_members');
-				$formData['size'] = count($members_id);
-				$teams  = $data->update($formData);
-				if(count($members_id) > 0){
-					$delete = TeamsMembers::where('team_id',$id)->where('is_head',0)->delete();
-					$member_arr = array();
-					foreach ($members_id as $key => $value) {
-						$member_arr['team_id'] = $id;
-						$member_arr['member_id'] = $value;
-						$member_arr['is_head'] = 0;
-						TeamsMembers::create($member_arr);
-					}
-				}
-				if($this->request->get('team_head')){
-					$delete = TeamsMembers::where('team_id',$id)->where('is_head',1)->delete();
-					$member_arr = array();
-					$member_arr['team_id'] = $id;
-					$member_arr['member_id'] = $this->request->get('team_head');
-					$member_arr['is_head'] = 1;
-					TeamsMembers::create($member_arr);
-					
-				}
-				if($teams){
-					return response()->json(['type' => 'success', 'url'=> url(env('ADMIN_PREFIX'), 'teams'), 'message' => getLabels('Team Update Successfully')]);
-				}else{
-					return response()->json(['type' => 'error', 'url'=> url(env('ADMIN_PREFIX'), 'teams'), 'message' => getLabels('something_wrong_try_again')]);
-				}
-			}
-		}
-		$members  = User::select(DB::raw("CONCAT_WS(', ',first_name,designation) AS name"),'id')->where('role_id', 2)->orderBy('id', 'desc')->pluck('name', 'id')->toArray();
-		$selected_members = TeamsMembers::where('team_id',$id)->where('is_head',0)->pluck('member_id','id');
-		if(!empty($selected_members)){
-			$selected_members = $selected_members->toArray();
-		}
-		return view('frontend/teams/admin_edit', compact('data', 'id', 'members', 'page_title','selected_members'));
-	}
-	
-	
-	
-	
-	public function profile($username = null){
-	
-		$data  = DB::table('users')->leftjoin('countries', 'countries.id', '=', 'users.country_id')->where('users.uniq_username', $username)->where('users.status', 1)->first(array('users.*', 'countries.name as country_name'));
-		$page_title = $data->first_name." ".$data->last_name;
-		
-		$following   = Follower::leftjoin('users', 'users.id', '=', 'followers.to_user_id')->where('followers.user_id', $data->id)->where('users.status', 1)->orderBy("first_name", "ASC")->select('users.*', 'followers.to_user_id')->paginate(config('constants.PAGINATION_FOLLOWERS', ['*'], 'fipage'));
-		
-		$followers   = Follower::leftjoin('users', 'users.id', '=', 'followers.user_id')->where('followers.to_user_id', $data->id)->where('users.status', 1)->orderBy("first_name", "ASC")->select('users.*', 'followers.user_id')->paginate(config('constants.PAGINATION_FOLLOWERS'), ['*'], 'fpage');
-		//$followers->setPageName('fpage');
-		$my_following  = $my_followers = array();
-		if(Auth::check()){
-			$my_following  = Follower::where('user_id', Auth::id())->pluck('to_user_id')->toArray();
-			$my_followers   = Follower::where('to_user_id', Auth::id())->pluck('user_id')->toArray();
-		}
-		
-		$myfollowers = array_merge($my_following, $my_followers);
-		
-		$posts = Post::with(['postUser', 'postFiles', 'postLike', 'postComments'])->where("posts.user_id", $data->id)->orderBy('created_at', 'DESC')->paginate(2)->map(function ($query) {
-            $query->setRelation('postComments', $query->postComments->take(config('constants.PAGINATION_COMMENTS')));
-            return $query;
-        });
-
-		
-		if ($this->request->ajax() and isset($_GET['fpage'])) {
-			$view = view('Element/users/followers',compact('followers'))->render();
-            return response()->json(['html'=>$view, 'total_page' => $followers->lastPage()]);
-        }
-		
-		if ($this->request->ajax() and isset($_GET['fipage'])) {
-			//return response()->json(['html'=>$following->currentPage()]);
-			$view = view('Element/users/following',compact('following'))->render();
-            return response()->json(['html'=>$view, 'total_page' => $following->lastPage()]);
-        }
-		
-		if ($this->request->ajax() and isset($_GET['page'])) {
-    		$view = view('frontend/posts/post_mid',compact('posts'))->render();
-            return response()->json(['html'=>$view]);
-        }
-		
-		
-		$myfollowers[] = Auth::id();
-		$myfollowers = array_unique($myfollowers);
-		
-		
-		/* Uncomment the code if Follwing and Followers will be on One page
-		
-		$following  = Follower::leftjoin('users', 'users.id', '=', 'followers.to_user_id')->where('followers.user_id', Auth::id())->where('users.status', 1)->select(DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS userfullname"), "followers.to_user_id")->pluck('userfullname', 'followers.to_user_id')->toArray();
-		$follower   = Follower::leftjoin('users', 'users.id', '=', 'followers.user_id')->where('followers.to_user_id', Auth::id())->where('users.status', 1)->select(DB::raw("CONCAT(users.first_name, ' ', users.last_name) AS userfullname"), "followers.user_id")->pluck('userfullname', 'followers.user_id')->toArray();
-		
-		$followArr  = $following + $follower;
-		
-		asort($followArr);
-		$orders = array_keys($followArr);
-		$orderBy  = implode(", ", $orders);
-	
-		$dataFollower  = User::where('users.status', 1)->whereIn('users.id', $orders)->leftjoin('countries', 'countries.id', '=', 'users.country_id');
-		$dataFollower  = $dataFollower->select('users.*', 'countries.name as country')->orderByRaw('FIELD(users.id,'.$orderBy.')')->paginate(config('constants.PAGINATION')); */
-		$plans = SubscriptionPlan::where('user_id', $data->id)->get();	
-		if($plans){
-			$plans = $plans->toArray();
-		}
-		return view('frontend.users.profile', compact('page_title', 'data', 'following', 'followers', 'posts', 'myfollowers', 'plans'));
-	}
-	
-	
-	
-	
-	public function admin_delete_photo(){
-		if($this->request->ajax()){
-			$user_id  	 = $this->request->user_id;
-			$image_type  = $this->request->image_type;
-			$User  		 = User::find($user_id);
-			if($image_type == "photo"){
-				if($User and $User->photo !="" and file_exists('public/upload/users/profile-photo/'.$User->photo)){
-					unlink('public/upload/users/profile-photo/'.$User->photo);
-					$User->update(array("photo" => $User->photo));
-				}
-			}
-			if($image_type == "cover_photo"){
-				if($User and $User->cover_photo !="" and file_exists('public/upload/users/cover_photo/'.$User->cover_photo)){
-					unlink('public/upload/users/cover_photo/'.$User->cover_photo);
-					$User->update(array("cover_photo" => $User->cover_photo));
-				}
-			}
-			return response()->json(['type' => 'success']);
-		}
-	}
-	
-	public function update_profile($username = null){ 
-		
-		$id = Auth::id();
-		$data   = User::find($id);
-		$uniq_username_old  = !empty($data->uniq_username)?$data->uniq_username:"";
-		$page_title = getLabels("update_my_profile");
-		$countries  = Country::where('status', 1)->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
-		if($this->request->isMethod('post')){
-			$validator = User::validateMy($this->request->all(), $id);
-			
-			if ( $validator->fails() ) {
-				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('profile_not_updated')]);
-			} else {
-				$formData              	= $this->request->except('password','photo', 'cover_photo');
-				
-				if ( $this->request->photo){
-					// Pass Slim's getImages the name of your file input, and since we only care about one image, use Laravel's head() helper to get the first element
-					$image = head(Slim::getImages('photo'));
-
-					// Grab the ouput data (data modified after Slim has done its thing)
-					if ( isset($image['output']['data']) ){
-						// Original file name
-						$name = $image['output']['name'];
-
-						// Base64 of the image
-						$dataImage = $image['output']['data'];
-
-						// Server path
-						$path = base_path() . '/public/upload/users/profile-photo/';
-
-						// Save the file to the server
-						$file = Slim::saveFile($dataImage, $name, $path);
-						if($id and $data->photo !="" and file_exists('public/upload/users/profile-photo/'. $data->photo)){
-							unlink('public/upload/users/profile-photo/'. $data->photo);
-						}
-						$formData['photo'] 	= $file['name'];
-						// Get the absolute web path to the image
-						//$imagePath = asset('tmp/' . $file['name']);
-					}
-				}
-				
-				if ( $this->request->cover_photo){
-					$image = head(Slim::getImages('cover_photo'));
-
-					if ( isset($image['output']['data']) ){
-						$name = $image['output']['name'];
-						$dataImage = $image['output']['data'];
-						$path = base_path() . '/public/upload/users/cover_photo/';
-
-						// Save the file to the server
-						$file = Slim::saveFile($dataImage, $name, $path);
-						if($id and $data->cover_photo !="" and file_exists('public/upload/users/cover_photo/'. $data->cover_photo)){
-							unlink('public/upload/users/cover_photo/'. $data->cover_photo);
-						}
-						$formData['cover_photo'] 	= $file['name'];
-					}
-				}
-				if(!empty($formData['payout_email']) && !empty($formData['street_1']) && !empty($formData['city']) && !empty($formData['state']) && !empty($formData['country_id'])){
-					$formData['is_complete_profile'] = 1;
-				}else{
-					$formData['is_complete_profile'] = 0;
-				}
-				
-				$user  = $data->update($formData);
-				
-				if($user){
-					if(!empty($formData['uniq_username']) and ($uniq_username_old != $formData['uniq_username'])){
-						changeuniqusername($uniq_username_old, $formData['uniq_username']);
-					}
-					$u_prefix = "";
-					if(Auth::User()->role_id == 1){
-						$u_prefix  =  env('ADMIN_PREFIX');
-					}
-					return response()->json(['type' => 'success', 'url'=> url($u_prefix, Auth::User()->uniq_username), 'message' => getLabels('profile_updated_successfully')]);
-				}else{
-					return response()->json(['type' => 'error', 'url'=> url($u_prefix, Auth::User()->uniq_username), 'message' => getLabels('something_wrong_try_again')]);
-				}
-			}
-		}
-		$total_followers  = Follower::where('user_id', Auth::id())->orWhere('to_user_id', Auth::id())->count();
-		return view('frontend/users/update_profile', compact('data', 'id', 'countries', 'page_title', 'total_followers', $total_followers));
-	}
-	
-	
-	
-	
-	public function change_password($uniq_username = null){
-		if($this->request->ajax()){
-			$id = Auth::id();
-			$users =  User::find($id);
-		
-			if ($this->request->isMethod('post')) {            
-			   $validator = User::change_password($this->request->all());
-				
-				if ( $validator->fails() ) {
-					return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('password_saved_errors')]);
-				} else {
-					$password = Hash::make($this->request->get('new_password'));
-					$data = array('password' => $password);
-					$action =   $users->update($data);
-					if($action){
-						return response()->json(['type' => 'success', 'url'=>'close_modal', 'message' => getLabels('password_changed')]);
-					}else{
-						return response()->json(['type' => 'error', 'url'=>'close_modal', 'message' => getLabels('something_wrong_try_again')]);
-					}
-				}
-			}
-		}
-	}
-	
-	public function search(){
-		$page_title  = getLabels("people");
-		$first_name = $this->request->query('q');
-		
-		if($first_name == ""){
-			$first_name = $this->request->session()->get('search_q');
+		$input = $this->request->all();
+		$objectiveinfo = Objective::leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->where('al_objectives.id',$input['id'])->select('al_objectives.*','al_goal_cycles.cycle_name','al_master_status.name as status_name','al_master_status.bg_color','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->first();
+		$measuresList = Measure::leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.objective_id',$input['id'])->where('al_measures.category_type',1)->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
+		if(!empty($measuresList)){
+			$measuresList = $measuresList->toArray();
 		}else{
-			$this->request->session()->put('search_q', $first_name);
+			$measuresList = array();
 		}
-		
-		$data  = User::where('users.role_id', 2)->where('users.status', 1)->where('users.id', '!=', Auth::id())->leftjoin('countries', 'countries.id', '=', 'users.country_id');
-		if($first_name){
-			$data = $data->whereRaw('concat(users.first_name," ",users.last_name) like ?', "%{$first_name}%");
-		}
-		
-		$data  = $data->select('users.*', 'countries.name as country')->orderBy('users.created_at', 'desc')->paginate(config('constants.PAGINATION'));
-		$following  = Follower::where('user_id', Auth::id())->pluck('to_user_id')->toArray();
-		$follower   = Follower::where('to_user_id', Auth::id())->pluck('user_id')->toArray();
-		if(isset($_GET['q']) and $_GET['q']){
-			$data->appends(array('q' => $_GET['q']))->links();
-		}
-		return view('frontend/users/search', compact('data', 'page_title', 'following', 'follower'));
-	}
-	
-	
-	
-	public function admin_changepassword($uniq_username = null){
-		$page_title = getLabels("Change_Password");
-		$data =  User::where('uniq_username', $uniq_username)->first();
-		if($this->request->ajax() and Auth::User()->role_id == 1){
-			if ($this->request->isMethod('post')) {            
-			   $validator = User::admin_changepassword($this->request->all());
-				
-				if ( $validator->fails() ) {
-					return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('password_saved_errors')]);
-				} else {
-					$password = Hash::make($this->request->get('new_password'));
-					$dataForm = array('new_password' => $password);
-					$action =   $data->update($dataForm);
-					if($action){
-						return response()->json(['type' => 'success', 'url'=>url(env('ADMIN_PREFIX'), 'users'), 'message' => getLabels('password_changed')]);
-					}else{
-						return response()->json(['type' => 'error', 'url'=>url(env('ADMIN_PREFIX'), 'users'), 'message' => getLabels('something_wrong_try_again')]);
-					}
-				}
-			}
-		}
-		return view('frontend/users/admin_changepassword', compact('data', 'page_title'));
-	}
-	
-	
-	
-	public function follow_user($uniq_username = null){
-		$data =  User::where('uniq_username', $uniq_username)->where('status', 1)->first();
-		if($data){ 
-			$is_existing  = Follower::where(function($query) use($data){
-                $query->where('user_id', $data->id)->where('to_user_id', Auth::id());
-            })->orWhere(function($query2) use($data){
-                $query2->where('to_user_id', $data->id)->where('user_id', Auth::id());
-            })->count();
-			if($is_existing == 0){
-				Follower::create(['user_id' => Auth::id(), 'to_user_id' => $data->id]);
-				$messageNoti  = str_replace(array('{USER}'), array(Auth::User()->first_name." ".Auth::User()->last_name), getLabels('start_following_you'));
-				//$messageNoti  = Auth::User()->first_name." ".Auth::User()->last_name.' start following you';
-				$notification = Notification::createNotifications(Auth::User()->uniq_username, $uniq_username, $messageNoti, 16, 0);
-				
-				$html = '<div class="dropdown d-inline-block">
-							<button class="btn btn-xs btn-outline-primary dropdown-toggle mb-1" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Following
-							</button>
-							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-								<a class="dropdown-item unfollow_user" rel="'.$data->uniq_username.'" href="javascript:void(0);">'.getLabels('unfollow').'</a>
-							</div>
-						</div>';
-						
-				return json_encode(['type' => 'success', 'html' => $html, 'notification' => $notification]);
-			}
-		}
-	}
-	
-	
-	
-	
-	public function unfollow_user($uniq_username = null){
-		$data =  User::where('uniq_username', $uniq_username)->where('status', 1)->first();
-		if($data){ 
-			$is_existing  = Follower::where(function($query) use($data){
-                $query->where('user_id', $data->id)->where('to_user_id', Auth::id());
-            })->orWhere(function($query2) use($data){
-                $query2->where('to_user_id', $data->id)->where('user_id', Auth::id());
-            })->count();
-			if($is_existing > 0){
-				Follower::where('user_id', Auth::id())->where('to_user_id', $data->id)->delete();
-				Follower::where('to_user_id', Auth::id())->where('user_id', $data->id)->delete();
-				$html = '<button type="button" class="btn btn-xs btn-outline-primary follow_btn" rel="'.$uniq_username.'">'.getLabels('follow').'</button>';
-				return json_encode(['type' => 'success', 'html' => $html]);
-			}
-		}
-	}
-	
-	
-	
-	/************************************************Social Logins *********************************************************************************/
-	public function redirectToProvider($provider){
-       return Socialite::driver($provider)->redirect();
-    }
-	
-	
-	public function handleProviderCallback($provider){
-		$user = Socialite::driver($provider)->user();
-		//pr($user); die;
-		$authUser = $this->findOrCreateUser($user, $provider);
-	 
-		Auth::login($authUser, true);
-		$page_title  = "Callback";
-		$response = json_encode(['header' => view('frontend/layouts/header')->render(), 'navigation' => view('frontend/layouts/navigation')->render()]);
-		return view('frontend/users/handleProviderCallback', compact('page_title', 'response'));
-	}
-	
-	
-	
-	public function findOrCreateUser($user, $provider){
-		if(isset($user->email)){
-			$authUser = User::where('email', $user->email)->first();
+		$initiativeList = Measure::leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.objective_id',$input['id'])->where('al_measures.category_type',2)->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
+
+		if(!empty($initiativeList)){
+			$initiativeList = $initiativeList->toArray();
 		}else{
-			$authUser = User::where('provider_id', $user->id)->first(); 
+			$initiativeList = array();
 		}
-		// Register New user
-		if ($authUser) {
-			return $authUser;
-		}
-
-		$file_name ='';
-		$gender = 1;
-
-		$first_name = 'Stremer';
-		$last_name = 'Studio';
-		
-		if($provider =='linkedin'){  
-			if($user->avatar_original){          
-				$file_name = $this->resizeProfileImage($user->avatar_original);         
-			}
-			$first_name = $user->name;
-		}
-		
-		if($provider =='twitter'){  
-			if($user->avatar_original){          
-				$file_name = $this->resizeProfileImage($user->avatar_original,1);           
-			}
-		}
-
-		if($provider =='discord'){  
-			if($user->avatar_original){          
-				$file_name = $this->resizeProfileImage($user->avatar_original,1);           
-			}
-		}
-
-		if($provider =='steam'){ 
-			if($user->avatar){          
-				$file_name = $this->resizeProfileImage($user->avatar,1);           
-			}
-		   $first_name = $user->nickname;
-		}
-
-		if($provider =='mixer'){ 
-			if($user->avatar){          
-				$file_name = $this->resizeProfileImage($user->avatar,1);           
-			}
-			$first_name = $user->username;
-		}
-
-
-		if($provider =='instagram'){  
-			if($user->avatar){           
-				$file_name = $this->resizeProfileImage($user->avatar);          
-			}
-		}
-
-		if($provider =='facebook'){  
-			if($user->avatar_original){          
-				$file_name = $this->resizeProfileImageFacebook($user->avatar_original);         
-			}
-		}
-
-		if($provider =='github'){  
-			if($user->avatar){  
-				$url =$user->avatar;
-				//https://avatars1.githubusercontent.com/u/7098612?v=4
-				$name = substr($url, strrpos($url, '/') + 1);
-
-				$name = explode('?', $name );
-				$name = $name[0];
-				$name = $name.'.jpeg';
-
-				$file_name = $this->resizeProfileImageGoogle($user->avatar,$name);
-				User::where('provider_id', $user->id)->update(array("photo" => $file_name));
-			}
-		}
-
-		if($provider =='bitbucket'){  
-			if($user->avatar){  
-				$name = $user->id.'.jpg';
-				$image_path = str_replace('32', '300', $user->avatar);           
-				$file_name = $this->resizeProfileImageGoogle($image_path, $name);
-				User::where('provider_id', $user->id)->update(array("photo" => $name));
-			}
-		}
-
-		if($provider =='google'){ 
-			if($user->avatar_original){  
-				$name = $user->id.'.jpg';
-				$file_name = $this->resizeProfileImageGoogle($user->avatar_original, $name);
-				User::where('provider_id', $user->id)->update(array("photo" => $name));
-			}
-		}
-
-		if($provider =='facebook' || $provider =='google'){
-			  if(isset($user->user['gender'])){
-				if($user->user['gender'] == 'female'){
-					$gender = 0;
-				}
-			}
-		}
-
-		if($provider =='facebook' || $provider =='twitter' || $provider =='google' || $provider =='github' || $provider =='vkontakte' || $provider =='instagram' || $provider =='bitbucket' || $provider =='discord'){
-			$names = explode(' ', $user->name);
-			if(isset($names[0])){           
-				$first_name =$names[0];
-			}
-			if(isset($names[1])){           
-				$last_name =$names[1];
-			}
-		}
-	   
-		$str = 'streamer';
-		if($user->name){
-			$str = $user->name;
+		$subobjective = Objective::leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->where('al_objectives.objective_id',$input['id'])->select('al_objectives.*','al_goal_cycles.cycle_name','al_master_status.name as status_name','al_master_status.bg_color','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
+		if(!empty($subobjective)){
+			$subobjective = $subobjective->toArray();
 		}else{
-			$str = $first_name.$last_name;
+			$subobjective = array();
 		}
-		
-		
-
-		
-
-		$data = User::create([
-			'first_name'     => $first_name,
-			'last_name'     => $last_name,
-			'email'    => isset($user->email)?$user->email:'',
-			'provider' => $provider,
-			'provider_id' => $user->id,
-			//'username' => md5($user->id),
-			/* 'password' =>$password_d,
-			'varify_hash'=>$varify_hash,
-			'uniq_username'=>$uniq_username, */
-			'varify_account'=>isset($user->email)?1:0,
-			'status'=>1,
-			'role_id'=>2,
-			'photo'=>$file_name,
-			'gender'=>$gender
-		]);
-		$uniq_username  = User::createUsername($data->id);
-		
-		$varify_hash = base64_encode($user->id.$uniq_username);
-
-		$password = md5($user->id.$uniq_username);
-
-		$password_d = Hash::make($password);
-		
-		User::where('id', $data->id)->update(array('password' => $password_d, 'varify_hash' => $varify_hash));
-
-		$mail_data  	= getEmailTemplate('streamer-studio-social-login');
-		if($mail_data && isset($user->email)){
-			$usr_name       = $first_name." ".$last_name;
-			$email          = $user->email; 
-			$link           = config('constants.SITE_URL'); 
-
-			$site_name      = config('constants.SITE_TITLE');
-			$admin_email    = config('constants.SITE_EMAIL'); 
-			$helplink           = config('constants.SITE_URL').'help';
-			$privacy_policy = config('constants.SITE_EMAIL').'privacy_policy'; 
-			$about_us   = config('constants.SITE_EMAIL').'about_us';
-			$message        = str_replace(array('{NAME}', '{SITE}', '{PASSWORD}'), array($usr_name, $site_name, $password), $mail_data['content']);
-			$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data['subject']);
-			Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
-				$message->from($admin_email, $site_name);
-				$message->to($email, $usr_name)->subject($subject);
-			}); 
+		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',0)->where('al_tasks.objective_id',$input['id'])->select('al_master_status.name as status_name','al_tasks.*')->get();
+		if (!empty($tasklist)) {
+			$tasklist = $tasklist->toArray();
+			foreach ($tasklist as $key => $value) {
+				$owners = explode(',',$value['owners']);
+				$list = User::whereIn('id',$owners)->pluck('first_name')->toArray();
+				$tasklist[$key]['owners'] = implode(',', $list);
+			}
 		}
-
-		return  $data;
-	}
-	
-	
-	
-	
-	public function resizeProfileImageGoogle($url,$name){
-        $file_name = $name;
-		$ext = 'jpeg';      
-		$contents = file_get_contents($url);
-		$uploadfile = 'public/upload/users/profile-photo/'.$file_name; 
-        $upload =file_put_contents($uploadfile, $contents);
-		list($width, $height) = getimagesize($uploadfile);
-		
-		$quality_jpg = config('constants.Image_QUALITY');
-		$quality_png = config('constants.Image_QUALITY_PNG');
-		
-		//Saving thumb
-        $thumb_height   = $thumb_width  = config('constants.USER_THUMB_WIDTH');
-		
-		$quality = config('constants.Image_QUALITY');
-            
-		$image = imagecreatefromstring(file_get_contents($uploadfile));
-		$image_thumb = imagecreatetruecolor($thumb_width, $thumb_height);
-		imagecopyresampled($image_thumb, $image, 0, 0, 0, 0, $thumb_width, $thumb_height, $width, $height);
-		// Output
-             
-		if($ext == 'png'){
-			imagepng($image_thumb, 'public/upload/users/profile-photo/thumb/'. $file_name, $quality_png);
-		}else{
-			imagejpeg($image_thumb, 'public/upload/users/profile-photo/thumb/'. $file_name,$quality_jpg); 
-		}
-            //Saving medium
-		$medium_height  =  $medium_width    = config('constants.USER_MEDIUM_WIDTH');
-		
-		$image = imagecreatefromstring(file_get_contents($uploadfile));
-		$image_medium = imagecreatetruecolor($medium_width, $medium_height);
-		imagecopyresampled($image_medium, $image, 0, 0, 0, 0, $medium_width, $medium_height, $width, $height);
-		// Output
-		if($ext == 'png'){
-			imagepng($image_medium, 'public/upload/users/profile-photo/medium/'. $file_name, $quality_png);
-		}else{
-			imagejpeg($image_medium, 'public/upload/users/profile-photo/medium/'. $file_name, $quality_jpg); 
-		}
-
-		/* saveOverFTPUserImage('users/profile-photo/large', $file_name); //Move large files on hubscure.co
-		saveOverFTPUserImage('users/profile-photo/medium', $file_name); //Move medium files on hubscure.co
-		saveOverFTPUserImage('users/profile-photo/thumb', $file_name); //Move thumb files on hubscure.co */
-
-		return $file_name;
+		$data['objectiveinfo'] = $objectiveinfo;
+		$data['measuresList'] = $measuresList;
+		$data['initiativeList'] = $initiativeList;
+		$data['subobjective'] = $subobjective;
+		$data['tasklist'] = $tasklist;
+ 		return json_encode($data);
 	}
 
-	
-	
-	public function resizeProfileImage($url,$extainsion=false){
-        $file_name = '';
-		$contents = file_get_contents($url);
-		$name = substr($url, strrpos($url, '/') + 1);
-
-		if(!$extainsion){
-			$file_name = $name.'.jpeg';
-			$ext = 'jpeg';
+	public function updateobjective(){
+		$data = array();
+		$inputs = $this->request->all();
+		$objective = Objective::find($inputs['objective_id']);
+		if(!empty($objective)){
+			$objective = $objective->toArray();
 		}else{
-			$file_name = $name;
-			$ext = pathinfo($file_name,PATHINFO_EXTENSION);
+			$objective = array();
 		}
-
-        $uploadfile = 'public/upload/users/profile-photo/'.$file_name;
-		$upload =file_put_contents($uploadfile, $contents);
-		list($width, $height) = getimagesize($uploadfile);
-
-		$quality_jpg = config('constants.Image_QUALITY');
-		$quality_png = config('constants.Image_QUALITY_PNG');
-
-            
-		//Saving thumb
-		$thumb_height   = $thumb_width  = config('constants.USER_THUMB_WIDTH');
-
-		$quality = config('constants.Image_QUALITY');
-		
-		$image = imagecreatefromstring(file_get_contents($uploadfile));
-		$image_thumb = imagecreatetruecolor($thumb_width, $thumb_height);
-		imagecopyresampled($image_thumb, $image, 0, 0, 0, 0, $thumb_width, $thumb_height, $width, $height);
-		// Output
-		 
-		if($ext == 'png'){
-			imagepng($image_thumb, 'public/upload/users/profile-photo/thumb/'. $file_name, $quality_png);
-		}else{
-			imagejpeg($image_thumb, 'public/upload/users/profile-photo/thumb/'. $file_name,$quality_jpg); 
-		}
-		//Saving medium
-		$medium_height  =  $medium_width    = config('constants.USER_MEDIUM_WIDTH');
-		
-		$image = imagecreatefromstring(file_get_contents($uploadfile));
-		$image_medium = imagecreatetruecolor($medium_width, $medium_height);
-		imagecopyresampled($image_medium, $image, 0, 0, 0, 0, $medium_width, $medium_height, $width, $height);
-		// Output
-		if($ext == 'png'){
-			imagepng($image_medium, 'public/upload/users/profile-photo/medium/'. $file_name, $quality_png);
-		}else{
-			imagejpeg($image_medium, 'public/upload/users/profile-photo/medium/'. $file_name, $quality_jpg); 
-		}
-
-		/* saveOverFTPUserImage('users/profile-photo/large', $file_name); //Move large files on hubscure.co
-		saveOverFTPUserImage('users/profile-photo/medium', $file_name); //Move medium files on hubscure.co
-		saveOverFTPUserImage('users/profile-photo/thumb', $file_name); //Move thumb files on hubscure.co
-		*/
-		return $file_name;
+		$departments = $departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
+		$teams = Teams::where('company_id',Auth::User()->company_id)->pluck('team_name','id');
+		$members = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$data['teams'] = $teams;
+		$data['departments'] = $departments;
+		$data['members'] = $members;
+		$data['objective'] = $objective;
+		return json_encode($data);	
 	}
 
-	
-	public function resizeProfileImageFacebook($url,$extainsion=false){
-		$file_name = '';
-		$contents = file_get_contents($url);
-
-		$url = explode('.com', $url);
-		$url = explode('/', $url[1]);
-
-		
-		$name = $url[2];            
-
-		if(!$extainsion){
-			$file_name = $name.'.jpeg';
-			$ext = 'jpeg';
-		}else{
-			$file_name = $name;
-			$ext = pathinfo($file_name,PATHINFO_EXTENSION);
-		}
-		
-		$uploadfile = 'public/upload/users/profile-photo/'.$file_name;
-
-        $upload =file_put_contents($uploadfile, $contents);
-		list($width, $height) = getimagesize($uploadfile);
-
-		$quality_jpg = config('constants.Image_QUALITY');
-		$quality_png = config('constants.Image_QUALITY_PNG');
-
-        //Saving thumb
-        $thumb_height   = $thumb_width  = config('constants.USER_THUMB_WIDTH');
-		$quality = config('constants.Image_QUALITY');
-            
-		$image = imagecreatefromstring(file_get_contents($uploadfile));
-		$image_thumb = imagecreatetruecolor($thumb_width, $thumb_height);
-		imagecopyresampled($image_thumb, $image, 0, 0, 0, 0, $thumb_width, $thumb_height, $width, $height);
-        
-		// Output
-             
-		if($ext == 'png'){
-			imagepng($image_thumb, 'public/upload/users/profile-photo/thumb/'. $file_name, $quality_png);
-		}else{
-			imagejpeg($image_thumb, 'public/upload/users/profile-photo/thumb/'. $file_name,$quality_jpg); 
-		}
-        //Saving medium
-        $medium_height  =  $medium_width    = config('constants.USER_MEDIUM_WIDTH');
-            
-		$image = imagecreatefromstring(file_get_contents($uploadfile));
-		$image_medium = imagecreatetruecolor($medium_width, $medium_height);
-		imagecopyresampled($image_medium, $image, 0, 0, 0, 0, $medium_width, $medium_height, $width, $height);
-		// Output
-		if($ext == 'png'){
-			imagepng($image_medium, 'public/upload/users/profile-photo/medium/'. $file_name, $quality_png);
-		}else{
-			imagejpeg($image_medium, 'public/upload/users/profile-photo/medium/'. $file_name, $quality_jpg); 
-		}
-
-		/*
- 		saveOverFTPUserImage('users/profile-photo/large', $file_name); //Move large files on hubscure.co
-		saveOverFTPUserImage('users/profile-photo/medium', $file_name); //Move medium files on hubscure.co
-		saveOverFTPUserImage('users/profile-photo/thumb', $file_name); //Move thumb files on hubscure.co
-		*/
-       return $file_name;
+	public function getcontributers(){
+		$input = $this->request->all();
+		$contributers = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		return json_encode($contributers);
 	}
+
+	public function updateobjectivesubmit(){
+		$input = $this->request->except('contributers','scorecard_id');
+		$data = Objective::find($input['id']);
+		$input['user_id'] = Auth::User()->id;
+		$input['company_id'] = Auth::User()->company_id;
+		if($this->request->get('team_type') == 'team'){
+			$owner_user_id = TeamsMembers::where('team_id',$this->request->get('team_id'))->where('is_head',1)->value('member_id');
+			$input['owner_user_id'] = $owner_user_id;
+		}elseif($this->request->get('team_type') == 'department'){
+			$owner_user_id = DepartmentMember::where('department_id',$this->request->get('department_id'))->where('is_head',1)->value('member_id');
+			$input['owner_user_id'] = $owner_user_id;
+		}
+		if($this->request->get('contributers')){
+			$input['contributers'] = implode(',', $this->request->get('contributers'));
+		}
+		if($this->request->get('scorecard_id')){
+			$input['scorecard_id'] = implode(',', $this->request->get('scorecard_id'));
+		}
+		//pr($input);
+		$objective = $data->update($input);
+		if($objective){
+			return redirect()->back()->with('message',getLabels('objective_update_successfully'));
+		}else{
+			return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+		}
+	} 
 }

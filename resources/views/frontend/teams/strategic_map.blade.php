@@ -31,12 +31,14 @@
                                 <h6><b>Financial</b></h6>
                                 <br>
                                 <div class="row" style="justify-content: center;">
-                                @if(!empty($financial))
+                                @if(!$financial->isEmpty())
                                 @foreach($financial as $key => $value)
                                     <div class="col-lg-2"><div style="border-radius: 50%;background: {!!$value->bg_color!!};height: 100px;text-align: center;padding-top: 35px;"><b>{!!$value->heading!!}</b></div></div> 
                                      
 
                                 @endforeach
+                                @else
+                                No Data Available
                                 @endif
                                 </div>
                             </div>
@@ -44,12 +46,14 @@
                                 <h6><b>Customer</b></h6>
                                  <br>
                                 <div class="row" style="justify-content: center;">
-                                    @if(!empty($customer))
+                                    @if(!$customer->isEmpty())
                                 @foreach($customer as $key => $value)
                                     <div class="col-lg-2"><div style="border-radius: 50%;background: {!!$value->bg_color!!};height: 100px;text-align: center;padding-top: 35px;"><b>{!!$value->heading!!}</b></div></div> 
                                      
 
                                 @endforeach
+                                @else
+                                No Data Available
                                 @endif
                                             
                                 </div>
@@ -58,12 +62,14 @@
                                 <h6><b>Internal Process</b></h6>
                                  <br>
                                 <div class="row" style="justify-content: center;">
-                                    @if(!empty($process))
+                                    @if(!$process->isEmpty())
                                 @foreach($process as $key => $value)
                                     <div class="col-lg-2"><div style="border-radius: 50%;background: {!!$value->bg_color!!};height: 100px;text-align: center;padding-top: 35px;"><b>{!!$value->heading!!}</b></div></div> 
                                      
 
                                 @endforeach
+                                @else
+                                No Data Available
                                 @endif
                                     
                                 </div>

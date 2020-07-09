@@ -213,9 +213,9 @@ $(document).ready(function(){
                                 data-order="[[ 1, &quot;desc&quot; ]]">
                                 <thead>
                                     <tr>
-                                        <th>Projects</th> 
-                                        <th></th> 
-                                        <th></th>
+                                         <th>Projects</th> 
+                                        <th>Type</th> 
+                                        <th>Status</th>
                                         <th>Progress</th>
                                     </tr>
                                 </thead> 
@@ -224,20 +224,19 @@ $(document).ready(function(){
 								
 								
                                 <tbody>
+                                    @if(!empty($objectives))
+                                    @foreach($objectives as $k => $obj)
                                     <tr>
                                         <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
+                                            <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="javascript:void(0);">
+                                                <span class="align-middle d-inline-block">{!!$obj->heading!!}</span>
+                                            </a>
                                         </td>
-                                        
-										 
-                                         <td> 
+                                        <td> 
                                             <p class="text-semi-muted mb-2">Objective</p>  
                                         </td>
-										  <td> 
-											<span class="badge badge-pill badge-secondary">ON HOLD</span>  
+                                          <td> 
+                                            <span class="badge badge-pill badge-secondary">ON HOLD</span>  
                                         </td>
                                         <td>
                                             <div role="progressbar" class="progress-bar-circle position-relative"
@@ -247,147 +246,8 @@ $(document).ready(function(){
                                         </td>
                                        
                                     </tr>
-									 <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-										 
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-										  <td> 
-											<span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-									 <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-										 
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-										  <td> 
-											<span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-									 <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-										 
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-										  <td> 
-											<span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-									 <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-										 
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-										  <td> 
-											<span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-									 <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-										 
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-										  <td> 
-											<span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-									 <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="simple-icon-refresh heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-										 
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
-										  <td> 
-											<span class="badge badge-pill badge-secondary">ON HOLD</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-									
-									
-									 
+                                    @endforeach
+                                    @endif 
                                 </tbody>
                             </table>
                         </div>

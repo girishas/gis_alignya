@@ -117,167 +117,10 @@ chart.scrollbarX = new am4core.Scrollbar();
                     </div>
                     
   <!-- Modal -->
-                           @extends('Element/initiative/add_initiative')
+                           @include('Element/initiative/add_initiative')
+                           @include('Element/initiative/view_initiative')
 
-
-							<div class="modal modal-right" id="myModal" role="dialog" >
-                                <div class="modal-dialog" style="max-width: 99.99%;">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title"> <i class="iconsminds-up-1 heading-icon" style="color:#18ca18;"></i> Airport Traffic
-                                                <p style="margin-left: 40px;"><a href="#" class="badge badge-pill badge-outline-info mb-1">Edit</a> </p></h5>
-                                            <button type="button" class="close" id="popup1hide" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                        	
-        <div class="container-fluid">
-            <div class="row ">
-                <div class="col-12 survey-app">
-                    <ul class="nav nav-tabs separator-tabs ml-0 mb-5" role="tablist">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="first-tab" data-toggle="tab" href="#first" role="tab"
-                                aria-controls="first" aria-selected="true">Milestones</a>
-                        </li>
-<li class="nav-item">
-                            <a class="nav-link " id="second-tab" data-toggle="tab" href="#second" role="tab"
-                                aria-controls="second" aria-selected="true">Tasks</a>
-                        </li>
-
-                        
-                    </ul>
-                    <div class="tab-content mb-4">
-                        <div class="tab-pane show active" id="first" role="tabpanel" aria-labelledby="first-tab">
-                            <div class="row">
-
-                                <div class="col-lg-12 col-12 mb-4">
-									<div id="chartdiv"></div>
-								</div>
-							   <div class="col-lg-12 col-12 mb-4">
-                                 <div class="card mb-8">
-                                        <div class="card-body">
-                            <table class="table table-borderless">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"><h6>Milestones</h6></th>
-                                        
-                                        <th scope="col"><h6>Actual</h6></th>
-                                        <th scope="col"><h6>Target</h6></th>
-                                        <th scope="col"><h6>Start Date</h6></th>
-                                        <th scope="col"><h6>Due Date</h6></th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Milestone 1</td>
-                                        
-                                        <td>10</td>
-										<td>20</td>
-										<td>06/06/2020</td>
-										<td>07/06/2020</td>
-										<td><a href="javascript:void(0);"><i class="simple-icon-pencil"></i></a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Milestone 2</td>
-                                       
-                                        <td>30</td>
-										<td>40</td>
-										<td>08/06/2020</td>
-										<td>09/06/2020</td>
-										<td><a href="javascript:void(0);"><i class="simple-icon-pencil"></i></a></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Milestone 3</td>
-                                        <td>50</td>
-										<td>60</td>
-										<td>10/06/2020</td>
-										<td>11/06/2020</td>
-										<td><a href="javascript:void(0);"><i class="simple-icon-pencil"></i></a></td>
-                                    </tr>
-                                     <tr>
-                                        <th scope="row"><a href="javascript:void(0);"><h6 id="myBtn2"><i class="simple-icon-plus btn-group-icon"></i> Add Milestone</h6></a></th>
-                                       
-                                    </tr>
-                                </tbody>
-                            </table>
-                        
-                                </div>
-                                </div>
-                                </div>
-
-                                
-                            </div>
-                        </div>
-                        <div class="tab-pane show" id="second" role="tabpanel" aria-labelledby="second-tab">
-                            <div class="row">
-
-                                <div class="col-lg-12 col-12 mb-4">
-                                 <div class="card mb-8">
-                                        <div class="card-body">
-                            <table class="table table-borderless">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"><h6>Tasks</h6></th>
-                                        <th scope="col"><h6>Due Date</h6></th>
-                                        <th scope="col"><h6>Owner</h6></th>
-                                        <th scope="col"><h6>Status</h6></th>
-                                        <th scope="col"><h6>Action</h6></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Check Progress Return</td>
-                                        <td>06/06/2020</td>
-                                        <td>Jhon</td>
-                                        <td><span class="badge badge-pill badge-danger">AT RISK</span></td>
-                                        <td><i class="iconsminds-right-1 heading-icon" style="cursor: pointer;"></i> <i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Plan Departures</td>
-                                        <td>06/06/2020</td>
-                                        <td>Jack</td>
-                                        <td><span class="badge badge-pill badge-danger">AT RISK</span></td>
-                                        <td><i class="iconsminds-right-1 heading-icon" style="cursor: pointer;"></i> <i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Discuss Requirements</td>
-                                        <td>06/06/2020</td>
-                                        <td>Smith</td>
-                                        <td><span class="badge badge-pill badge-success">Above Target</span></td>
-                                        <td><i class="iconsminds-right-1 heading-icon" style="cursor: pointer;"></i> <i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td>
-                                    </tr>
-                                     <tr>
-                                        <th scope="row"><a href="javascript:void(0);" ><h6 id="myBtn1"><i class="simple-icon-plus"></i> Add Task</h6></a></th>
-                                       
-                                    </tr>
-                                </tbody>
-                            </table>
-                        
-                                </div>
-                                </div>
-                                </div>
-
-                                
-                            </div>
-                        </div>
-
-                        
-                        
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-                                        </div>
-                                        <div class="modal-footer">
-                                          
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+							
 							<div class="modal modal-right" id="myModal1" role="dialog" >
                                 <div class="modal-dialog">
                                     <div class="modal-content">
@@ -460,11 +303,11 @@ $(document).ready(function(){
 								<table class="table">
 									<thead class="thead-light">
 										<tr>
-										   <th> {!! SortableTrait::link_to_sorting_action('team_name',  getLabels('Name')) !!} </th>
-											<th> {!! SortableTrait::link_to_sorting_action('team_head',  getLabels('Cycle')) !!} </th>
-                                            <th> {!! SortableTrait::link_to_sorting_action('team_head',  getLabels('Owner')) !!} </th>
-                                            <th> {!! SortableTrait::link_to_sorting_action('team_head',  getLabels('Status')) !!} </th>
-                                            <th> {!! SortableTrait::link_to_sorting_action('team_head',  getLabels('Objective')) !!} </th>
+										   <th> {!! getLabels('Name') !!} </th>
+											<th> {!! getLabels('Cycle') !!} </th>
+                                            <th> {!! getLabels('Owner') !!} </th>
+                                            <th> {!! getLabels('Status') !!} </th>
+                                            <th> {!!  getLabels('Objective') !!} </th>
 											<th> {!! getLabels('action') !!} </th>
 										</tr>
 									</thead>

@@ -30,12 +30,14 @@
                                 <h6><b>Financial</b></h6>
                                 <br>
                                 <div class="row" style="justify-content: center;">
-                                <?php if(!empty($financial)): ?>
+                                <?php if(!$financial->isEmpty()): ?>
                                 <?php $__currentLoopData = $financial; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="col-lg-2"><div style="border-radius: 50%;background: <?php echo $value->bg_color; ?>;height: 100px;text-align: center;padding-top: 35px;"><b><?php echo $value->heading; ?></b></div></div> 
                                      
 
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                No Data Available
                                 <?php endif; ?>
                                 </div>
                             </div>
@@ -43,12 +45,14 @@
                                 <h6><b>Customer</b></h6>
                                  <br>
                                 <div class="row" style="justify-content: center;">
-                                    <?php if(!empty($customer)): ?>
+                                    <?php if(!$customer->isEmpty()): ?>
                                 <?php $__currentLoopData = $customer; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="col-lg-2"><div style="border-radius: 50%;background: <?php echo $value->bg_color; ?>;height: 100px;text-align: center;padding-top: 35px;"><b><?php echo $value->heading; ?></b></div></div> 
                                      
 
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                No Data Available
                                 <?php endif; ?>
                                             
                                 </div>
@@ -57,12 +61,14 @@
                                 <h6><b>Internal Process</b></h6>
                                  <br>
                                 <div class="row" style="justify-content: center;">
-                                    <?php if(!empty($process)): ?>
+                                    <?php if(!$process->isEmpty()): ?>
                                 <?php $__currentLoopData = $process; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <div class="col-lg-2"><div style="border-radius: 50%;background: <?php echo $value->bg_color; ?>;height: 100px;text-align: center;padding-top: 35px;"><b><?php echo $value->heading; ?></b></div></div> 
                                      
 
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php else: ?>
+                                No Data Available
                                 <?php endif; ?>
                                     
                                 </div>

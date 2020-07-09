@@ -43,6 +43,31 @@ class Measure extends Model
 'check_in_frequency',
 'confidence_level',
 'is_save_publish',
-'status'];
+'status',
+'contributers'];
+
+
+
+public static function validate($input){
+		$rules = array(
+		
+			'heading'         	=> 'required',
+			'objective_id'         	=> 'required',
+			'measure_cycle'    	=> 'required',
+			'ownership'    	=> 'required',
+			
+		);
+		
+		
+		$messages = array(
+			'heading.required'			    => getLabels('objective_name_required'),
+			'objective_id.required'			    => getLabels('please_select_objective'),
+			'measure_cycle.required'				=> getLabels('please_select_cycle'),
+			'ownership.required'				=> getLabels('please_select_owner'),
+			
+		);
+		return validator($input, $rules, $messages);
+	}
 
 }
+

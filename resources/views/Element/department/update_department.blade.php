@@ -30,7 +30,7 @@
                     @if(isset($all_members))
                     <div class="form-group ">
                         <label>Choose Department Head</label>
-                        {!! Form::select('department_head', $all_members,isset($hod)?$hod->id:"", array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}                    
+                        {!! Form::select('department_head', $department_head,isset($hod)?$hod->id:"", array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}                    
                         <div class="invalid-tooltip"></div>
                     </div>
                     

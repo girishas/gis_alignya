@@ -28,12 +28,26 @@ Route::any('objectives', array('as'=>'admin.objectives', function(){
 Route::any('setuserdatasession', array('as'=>'users.setuserdatasession', 'uses'=>'UserController@setuserdatasession'));
 Route::any('add_teampopup', array('as'=>'users.add_teampopup', 'uses'=>'TeamController@add_teampopup'));
 Route::any('kpis', array('as'=>'admin.measures', 'uses'=>'ObjectiveController@measures' ));
-Route::any('measures', array('as'=>'admin.measure', 'uses'=>'ObjectiveController@measure' ));
-Route::any('initiatives', array('as'=>'admin.initiatives', 'uses'=>'ObjectiveController@initiatives'));
+Route::any('measures', array('as'=>'admin.admin_index', 'uses'=>'MeasureController@admin_index' ));
+Route::any('initiatives', array('as'=>'admin.initiatives', 'uses'=>'InitiativeController@admin_index'));
+Route::any('addinitiative', array('as'=>'admin.addinitiative', 'uses'=>'InitiativeController@addinitiative'));
+Route::any('updateinitiative', array('as'=>'admin.updateinitiative', 'uses'=>'InitiativeController@updateinitiative'));
+Route::any('addmilestoneinitiative', array('as'=>'admin.addmilestoneinitiative', 'uses'=>'InitiativeController@addmilestoneinitiative'));
+Route::any('getmilestonedata', array('as'=>'admin.getmilestonedata', 'uses'=>'InitiativeController@getmilestonedata'));
+Route::any('getInitiativeData', array('as'=>'admin.getInitiativeData', 'uses'=>'InitiativeController@getInitiativeData'));
 Route::any('department/remove/{id?}', array('as'=>'admin.department_remove', 'uses'=>'DepartmentController@department_remove'));
 Route::any('team/remove/{id?}', array('as'=>'admin.team_remove', 'uses'=>'TeamController@team_remove'));
 
 Route::any('reports', array('as'=>'users.reports', 'uses'=>'TeamController@reports'));
+Route::any('addobjective', array('as'=>'users.addobjective', 'uses'=>'ObjectiveController@addobjective'));
+Route::any('updateobjective', array('as'=>'users.updateobjective', 'uses'=>'ObjectiveController@updateobjective'));
+Route::any('viewobjective', array('as'=>'users.viewobjective', 'uses'=>'ObjectiveController@viewobjective'));
+Route::any('getprojectinsightsobjective', array('as'=>'users.getprojectinsightsobjective', 'uses'=>'TeamController@getprojectinsightsobjective'));
+Route::any('addmeasure', array('as'=>'users.addmeasure', 'uses'=>'MeasureController@addmeasure'));
+Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@addtask'));
+Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@addtask'));
+Route::any('updatemeasure', array('as'=>'users.updatemeasure', 'uses'=>'MeasureController@updatemeasure'));
+Route::any('getMeasureonUpdatePage', array('as'=>'users.getMeasureonUpdatePage', 'uses'=>'MeasureController@getMeasureonUpdatePage'));
 Route::any('ideas', array('as'=>'users.ideas', 'uses'=>'TeamController@ideas'));
 Route::any('department/{id?}', array('as'=>'users.admin_index', 'uses'=>'DepartmentController@admin_index'));
 Route::any('profile', array('as'=>'users.profile', 'uses'=>'UserController@profile'));
@@ -52,6 +66,19 @@ Route::any('team/{id?}', array('as'=>'users.admin_index', 'uses'=>'TeamControlle
 Route::any('scorecard', array('as'=>'users.scorecard', 'uses'=>'TeamController@scorecard'));
 Route::any('strategic-map', array('as'=>'users.startegic_map', 'uses'=>'TeamController@startegic_map'));
 Route::any('viewmember', array('as'=>'users.viewmember', 'uses'=>'UserController@viewmember'));
+Route::any('getscorecards', array('as'=>'users.getscorecards', 'uses'=>'ObjectiveController@getscorecards'));
+Route::any('submitscorecard', array('as'=>'users.submitscorecard', 'uses'=>'ObjectiveController@submitscorecard'));
+Route::any('getthemes', array('as'=>'users.getthemes', 'uses'=>'ObjectiveController@getthemes'));
+Route::any('getcontributers', array('as'=>'users.getcontributers', 'uses'=>'ObjectiveController@getcontributers'));
+Route::any('updateobjectivesubmit', array('as'=>'users.updateobjectivesubmit', 'uses'=>'ObjectiveController@updateobjectivesubmit'));
+Route::any('submitaddtheme', array('as'=>'users.submitaddtheme', 'uses'=>'ObjectiveController@submitaddtheme'));
+Route::any('getdepartments', array('as'=>'users.getdepartments', 'uses'=>'DepartmentController@getdepartments'));
+Route::any('getteams', array('as'=>'users.getteams', 'uses'=>'TeamController@getteams'));
+Route::any('getmembers', array('as'=>'users.getmembers', 'uses'=>'UserController@getmembers'));
+Route::any('getCycles', array('as'=>'users.getCycles', 'uses'=>'ObjectiveController@getCycles'));
+Route::any('submitaddcycle', array('as'=>'users.submitaddcycle', 'uses'=>'ObjectiveController@submitaddcycle'));
+Route::any('getMeasureCycles', array('as'=>'users.getMeasureCycles', 'uses'=>'MeasureController@getMeasureCycles'));
+Route::any('/initiative/remove/{id?}', array('as'=>'users.remove_initiative', 'uses'=>'InitiativeController@remove_initiative'));
 
 Route::any('auth/{provider?}', 'UserController@redirectToProvider');
 Route::any('auth/{provider?}/callback', 'UserController@handleProviderCallback');

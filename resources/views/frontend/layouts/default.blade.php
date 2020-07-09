@@ -26,6 +26,7 @@ Website: http://www.mosaddek.com
 		
 		
 		@if(!Request::ajax())
+			{!! HTML::style('public/css/circle.css') !!}
 			{!! HTML::style('public/font/iconsmind-s/css/iconsminds.css') !!}
 			{!! HTML::style('public/font/simple-line-icons/css/simple-line-icons.css') !!}
 			{!! HTML::style('public/css/vendor/bootstrap.min.css') !!}

@@ -8,6 +8,7 @@ use App\Models\Template;
 use App\Models\Teams;
 use App\Models\Department;
 use App\Models\TeamsMembers;
+use App\Models\Objective;
 use App\Models\DepartmentMember;
 use App\Models\Follower;
 use App\Models\Post;
@@ -107,17 +108,22 @@ class DepartmentController extends Controller
 			$parent_department = Department::where('company_id',Auth::User()->company_id)->orderBy('id','asc')->first();
 		}
 		if(!empty($parent_department)){
-			$hod = DepartmentMember::leftjoin('users','users.id','=','al_department_member.member_id')->where('al_department_member.department_id',$parent_department->id)->where('al_department_member.is_head',1)->select('users.first_name','users.last_name','users.designation','users.id','users.photo')->first();
+			$hod = DepartmentMember::leftjoin('users','users.id','=','al_department_member.member_id')->where('al_department_member.department_id',$parent_department->id)->where('al_department_member.is_head',1)->select('users.first_name','users.last_name','users.designation','users.id','users.photo','users.id as selected_user_id')->first();
 			$members = DepartmentMember::leftjoin('users','users.id','=','al_department_member.member_id')->where('al_department_member.department_id',$parent_department->id)->where('al_department_member.is_head',0)->select('users.first_name','users.last_name','users.designation','users.photo')->get();
 			$members_pluck = DepartmentMember::leftjoin('users','users.id','=','al_department_member.member_id')->where('al_department_member.department_id',$parent_department->id)->where('al_department_member.is_head',0)->select('users.first_name','users.last_name','users.designation','users.id')->pluck('users.id','users.first_name');
 			//pr($members_pluck->toArray());
 		}
 		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('role_id',5)->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
 		$department_head = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('role_id',3)->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
-		$departments = Department::where('status',1)->pluck("department_name","id");
+		$departments = Department::where('status',1)->where('company_id',Auth::User()->company_id)->pluck("department_name","id");
 		$data  = Department::where('company_id',Auth::User()->company_id)->where('parent_department_id',null)->get();
+		if(isset($hod)){
+			$objectives = Objective::where('owner_user_id',$hod->selected_user_id)->get();
+		}else{
+			$objectives = array();
+		}
 		$page_title  = getLabels("Departments");
-		return view('frontend/departments/department', compact('data','role_id','page_title','parent_department','hod','members','departments','all_members','id','members_pluck','department_head'));
+		return view('frontend/departments/department', compact('data','role_id','page_title','parent_department','hod','members','departments','all_members','id','members_pluck','department_head','objectives'));
 	}
 	
 	
@@ -898,5 +904,11 @@ class DepartmentController extends Controller
 			$results = array("type" => "error", "url" => url('department'), "message" => getLabels('department_not_removed'));
 		}
 		return json_encode($results);
+	}
+
+	public function getdepartments(){
+		$inputs = $this->request->all();
+		$departments = Department::where('company_id',$inputs['company_id'])->pluck('department_name','id');
+		return json_encode($departments);
 	}
 }

@@ -10,448 +10,18 @@
                 <div class="col-12">
                     <h1>{!! getLabels('Objective') !!}</h1>
 					<div class="text-zero top-right-button-container">
-						<a href="javascript:void(0);" class=" btn btn-primary btn-sm top-right-button mr-1" id="add_objectiveBtn">{!! getLabels('add_objective') !!}</a>
+						<a href="javascript:void(0);" class=" btn btn-primary btn-sm top-right-button mr-1" onclick="addObjectivepop()">{!! getLabels('add_objective') !!}</a>
                         <button type="button" class="btn btn-outline-primary mb-1" id="filterBtn">Filters</button>
                             
                     </div>
-                    <div class="modal modal-right" id="filterPop" role="dialog" >
-                                <div class="modal-dialog" >
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Search</h5>
-                                            <button type="button" class="close" id="hideFilter" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            
-                                            <form>
-                                                <div class="container-fluid">
-                                                <div class="row">
-                                                    
-                                                <div class="col-lg-8">
-                                                    <div class="form-group">
-                                                    <label>Name</label>
-                                                    <input type="text" class="form-control" placeholder="">
-                                                </div>
-                                               
+                    @include('Element/objective/add_objective')
+                    @include('Element/objective/view_objective')
+                    @include('Element/measure/add_measure')       
+                    @include('frontend/objectives/filter')
+                    @include('Element/measure/task')
+                    @include('Element/initiative/add_initiative')
 
-                                                <div class="form-group">
-                                                    <label>Cycle</label>
-                                                    <select class="form-control">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">FY2020-Q1</option>
-                                                        <option value="Sass">FY2020-Q2</option>
-                                                        <option value="React">FY2020-Q3</option>
-                                                        <option value="React">FY2020-Q4</option>
-                                                        <option value="React">FY2020-H1</option>
-                                                        <option value="React">FY2020-H2</option>
-                                                    </select>
-                                                </div>
-                                                 <div class="form-group">
-                                                    <label>Status</label>
-                                                    <select class="form-control">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">Hold</option>
-                                                        <option value="Sass">Above Target</option>
-                                                        <option value="React">Below Target</option>
-                                                        <option value="React">At Risk</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group ">
-                                                    <label>Owners</label>
-                                                    <select class="form-control select2-single">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">Jhon</option>
-                                                        <option value="Sass">Emma</option>
-                                                        <option value="React">Jolley</option>
-                                                        <option value="React">Jack</option>
-                                                    </select>
-                                                </div>
-                                                  
-                                                </div>
-                                                
-                                                </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                           <button type="button" class="btn btn-primary">Search</button>
-                                            <a class="btn btn-dark mb-1 steamerst_link" href="{!!url('objectives')!!}">Show All</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-  <!-- Modal -->
-  							<!-- add objecive -->
-							<div class="modal modal-right" id="myModalAddObjective" role="dialog" >
-                                <div class="modal-dialog" >
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Add Objective</h5>
-                                            <button type="button" class="close" id="popupaddhide" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                        	
-                                            <form>
-                                            	<div class="container-fluid">
-                                            	<div class="row">
-                                            		
-                                            	<div class="col-lg-8">
-                                            		<div class="form-group">
-                                                    <label>Objective Title</label>
-                                                    <input type="text" class="form-control" placeholder="">
-                                                </div>
-                                               
-
-                                                <div class="form-group">
-                                                    <label>Time Period</label>
-                                                    <select class="form-control">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">Flexbox</option>
-                                                        <option value="Sass">Sass</option>
-                                                        <option value="React">React</option>
-                                                    </select>
-                                                </div>
-                                                 <div class="form-group">
-                                                    <label>Perspective</label>
-                                                    <select class="form-control">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">Flexbox</option>
-                                                        <option value="Sass">Sass</option>
-                                                        <option value="React">React</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">	
-                                <label>Ownership</label>
-                               		<br>
-                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                        <label class="btn btn-primary active">
-                                            <input type="radio" name="options" id="option1" value="1" checked> Department
-                                        </label>
-                                        <label class="btn btn-primary">
-                                            <input type="radio" name="options" value="2" id="option2"> Team
-                                        </label>
-                                        <label class="btn btn-primary">
-                                            <input type="radio" name="options" value="3" id="option3"> Individual
-                                        </label>
-                                    </div>
-                                </div>
-
-                           <div class="form-group ">
-								<select class="form-control select2-single" name="department_head" data-width="100%">
-                                	<option label="&nbsp;"></option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	
-                                	
-                                </select>						
-								<div class="invalid-tooltip"></div>
-							</div>
-
-                           						
-                                                </div>
-                                                
-                                                </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                           <button type="button" class="btn btn-primary">Submit</button>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- add objecive -->
-							<!-- parent objective -->
-							<div class="modal modal-right" id="myModal" role="dialog" >
-                                <div class="modal-dialog" style="max-width: 99.99%;">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title"><i class="iconsminds-up-1 heading-icon" style="color:#0fe50f;"></i>  Increase Share Holder Value<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="
-                                                simple-icon-clock"></i> FY2020-Q3  <a href="#" class="badge badge-pill badge-outline-info mb-1">Edit</a></p>
-
-
-
-</h5>
-                                            <button type="button" class="close" id="popup1hide" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                        	
-						        <div class="container-fluid">
-						            <div class="row ">
-						                <div class="col-12 survey-app">
-						                    <ul class="nav nav-tabs separator-tabs ml-0 mb-5" role="tablist">
-						                        <li class="nav-item">
-						                            <a class="nav-link active" id="first-tab" data-toggle="tab" href="#first" role="tab"
-						                                aria-controls="first" aria-selected="true">Measure</a>
-						                        </li>
-
-						                        <li class="nav-item">
-						                            <a class="nav-link" id="third-tab" data-toggle="tab" href="#third" role="tab"
-						                                aria-controls="third" aria-selected="false">Initiative</a>
-						                        </li>
-						                        <li class="nav-item">
-						                            <a class="nav-link" id="second-tab" data-toggle="tab" href="#second" role="tab"
-						                                aria-controls="second" aria-selected="false">Aligned Objective</a>
-						                        </li>
-						                       
-						                    </ul>
-						                    <div class="tab-content mb-4">
-						                        <div class="tab-pane show active" id="first" role="tabpanel" aria-labelledby="first-tab">
-						                            <div class="row">
-
-						                                <div class="col-lg-8 col-12 mb-4">
-						                                 <div class="card mb-8">
-						                                        <div class="card-body">
-						                            <table class="table table-borderless">
-						                                
-						                                <tbody>
-						                                    <tr style="background: #f3f3f3;">
-						                                        <td style="padding-top: 25px;"><i class="iconsminds-up-1 heading-icon" style="color:#0fe50f;"></i> Revenue <p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q3</p></td>
-						                                        <td style="padding-top: 30px;"><p class="text-semi-muted mb-2">John Ch.</p></td>
-                    						                  <td> 
-                                                                <span class="badge badge-pill badge-success" style="margin-top: 20px;">ON TARGET</span>  
-                                                            </td>
-						                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-						                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="40"
-						                                data-show-percent="true">
-						                            </div>
-						                        </td>
-						                       
-						                                    </tr>
-						                                    <tr>
-						                                        <td style="padding-top: 25px;"><i class="iconsminds-down-1 heading-icon" style="color:red;"></i> Net Profit<p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q1</p></td>
-						                                        <td style="padding-top: 30px;"><p class="text-semi-muted mb-2">Emma Wh.</p></td>
-						                                        <td> 
-                                                                <span class="badge badge-pill badge-danger" style="margin-top: 20px;">AT RISK</span>  
-                                                            </td>
-						                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-						                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="10"
-						                                data-show-percent="true">
-						                            </div></td>
-						                                    </tr>
-						                                    <tr>
-						                                        <td style="padding-top: 25px;"><i class="iconsminds-pause heading-icon" style="color:yellow;"></i> Expense <p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q2</p></td>
-						                                        <td style="padding-top: 30px;"><p class="text-semi-muted mb-2">Jolly RA.</p></td>
-						                                        <td ><span class="badge badge-pill badge-secondary" style="    margin-top: 20px;">ON HOLD</span> </td>
-						                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-						                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="20"
-						                                data-show-percent="true">
-						                            </div></td>
-						                                   </tr> <tr>
-						                                        <th scope="row"><a href="javascript:void(0);" ><h6 id="myBtn3"><i class="simple-icon-plus btn-group-icon"></i>
-                                                                        Add Measure</h6></a></th>
-						                                        <td colspan="2"></td>
-						                                        <td></td>
-
-						                                    </tr>
-						                                </tbody>
-						                            </table>
-						                        
-						                                </div>
-						                                </div>
-						                                </div>
-
-						                                <div class="col-12 col-lg-4">
-						                                	 <div class="card mb-8">
-						                                        <div class="card-body">
-						                                   
-						                                   <div class="d-flex flex-row mb-2  mb-4">
-						                                                
-						                                                <div class=" d-flex flex-grow-1 min-width-zero">
-						                                                    <div
-						                                                        class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-						                                                        <div class="min-width-zero">
-						                                                            <a href="#">
-						                                                                <p class="mb-0 truncate"><i class="iconsminds-up-1 heading-icon" style="color:#0fe50f;"></i>Revenue</p>
-						                                                            </a>
-						                                                            <p class="text-muted mb-0 text-small" style="margin-left: 35px">FY2020-Q3</p>
-						                                                        </div>
-						                                                    </div>
-						                                                </div>
-						                                            </div>
-						                                            <div class="dashboard-line-chart">
-						                                                <canvas id="contributionChart1"></canvas>
-						                                            </div>
-						                                </div>
-						                                </div>
-						                                </div>
-						                            </div>
-						                        </div>
-
-                        <div class="tab-pane fade" id="third" role="tabpanel" aria-labelledby="third-tab">
-                                             <div class="row">
-
-                                <div class="col-lg-8 col-12 mb-4">
-                                 <div class="card mb-8">
-                                        <div class="card-body">
-                            <table class="table table-borderless">
-                                
-                                <tbody>
-                                    <tr style="background:#f3f3f3; ">
-                                        <td style="padding-top: 25px;"><i class="iconsminds-down-1 heading-icon" style="color:red;"></i>  Goods & Sales<p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q2</p></td>
-                                        <td style="padding-top: 30px;"><p class="text-semi-muted mb-2">John Ch.</p></td>
-                                        <td><span class="badge badge-pill badge-danger" style="margin-top: 20px;">AT RISK</span></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="40"
-                                data-show-percent="true">
-                            </div></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-top: 25px;"><i class="iconsminds-up-1 heading-icon" style="color:#0fe50f;"></i> Targets<p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q1</p></td>
-                                       <td style="padding-top: 30px;"><p class="text-semi-muted mb-2">Emma Ch.</p></td>
-                                        <td><span class="badge badge-pill badge-success" style="margin-top: 20px;">ON TARGET</span></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="10"
-                                data-show-percent="true">
-                            </div></td>
-                                    </tr>
-                                    <tr>
-                                        <td><i class="iconsminds-pause heading-icon" style="color:yellow;"></i></i> Ticket Sold <p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q3</p></td>
-                                        <td style="padding-top: 30px;"><p class="text-semi-muted mb-2">Jolly Ch.</p></td>
-                                        <td ><span class="badge badge-pill badge-secondary" style="    margin-top: 20px;">ON HOLD</span></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="20"
-                                data-show-percent="true">
-                            </div></td>
-                                    </tr><tr>
-                                        <th scope="row"><a href="javascript:void(0);" ><h6 id="myBtn4"><i class="simple-icon-plus btn-group-icon"></i> Add Initiative</h6></a></th>
-                                        <td colspan="2"></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        
-                                </div>
-                                </div>
-                                </div>
-
-                                <div class="col-12 col-lg-4">
-                                	 <div class="card mb-8">
-                                        <div class="card-body">
-                                   
-                                   <div class="d-flex flex-row mb-2  mb-4">
-                                                
-                                                <div class=" d-flex flex-grow-1 min-width-zero">
-                                                    <div
-                                                        class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                                        <div class="min-width-zero">
-                                                            <a href="#">
-                                                                <p class="mb-0 truncate"><i class="iconsminds-down-1 heading-icon" style="color:red;"></i>Goods & Sales</p>
-                                                            </a>
-                                                             <p class="text-muted mb-0 text-small" style="margin-left: 35px">FY2020-Q2</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="dashboard-line-chart">
-                                                <canvas id="contributionChart2"></canvas>
-                                            </div>
-                                </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
-                                  <div class="row">
-
-                                <div class="col-lg-8 col-12 mb-4">
-                                 <div class="card mb-8">
-                                        <div class="card-body">
-                            <table class="table table-borderless">
-                                
-                                <tbody>
-                                    <tr  style="background:#f3f3f3; ">
-                                        <td style="padding-top: 25px;"><a href="javascript:void(0);" ><i class="iconsminds-pause heading-icon" style="color:yellow;"></i> Product Sales<p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q3</p></a></td>
-                                        <td style="padding-top: 30px;"><p class="text-semi-muted mb-2">John Ch.</p></td>
-                                        
-                                        <td><span class="badge badge-pill badge-secondary" style="    margin-top: 20px;">ON HOLD</span></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="40"
-                                data-show-percent="true">
-                            </div></td>
-                            
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-top: 25px;"><i class="iconsminds-up-1 heading-icon" style="color:#0fe50f;"></i> Machinery Sales<p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q1</p></td>
-                                        <td style="padding-top: 30px;"><p class="text-semi-muted mb-2">Jolly Ch.</p></td>
-                                        <td><span class="badge badge-pill badge-success" style="margin-top: 20px;">ON TARGET</span></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="10"
-                                data-show-percent="true">
-                            </div></td>
-                            
-                                    </tr>
-                                    <tr>
-                                        <td style="padding-top: 25px;"><i class="iconsminds-down-1 heading-icon" style="color:red;"></i> Commodities & Sales<p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q2</p></th>
-                                        <td style="padding-top: 30px;"><p class="text-semi-muted mb-2">Jack Ch.</p></td>
-                                        <td ><span class="badge badge-pill badge-danger" style="margin-top: 20px;">AT RISK</span></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="20"
-                                data-show-percent="true">
-                            </div></td>
-                            
-                                    </tr>
-                                </tbody>
-                            </table>
-                        
-                                </div>
-                                </div>
-                                </div>
-
-                                <div class="col-12 col-lg-4">
-                                	 <div class="card mb-8">
-                                        <div class="card-body">
-                                   
-                                   <div class="d-flex flex-row mb-2  mb-4">
-                                                
-                                                <div class=" d-flex flex-grow-1 min-width-zero">
-                                                    <div
-                                                        class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                                        <div class="min-width-zero">
-                                                            <a href="#">
-                                                                <p class="mb-0 truncate"><i class="iconsminds-pause heading-icon" style="color:yellow;"></i>Product Sales</p>
-                                                            </a>
-                                                           <p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q3</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="dashboard-line-chart">
-                                                <canvas id="contributionChart3"></canvas>
-                                            </div>
-                                </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-                                        </div>
-                                        <div class="modal-footer">
-                                          
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-<!-- 
-parent objective -->
-
-<div class="modal modal-right" id="myModal2" role="dialog" >
+                            <div class="modal modal-right" id="myModal2" role="dialog" >
                                 <div class="modal-dialog" style="max-width: 99.99%;">
                                     <div class="modal-content">
                                         <div class="modal-header">
@@ -467,8 +37,7 @@ parent objective -->
 						                <div class="col-12 survey-app">
 						                    <ul class="nav nav-tabs separator-tabs ml-0 mb-5" role="tablist">
 						                        <li class="nav-item">
-						                            <a class="nav-link active" id="first-tab" data-toggle="tab" href="#first" role="tab"
-						                                aria-controls="first" aria-selected="true">Measure</a>
+						                            <a class="nav-link active" id="first-tab" data-toggle="tab" href="#first" role="tab" aria-controls="first" aria-selected="true">Measure</a>
 						                        </li>
 
 						                        <li class="nav-item">
@@ -997,23 +566,75 @@ parent objective -->
 
   
   <script>
+     $("#myBtn3").click(function(){
+        var objid = $("#objective_idview").val();
+        $("#hideforobj").hide();
+        $("#objectiveId").val(objid);
+        onchangeobjectivegetcycle();
+        $("#myModalAddMeasure").modal("show");
+    });
+    function addObjectivepop(slug){
+        if(slug == "sub"){
+            var heading = "Add Sub Objective";
+            $("#addobjectiven").html(heading);
+            var parobjeid = $("#objective_idview").val();
+            $("#parent_objective_id").val(parobjeid);
+        }else{
+            var heading = "Add Objective";
+            $("#addobjectiven").html(heading);
+        }
+        $("#myModalAddObjective").modal('show');
+    }
+     function onclickownershipadd(id){
+        
+        $("#ownership").html("");
+        var token = "{!!csrf_token()!!}";
+        var company_id = "{!!Auth::User()->company_id!!}";
+        if(id == 1){
+            $("#obj_teamtype").val("department");
+            var selectlabel = "Select Department";
+            var url = "{!!url('/getdepartments')!!}"; 
+        }else if(id == 2){
+            $("#obj_teamtype").val("team");
+            var selectlabel = "Select Team";
+            var url = "{!!url('/getteams')!!}";
+        }else{
+            $("#obj_teamtype").val("individual");
+            var selectlabel = "Select Owners";
+            var url = "{!!url('/getmembers')!!}"
+        }
+        $.ajax({
+            type:"POST",
+            url: url,
+            data:'_token='+token+'&company_id='+company_id,
+            dataType:'JSON',
+            success: function (response) {
+                $("#ownership").append('<option value = "">'+selectlabel+'</option>')
+                for (var key in response) {
+                  if (response.hasOwnProperty(key)) {
+                    var val = response[key];
+                    $("#ownership").append('<option value = "'+key+'">'+val+'</option>');
+                  }
+                }
+            }  
+        });
+    }
+
 $(document).ready(function(){
-  $("#myBtn").click(function(){
-    $("#myModal").modal('show');
-  });
+    var adderrormessage = "{!!session('adderrormessage')?session('adderrormessage'):''!!}";
+    if(adderrormessage != ''){
+        $("#myModalAddObjective").modal('show');
+    } 
+  
   $("#filterBtn").click(function(){
     $("#filterPop").modal('show');
   });
-   $("#add_objectiveBtn").click(function(){
-    $("#myModalAddObjective").modal('show');
-  });
+  
   
    $("#myBtn2").click(function(){
     $("#myModal2").modal('show');
   });
-   $("#myBtn3").click(function(){
-    $("#myModal3").modal('show');
-  });
+  
    $("#myBtn4").click(function(){
     $("#myModal4").modal('show');
   });$("#myBtn5").click(function(){
@@ -1038,8 +659,12 @@ $(document).ready(function(){
   }); $("#popup8hide").click(function(){
     $("#myModal5").modal('hide');
   });
-  $("#popupaddhide").click(function(){
+  $("#popupaddhideObjective").click(function(){
     $("#myModalAddObjective").modal('hide');
+  });
+
+   $("#popupaddhideinitiative").click(function(){
+    $("#myModalAddInitiative").modal('hide');
   });
 });
 </script>
@@ -1066,11 +691,11 @@ $(document).ready(function(){
 								<table class="table">
 									<thead class="thead-light">
 										<tr>
-										   <th> {!! SortableTrait::link_to_sorting_action('heading',  getLabels('Name')) !!} </th>
-										   <th> {!! SortableTrait::link_to_sorting_action('cycle_name',  getLabels('Cycle')) !!} </th>
-											<th> {!! SortableTrait::link_to_sorting_action('owner_user_id',  getLabels('Owner')) !!} </th>
-                                            <th> {!! SortableTrait::link_to_sorting_action('project_status_id',  getLabels('Status')) !!} </th>
-                                           <th> {!! SortableTrait::link_to_sorting_action('objective_id',  getLabels('Aligned to')) !!} </th>
+										   <th> {!!getLabels('Name') !!}</th>
+										   <th> {!!  getLabels('Cycle')!!} </th>
+											<th> {!!  getLabels('Owner') !!} </th>
+                                            <th> {!!  getLabels('Status') !!} </th>
+                                           <th> {!! getLabels('Aligned to') !!} </th>
 											<th> {!! getLabels('action') !!} </th>
 										</tr>
 									</thead>
@@ -1079,10 +704,10 @@ $(document).ready(function(){
                                         @foreach($data as $key => $value)
 												<tr>
 													<td>
-									<a href="javascript:void(0);" id="myBtn"><i class="iconsminds-up-1 heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}
+									<a href="javascript:void(0);" onclick="viewobjective('{!!$value->id!!}')"><i class="{!!$value->status_icon!!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}
 														</a></td>
 													<td> {!!$value->cycle_name!!}</td>
-													<td> <p class="text-semi-muted mb-2">John Ch.</p></td>
+													<td> <p class="text-semi-muted mb-2">{!!$value->owner_name!!}</p></td>
                                                     <td> <span class="badge badge-pill badge-success" style="background: {!!$value->bg_color!!}">{!!$value->status_name!!}</span></td>
                                                     <td>{!!$value->parent_objective!!}</td>
 													<td>
@@ -1091,7 +716,7 @@ $(document).ready(function(){
 																{!! getLabels('action') !!}
 															</button>
 															<div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
-																<a class="steamerst_link dropdown-item" href="javascript:void(0);">{!! getLabels('edit') !!}</a>
+																<a class="dropdown-item" href="javascript:void(0);" onclick="updateObjective('{!!$value->id!!}')">{!! getLabels('edit') !!}</a>
 																
 															</div>
 														</div>
@@ -1120,4 +745,188 @@ $(document).ready(function(){
             </div>
         </div>
     </main>
+    @include('Element/objective/update_objective')
+<script type="text/javascript">
+    function updateObjective(id){
+        $("#ownership_update").html("");
+        var token = "{!!csrf_token()!!}";
+        var company_id = "{!!Auth::User()->company_id!!}"; 
+        $.ajax({
+            type:"POST",
+            url: "{!!url('updateobjective')!!}",
+            data:'_token='+token+'&company_id='+company_id+'&objective_id='+id,
+            dataType:'JSON',
+            success: function (all_response) {
+                var response = all_response.objective;
+                var teamsli = all_response.teams;
+                var departmentli = all_response.departments;
+                var memberli = all_response.members;
+                var team_type = response.team_type;
+                $("#obj_teamtype_update").val(team_type);
+                $("#editId").val(response.id);
+                $("#objective_heading_value").val(response.heading);
+                $("#timeperiodsupdate").val(response.cycle_id);
+                $("#perspectiveId").val(response.perspective_id);
+                if(response.team_type == "department"){
+                    $("#depactive").addClass('active');
+                    $("#teamactive").removeClass('active');
+                    $("#indiactive").removeClass('active');
+                    $("#obj_department_id_update").val(response.department_id);
+                    for (var depart in departmentli) {
+                      if (departmentli.hasOwnProperty(depart)) {
+                        var dep = departmentli[depart];
+                        $("#ownership_update").append('<option value = "'+depart+'">'+dep+'</option>');                       
+                     }
+                    }
+                    $("#ownership_update").val(response.department_id);
+                }else if(response.team_type == "team"){
+                    $("#depactive").removeClass('active');
+                    $("#teamactive").addClass('active');
+                    $("#indiactive").removeClass('active');
+                    $("#obj_teamid_update").val(response.team_id);
+                    for (var team in teamsli) {
+                      if (teamsli.hasOwnProperty(team)) {
+                        var tea = teamsli[team];
+                        if(response.team_id == team){
+                            $("#ownership_update").append('<option value = "'+team+'" selected="selected">'+tea+'</option>');
+                        }else{
+                            $("#ownership_update").append('<option value = "'+team+'">'+tea+'</option>');
+                        }
+                      }
+                    }
+                    $("#ownership_update").val(response.team_id);
+                }else{
+                    $("#depactive").removeClass('active');
+                    $("#teamactive").removeClass('active');
+                    $("#indiactive").addClass('active');
+                    $("#obj_ind_owner_user_id_update").val(response.owner_user_id);
+                    for (var member in memberli) {
+                      if (memberli.hasOwnProperty(member)) {
+                        var mem = memberli[member];
+                        $("#ownership_update").append('<option value = "'+member+'">'+mem+'</option>');
+                      }
+                    }
+                    $("#ownership_update").val(response.owner_user_id);
+                }
+                $("#scorecardsliupdate").html("");
+                var selectedscorecard = response.scorecard_id;
+                $("#objective_scorecard_update").val(selectedscorecard);
+                $.ajax({
+                    type:"POST",
+                    url: "{!!url('/getscorecards')!!}",
+                    data:'_token='+token+'&company_id='+company_id,
+                    dataType:'JSON',
+                    success: function (scorecards) {
+                        for (var scs in scorecards) {
+                          if (scorecards.hasOwnProperty(scs)) {
+                            var vals = scorecards[scs];
+                            if(selectedscorecard.indexOf(scs) != -1){
+                                $("#scorecardsliupdate").append('<option value = "'+scs+'" selected="selected">'+vals+'</option>');
+                            }else{
+                                $("#scorecardsliupdate").append('<option value = "'+scs+'">'+vals+'</option>');
+                            }
+                          }
+                        }
+                       
+                    }  
+                });
+                $.ajax({
+                    type:"POST",
+                    url: "{!!url('/getthemes')!!}",
+                    data:'_token='+token+'&company_id='+company_id,
+                    dataType:'JSON',
+                    success: function (themes) {
+                        for (var the in themes) {
+                          if (themes.hasOwnProperty(the)) {
+                            var thes = themes[the];
+                            if(the == response.theme_id){
+                                $("#themelistupdate").append('<option value = "'+the+'" selected="selected">'+thes+'</option>');
+                            }else{
+                                $("#themelistupdate").append('<option value = "'+the+'">'+thes+'</option>');
+                            }
+                          }
+                        }
+                    }  
+                });
+                var selectedcontributers = response.contributers;
+                $.ajax({
+                    type:"POST",
+                    url: "{!!url('/getcontributers')!!}",
+                    data:'_token='+token+'&company_id='+company_id,
+                    dataType:'JSON',
+                    success: function (contributers) {
+                        for (var contri in contributers) {
+                          if (contributers.hasOwnProperty(contri)) {
+                            var con = contributers[contri];
+                            if(selectedcontributers.indexOf(contri) != -1){
+                                $("#contributersupdate").append('<option value = "'+contri+'" selected="selected">'+con+'</option>');
+                            }else{
+                                $("#contributersupdate").append('<option value = "'+contri+'">'+con+'</option>');
+                            }
+                          }
+                        }
+                    }  
+                });
+                
+                $("#goal_visibilityid").val(response.goal_visibility);
+                $("#confidance_level_id").val(response.confidence_level);
+                $("#status_id").val(response.status);
+                $("#inputAboutYouupdate").val(response.summary);
+                $("#updateobjectivemodal").modal("show");
+            }  
+        });
+    }
+    $("#popupaddhideObjectiveupdate").click(function(){
+        $("#updateobjectivemodal").modal("hide");
+    });
+
+    function getQuarter(quater){
+        if(quater == 0){
+            var value = "FULL";
+        }else if(quater == 1){
+            var value = "Q1";
+        }else if(quater == 2){
+            var value = "Q2";
+        }else if(quater == 3){
+            var value = "Q3";
+        }else if(quater == 4){
+            var value = "Q4";
+        }else if(quater == 5){
+            var value = "H1";
+        }else if(quater == 6){
+            var value = "H2";
+        }
+        return value;
+    }
+    function viewobjective(id){
+        var token = "{!!csrf_token()!!}";
+        var company_id = "{!!Auth::User()->company_id!!}"; 
+        $("#measurelistvieww").html("");
+        $.ajax({
+            type:"POST",
+            url: "{!!url('/viewobjective')!!}",
+            data:'_token='+token+'&company_id='+company_id+'&id='+id,
+            dataType:'JSON',
+            success: function (response) {
+                $("#objective_name_view").html('<i class="'+response.objectiveinfo.status_icon+' heading-icon" style="color:'+response.objectiveinfo.bg_color+';"></i>'+response.objectiveinfo.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> '+response.objectiveinfo.cycle_name+'  <i class="simple-icon-people"></i> '+response.objectiveinfo.owner_name );
+                $("#objective_idview").val(id);
+                for (var i = 0; i < response.measuresList.length; i++) {
+                    $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td></tr>');
+                }
+                for (var i = 0; i < response.subobjective.length; i++) {
+                    $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td></tr>');
+                }
+                for (var i = 0; i < response.initiativeList.length; i++) {
+                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td></tr>');
+                }
+                for (var i = 0; i < response.tasklist.length; i++) {
+                    $("#tasklistid").append('<tr><td>'+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger">'+response.tasklist[i].status_name+'</span></td><td><i class="iconsminds-right-1 heading-icon" style="cursor: pointer;"></i> <i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>'); 
+                }
+            }  
+        });
+
+        $("#myModal").modal('show');
+    }
+</script>
+
 @stop

@@ -15,7 +15,7 @@ class Tasks extends Model
 	use SortableTrait;
 	protected $table = "al_tasks";
     protected $fillable = [
-'user_id',
+'user_id','owners',
 'company_id',
 'objective_id',
 'measure_id',

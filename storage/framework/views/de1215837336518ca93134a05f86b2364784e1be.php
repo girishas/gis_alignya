@@ -23,11 +23,6 @@
                             </div>
                         </div>
 						
-						
-						
-                        
-                        
-                        
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                         <ol class="breadcrumb pt-0">
                             <li class="breadcrumb-item">
@@ -99,8 +94,8 @@
      <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Objectives Insights</h5>
-                            <table class="data-table data-table-standard responsive nowrap"
-                                data-order="[[ 1, &quot;desc&quot; ]]">
+                            <div class="table-responsive">
+                            <table class="table">
                                 <thead>
                                     <tr>
                                         <th>Projects</th> 
@@ -109,126 +104,45 @@
                                         <th>Progress</th>
                                     </tr>
                                 </thead> 
-                                
-                                
-                                
-                                
                                 <tbody>
+                                    <?php if(!empty($objlist)): ?>
+                                    <?php $__currentLoopData = $objlist; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $obj): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <?php //pr($obj); ?>
                                     <tr>
                                         <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="iconsminds-pause heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
+                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0">
+                                        <i class="<?php echo $obj->status_icon; ?> heading-icon" style="color: <?php echo $obj->bg_color; ?>"></i> 
+                                        <span class="align-middle d-inline-block"><?php echo $obj->heading; ?></span>
                                     </a>
                                         </td>
                                         
                                          
                                          <td> 
-                                            <p class="text-semi-muted mb-2">John Ch.</p>  
+                                            <p class="text-semi-muted mb-2"><?php echo $obj->owner_name; ?></p>  
                                         </td>
                                           <td> 
-                                            <span class="badge badge-pill badge-secondary">ON HOLD</span>  
+                                            <span class="badge badge-pill badge-secondary" style="background-color: <?php echo $obj->bg_color; ?> !important;"><?php echo $obj->status_name; ?></span>  
                                         </td>
                                         <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="50" data-show-percent="true">
-                                            </div>
+                                            <div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div>
                                         </td>
                                        
                                     </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="iconsminds-right-1 heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">John Ch.</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-primary">IN PROGRESS</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="iconsminds-down-1 heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">John Ch.</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-danger">AT RISK</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="20" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <i class="iconsminds-up-1 heading-icon"></i> 
-                                        <span class="align-middle d-inline-block">Book train tickets</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">John Ch.</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-success">ON TARGET</span>  
-                                        </td>
-                                        <td>
-                                            <div role="progressbar" class="progress-bar-circle position-relative"
-                                                data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="90" data-show-percent="true">
-                                            </div>
-                                        </td>
-                                       
-                                    </tr>
-                                     
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                     
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
+                        </div>
                         </div>
                     </div>
                               
                </div>
 			   <div class="col-xl-6 col-lg-6 mb-4">
-     <div class="card h-100">
+                    <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Task Insights</h5>
-                            <table class="data-table data-table-standard responsive nowrap"
-                                data-order="[[ 1, &quot;desc&quot; ]]">
+                            <div class="table-responsive">
+                            <table class="table">
                                 <thead>
                                     <tr>
                                         <th>Task</th> 
@@ -237,10 +151,6 @@
                                         <th>Action</th>
                                     </tr>
                                 </thead> 
-                                
-                                
-                                
-                                
                                 <tbody>
                                     <tr>
                                         <td>
@@ -323,19 +233,9 @@
                                         <td><a href="javascript:void(0);"><i class="simple-icon-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);"><i class="simple-icon-action-undo"></i></a></td>
                                        
                                     </tr>
-                                     
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                    
-                                     
                                 </tbody>
                             </table>
+                        </div>
                         </div>
                     </div>
                               
@@ -668,6 +568,12 @@
         </div>
 
     </main>
+    <?php echo $__env->make('Element/objective/add_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                        <?php echo $__env->make('Element/measure/add_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                        <?php echo $__env->make('Element/initiative/add_initiative', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                        <?php echo $__env->make('Element/kpi/add_kpi', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                        <?php echo $__env->make('Element/department/add_department', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                        <?php echo $__env->make('Element/team/add_team', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 	<script type="text/javascript">
      function filterShow(){
         $(".showClass").show();
@@ -714,11 +620,6 @@
         });
 	});
 	</script>
+    
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('Element/team/add_team', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-<?php echo $__env->make('Element/department/add_department', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-<?php echo $__env->make('Element/kpi/add_kpi', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-<?php echo $__env->make('Element/initiative/add_initiative', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-<?php echo $__env->make('Element/measure/add_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-<?php echo $__env->make('Element/objective/add_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('frontend/layouts/default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
