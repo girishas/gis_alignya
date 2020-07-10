@@ -48,6 +48,8 @@ Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@ad
 Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@addtask'));
 Route::any('updatemeasure', array('as'=>'users.updatemeasure', 'uses'=>'MeasureController@updatemeasure'));
 Route::any('getMeasureonUpdatePage', array('as'=>'users.getMeasureonUpdatePage', 'uses'=>'MeasureController@getMeasureonUpdatePage'));
+Route::any('getmilestonedetails', array('as'=>'users.getmilestonedetails', 'uses'=>'MeasureController@getmilestonedetails'));
+Route::any('updatemilestonemeasure', array('as'=>'users.updatemilestonemeasure', 'uses'=>'MeasureController@updatemilestonemeasure'));
 Route::any('ideas', array('as'=>'users.ideas', 'uses'=>'TeamController@ideas'));
 Route::any('department/{id?}', array('as'=>'users.admin_index', 'uses'=>'DepartmentController@admin_index'));
 Route::any('profile', array('as'=>'users.profile', 'uses'=>'UserController@profile'));

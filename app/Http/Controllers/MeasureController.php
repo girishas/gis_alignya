@@ -537,11 +537,57 @@ class MeasureController extends Controller
 
 	public function getMeasureonUpdatePage(){
 		$inputs = $this->request->all();
-		$data['measures'] = Measure::where('id',$inputs['measure_id'])->first();
+		$data['measures'] = Measure::leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->where('al_measures.id',$inputs['measure_id'])->select('al_measures.*','al_master_status.name as status_name','al_master_status.icons as status_icon','al_master_status.bg_color',DB::raw('CONCAT_WS(" ",first_name,last_name) as owner_name'))->first();
 		$data['departments'] = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$data['teams'] = Teams::where('company_id',Auth::User()->company_id)->pluck('team_name','id');
 		$data['members'] = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
-		
+		$milestone = Milestones::where('measure_id',$inputs['measure_id'])->where('milestone_type',0)->get();
+		if(!empty($milestone)){
+			$milestone = $milestone->toArray();
+		}else{
+			$milestone = array();
+		}
+		$data['milestones'] = $milestone;
+		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',1)->where('al_tasks.measure_id',$inputs['measure_id'])->select('al_master_status.name as status_name','al_master_status.bg_color','al_tasks.*')->get();
+		if (!empty($tasklist)) {
+			$tasklist = $tasklist->toArray();
+			foreach ($tasklist as $key => $value) {
+				$owners = explode(',',$value['owners']);
+				$list = User::whereIn('id',$owners)->pluck('first_name')->toArray();
+				$tasklist[$key]['owners'] = implode(',', $list);
+			}
+		}
+		$data['tasklist'] = $tasklist;
 		return json_encode($data);
+	}
+
+	public function getmilestonedetails(){
+		$inputs = $this->request->all();
+		$milestone_id = $inputs['milestone_id'];
+		$milestone_data = Milestones::where('id',$milestone_id)->first();
+		if(!empty($milestone_data)){
+			$milestone_data = $milestone_data->toArray();
+		}
+		$data['milestone_data'] = $milestone_data;
+		return json_encode($data);
+	}
+
+	public function updatemilestonemeasure(){
+		$inputs = $this->request->except('start_date','end_date');
+		$start_date = date('Y-m-d',strtotime($this->request->get('start_date')));
+		$end_date = date('Y-m-d',strtotime($this->request->get('end_date')));
+		$inputs['start_date'] = $start_date;
+		$inputs['end_date'] = $end_date;
+		$inputs['user_id'] = Auth::User()->id;
+		$inputs['sys_progress'] = ($this->request->get('mile_actual')/$this->request->get('sys_target'))*100;
+		if(isset($inputs['id'])){
+			$data = Milestones::find($inputs['id']);
+			$update = $data->update($inputs);
+		}else{
+			Milestones::create($inputs);
+		}
+		
+		return redirect()->back();
+		
 	}
 }
