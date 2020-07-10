@@ -48,8 +48,6 @@ Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@ad
 Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@addtask'));
 Route::any('updatemeasure', array('as'=>'users.updatemeasure', 'uses'=>'MeasureController@updatemeasure'));
 Route::any('getMeasureonUpdatePage', array('as'=>'users.getMeasureonUpdatePage', 'uses'=>'MeasureController@getMeasureonUpdatePage'));
-Route::any('getmilestonedetails', array('as'=>'users.getmilestonedetails', 'uses'=>'MeasureController@getmilestonedetails'));
-Route::any('updatemilestonemeasure', array('as'=>'users.updatemilestonemeasure', 'uses'=>'MeasureController@updatemilestonemeasure'));
 Route::any('ideas', array('as'=>'users.ideas', 'uses'=>'TeamController@ideas'));
 Route::any('department/{id?}', array('as'=>'users.admin_index', 'uses'=>'DepartmentController@admin_index'));
 Route::any('profile', array('as'=>'users.profile', 'uses'=>'UserController@profile'));
@@ -84,6 +82,14 @@ Route::any('/initiative/remove/{id?}', array('as'=>'users.remove_initiative', 'u
 
 Route::any('auth/{provider?}', 'UserController@redirectToProvider');
 Route::any('auth/{provider?}/callback', 'UserController@handleProviderCallback');
+Route::any('/', array('as'=>'users.home', 'uses'=>'UserController@home'));
+Route::any('/features-strategy-development', array('as'=>'users.features_strategy_development', 'uses'=>'UserController@features_strategy_development'));
+Route::any('/features-alignment-target-initiative', array('as'=>'users.features_alignment_target_initiative', 'uses'=>'UserController@features_alignment_target_initiative'));
+Route::any('/features-progress-tracking-and-insights', array('as'=>'users.features_progress_tracking_and_insights', 'uses'=>'UserController@features_progress_tracking_and_insights'));
+Route::any('/features-collaboration', array('as'=>'users.features_collaboration', 'uses'=>'UserController@features_collaboration'));
+Route::any('/alignya-process', array('as'=>'users.alignya_process', 'uses'=>'UserController@alignya_process'));
+Route::any('/blog', array('as'=>'users.blog', 'uses'=>'UserController@blog'));
+Route::any('/contact', array('as'=>'users.contact', 'uses'=>'UserController@contact'));
 Route::any('/login', array('as'=>'users.login', 'uses'=>'UserController@login'));
 Route::any('/register', array('as'=>'users.login', 'uses'=>'UserController@register'));
 Route::any('/forgot-password', array('as'=>'users.forgot_password', 'uses'=>'UserController@forgot_password'));
