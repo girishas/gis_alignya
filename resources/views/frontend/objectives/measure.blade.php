@@ -715,15 +715,23 @@ $("#filterBtn").click(function(){
     	<table class="table">
     		<thead class="thead-light">
     			<tr>
+<<<<<<< Updated upstream
     			   <th> {!! SortableTrait::link_to_sorting_action('heading',  getLabels('Name')) !!} </th>
     				<th> {!! SortableTrait::link_to_sorting_action('measure_cycle_quarter',  getLabels('Cycle')) !!} </th>
                     <th> {!! SortableTrait::link_to_sorting_action('team_head',  getLabels('Owner')) !!} </th>
                     <th> {!! SortableTrait::link_to_sorting_action('status_name',  getLabels('Status')) !!} </th>
+=======
+    			   <th> {!! SortableTrait::link_to_sorting_action('team_name',  getLabels('Name')) !!} </th>
+    				<th> {!! SortableTrait::link_to_sorting_action('team_head',  getLabels('Cycle')) !!} </th>
+                    <th> {!! SortableTrait::link_to_sorting_action('team_head',  getLabels('Owner')) !!} </th>
+                    <th> {!! SortableTrait::link_to_sorting_action('team_head',  getLabels('Status')) !!} </th>
+>>>>>>> Stashed changes
                     <th> {!! SortableTrait::link_to_sorting_action('team_head',  getLabels('Objective')) !!} </th>
     				<th> {!! getLabels('action') !!} </th>
     			</tr>
     		</thead>
     		<tbody>
+<<<<<<< Updated upstream
     					@if(!$data->isEmpty())
                         @foreach($data as $key => $value)
                         <tr>
@@ -732,6 +740,14 @@ $("#filterBtn").click(function(){
                             <td> Jhon</td>
                             <td> <span class="badge badge-pill badge-success" style="background: {!!$value->bg_color!!}">{!!$value->status_name!!}</span></td>
                             <td>{!!$value->parent_objective!!}</td>
+=======
+    					<tr class="odd gradeX">
+    						<td><a href="javascript:void(0);" id="myBtn"><i class="iconsminds-up-1 heading-icon" style="color:#0fe50f;"></i>  Ticket Prices Differential</td>
+    						<td> FY2020-Q2</td>
+                            <td> Jhon</td>
+                            <td> <span class="badge badge-pill badge-success">ON TARGET</span></td>
+                            <td> Increase Goods & Sales</td>
+>>>>>>> Stashed changes
     						<td>
     							<div class="btn-group float-none-xs">
     								<button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -744,9 +760,49 @@ $("#filterBtn").click(function(){
     							</div>
     						</td>
     					</tr>
+<<<<<<< Updated upstream
                         @endforeach
                         @endif
                        
+=======
+                        <tr >
+                            <td><a href="javascript:void(0);" id="myBtn"><i class="iconsminds-down-1 heading-icon" style="color:red;"></i>  Increase Budget Value</td>
+                            <td> FY2020-Q3</td>
+                            <td> Jhon</td>
+                            <td> <span class="badge badge-pill badge-danger">AT RISK</span></td>
+                            <td> Increase Share Holder Value</td>
+                            <td>
+                                <div class="btn-group float-none-xs">
+                                    <button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {!! getLabels('action') !!}
+                                    </button>
+                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
+                                        <a class="steamerst_link dropdown-item" href="javascript:void(0);">{!! getLabels('edit') !!}</a>
+                                        
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                         <tr >
+                            <td><a href="javascript:void(0);" id="myBtn"><i class="iconsminds-up-1 heading-icon" style="color:#0fe50f;"></i>  Ticket Prices Differential</td>
+                            <td> FY2020-Q2</td>
+                            <td> Jhon</td>
+                            <td> <span class="badge badge-pill badge-success">ON TARGET</span></td>
+                             <td> Increase Product Sale</td>
+                            <td>
+                                <div class="btn-group float-none-xs">
+                                    <button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {!! getLabels('action') !!}
+                                    </button>
+                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
+                                        <a class="steamerst_link dropdown-item" href="javascript:void(0);">{!! getLabels('edit') !!}</a>
+                                        
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+    				
+>>>>>>> Stashed changes
     		</tbody>
     	</table>
     </div>

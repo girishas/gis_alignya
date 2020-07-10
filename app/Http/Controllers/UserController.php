@@ -34,10 +34,47 @@ class UserController extends Controller
 	public function __construct()
     {
        Parent::__construct();
+<<<<<<< Updated upstream
 		$this->middleware('auth', ['except' => ['resizeProfileImageGoogle', 'resizeProfileImage', 'profile', 'resizeProfileImageFacebook', 'verifyMail', 'findOrCreateUser', 'redirectToProvider', 'handleProviderCallback', 'admin_login', 'admin_register', 'login', 'register', 'forgot_password', 'resetpassword', 'admin_forgot_password']]);
     }
 	
+=======
+		$this->middleware('auth', ['except' => ['resizeProfileImageGoogle', 'resizeProfileImage', 'profile', 'resizeProfileImageFacebook', 'verifyMail', 'findOrCreateUser', 'redirectToProvider', 'handleProviderCallback', 'admin_login', 'admin_register', 'home','features_strategy_development','features_alignment_target_initiative','features_progress_tracking_and_insights','features_collaboration','alignya_process','blog','contact','login', 'register', 'forgot_password', 'resetpassword', 'admin_forgot_password','checkemailexist']]);
+	}
+>>>>>>> Stashed changes
 	
+	public function home(){
+		$page_title = "Home";
+		return view('frontend.users.home', compact('page_title'));
+	}
+	public function features_strategy_development(){
+		$page_title = "Home";
+		return view('frontend.users.features_strategy_development', compact('page_title'));
+	}
+	public function features_alignment_target_initiative(){
+		$page_title = "Home";
+		return view('frontend.users.features_alignment_target_initiative', compact('page_title'));
+	}
+	public function features_progress_tracking_and_insights(){
+		$page_title = "Home";
+		return view('frontend.users.features_progress_tracking_and_insights', compact('page_title'));
+	}
+	public function features_collaboration(){
+		$page_title = "Home";
+		return view('frontend.users.features_collaboration', compact('page_title'));
+	}
+	public function alignya_process(){
+		$page_title = "Home";
+		return view('frontend.users.alignya_process', compact('page_title'));
+	}
+	public function blog(){
+		$page_title = "Home";
+		return view('frontend.users.blog', compact('page_title'));
+	}
+	public function contact(){
+		$page_title = "Home";
+		return view('frontend.users.contact', compact('page_title'));
+	}
 	
 	
 	public function verifyMail(){
