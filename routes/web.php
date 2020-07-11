@@ -48,9 +48,12 @@ Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@ad
 Route::any('removetasks/{id?}', array('as'=>'users.removetasks', 'uses'=>'MeasureController@removetasks'));
 Route::any('updatemeasure', array('as'=>'users.updatemeasure', 'uses'=>'MeasureController@updatemeasure'));
 Route::any('getMeasureonUpdatePage', array('as'=>'users.getMeasureonUpdatePage', 'uses'=>'MeasureController@getMeasureonUpdatePage'));
+<<<<<<< HEAD
 
 Route::any('getmilestonedetails', array('as'=>'users.getmilestonedetails', 'uses'=>'MeasureController@getmilestonedetails'));
 Route::any('updatemilestonemeasure', array('as'=>'users.updatemilestonemeasure', 'uses'=>'MeasureController@updatemilestonemeasure'));
+=======
+>>>>>>> a7fd5427075e05e73d0688cd3c52681329d92fe2
 Route::any('ideas', array('as'=>'users.ideas', 'uses'=>'TeamController@ideas'));
 Route::any('department/{id?}', array('as'=>'users.admin_index', 'uses'=>'DepartmentController@admin_index'));
 Route::any('profile', array('as'=>'users.profile', 'uses'=>'UserController@profile'));
@@ -95,7 +98,10 @@ Route::any('/features-collaboration', array('as'=>'users.features_collaboration'
 Route::any('/alignya-process', array('as'=>'users.alignya_process', 'uses'=>'UserController@alignya_process'));
 Route::any('/blog', array('as'=>'users.blog', 'uses'=>'UserController@blog'));
 Route::any('/contact', array('as'=>'users.contact', 'uses'=>'UserController@contact'));
+<<<<<<< HEAD
 
+=======
+>>>>>>> a7fd5427075e05e73d0688cd3c52681329d92fe2
 Route::any('/login', array('as'=>'users.login', 'uses'=>'UserController@login'));
 Route::any('/register', array('as'=>'users.login', 'uses'=>'UserController@register'));
 Route::any('/forgot-password', array('as'=>'users.forgot_password', 'uses'=>'UserController@forgot_password'));

@@ -519,7 +519,7 @@ class MeasureController extends Controller
 		        $single_ebitda = 0 ;
 		      }
 			  
-			    $i = 1 ;
+			/*    $i = 1 ;
 		      while($date1 <= $date2){   
 		        $year = date('Y',strtotime($date1));
 		        $weekNumber = getWeek($date1); 
@@ -637,7 +637,7 @@ class MeasureController extends Controller
 
 		        } 
 		    
-			  
+			  */
 			  
 			  
 			  
