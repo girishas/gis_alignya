@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\SortableTrait;
-
+use App\Models\Measure;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -38,4 +38,15 @@ public static function validate($input){
 		);
 		return validator($input, $rules, $messages);
 	}
+	
+	public function getMeasures(){
+       return $this->hasMany('App\Models\Measure', 'objective_id', 'id')->leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->where('category_type',1)->select('al_measures.*','al_master_status.bg_color','al_master_status.icons','al_master_status.name as status_name')->orderBy('al_measures.id', 'DESC');
+    }
+   public function getInitiatives(){
+       return $this->hasMany('App\Models\Measure', 'objective_id', 'id')->leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->where('category_type',2)->select('al_measures.*','al_master_status.bg_color','al_master_status.icons','al_master_status.name as status_name')->orderBy('al_measures.id', 'DESC');
+    }
+   
+	
+	
+	
 	}

@@ -22,46 +22,61 @@
              
             <div class="row mb-4">
                 <div class="col-lg-12 col-md-12 mb-4">
-                <!-- <div class="card mb-4">
+				<?php echo Form::open(array('url' => array('/scorecard'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+
+                
+                <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="mb-4">Filters</h5>
                         <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <label>Goal Cycle</label>
-                            <select class="form-control select2-single" data-width="100%">
+                            <?php echo Form::select('cycle_id', array(0=>'Select Goal Cycle')+$al_goal_cycles, isset($_POST['cycle_id'])?$_POST['cycle_id']:null, array('class' => 'form-control select2-single')); ?>
+
+							<!--<select class="form-control select2-single" data-width="100%">
                                 <option >5 Year Strategy</option>
                                 <option >3 Year Strategy</option>
                                 <option >FY-2020</option>
-                            </select>
+                            </select>-->
                         </div>
-                        <div class="col-md-3">
-                            <label>Organization Unit</label>
-                            <select class="form-control select2-single" data-width="100%">
-                                <option label="&nbsp;">5 Year Strategy</option>
-                                <option label="&nbsp;">3 Year Strategy</option>
-                                <option label="&nbsp;">FY-2020</option>
-                            </select>
+                        <div class="col-md-2">
+                            <label>Department</label>
+                            <?php echo Form::select('department_id', array(0=>'Select Department')+$all_department, isset($_POST['department_id'])?$_POST['department_id']:null, array('class' => 'form-control select2-single')); ?>
+
+							
                         </div>
-                        <div class="col-md-3">
-                            <label><span class="glyphicon glyphicon-asterisk"></span>Owner</label>
-                            <select class="form-control select2-single" data-width="100%">
-                                <option label="&nbsp;">5 Year Strategy</option>
-                                <option label="&nbsp;">3 Year Strategy</option>
-                                <option label="&nbsp;">FY-2020</option>
-                            </select>
+                        <div class="col-md-2">
+                            <label>Owner</label>
+                            <?php echo Form::select('owner_id', array(0=>'Select Owner')+$all_users, isset($_POST['owner_id'])?$_POST['owner_id']:null, array('class' => 'form-control select2-single')); ?>
+
+							
                         </div>
-                        <div class="col-md-3">
-                            <label>Goal Cycle</label>
-                            <select class="form-control select2-single" data-width="100%">
-                                <option label="&nbsp;">5 Year Strategy</option>
-                                <option label="&nbsp;">3 Year Strategy</option>
-                                <option label="&nbsp;">FY-2020</option>
-                            </select>
+                        <div class="col-md-2">
+                            <label>Perspective</label>
+                             <?php echo Form::select('perspective_id', array(0=>'Select Perspective')+$all_perspective, isset($_POST['perspective_id'])?$_POST['perspective_id']:null, array('class' => 'form-control select2-single')); ?>
+
+							
+                        </div>
+						
+						<div class="col-md-2">
+                            <label>Strategic Theme</label>
+                             <?php echo Form::select('theme_id', array(0=>'Select Theme')+$al_themes, isset($_POST['theme_id'])?$_POST['theme_id']:null, array('class' => 'form-control select2-single')); ?>
+
+							
+                        </div>
+						<div class="col-md-2">
+                         
+                   <button type="submit" style="width:100%;" class="btn btn-primary">Search</button>
+                <a class="btn btn-dark mb-1 steamerst_link" style="width:100%;" href="<?php echo url('scorecard'); ?>">Show All</a>
+
+							
                         </div>
                     </div>
                     </div>
-                </div>-->
-                    <div class="card">
+                </div>
+				 <?php echo Form::close(); ?>
+
+					<div class="card">
                         <div class="card-body">
                            
                             <table class="table">
@@ -74,78 +89,40 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php if(!empty($financial)): ?>
-                                    <?php $__currentLoopData = $financial; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <tr>
-                                        <?php if($key == '0'): ?>
-                                        <th scope="row">Financial</th>
-                                        <?php else: ?>
-                                        <th scope="row"></th>
-                                        <?php endif; ?>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> <?php echo $value->heading; ?></td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Revenue</td>
-                                        <td></td>
-                                    </tr>
-                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php if(!empty($scorecard_data)): ?>
+                                    <?php $__currentLoopData = $scorecard_data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $skey => $svalue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+										<?php $__currentLoopData = $svalue; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+											<tr>
+												<?php if($key == '0'): ?>
+												<th scope="row"><?php echo $value->perspective_name; ?></th>
+												<?php else: ?>
+												<th scope="row"></th>
+												<?php endif; ?>
+												<td><i class="<?php echo $value->icons; ?> heading-icon" style="color:<?php echo $value->bg_color; ?>"></i> <?php echo $value->heading; ?></td>
+												<td></td>
+												<td></td>
+											</tr>
+											<?php $__currentLoopData = $value->getMeasures; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $mKey=>$mValue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+											<tr>
+												<th scope="row"></th>
+												<td><i class="<?php echo $value->icons; ?> heading-icon" style="color:<?php echo $value->bg_color; ?>"></i> <?php echo $value->heading; ?></td>
+												<td><i class="<?php echo $mValue->icons; ?> heading-icon" style="color:<?php echo $mValue->bg_color; ?>"></i> <?php echo $mValue->heading; ?></td>
+												<td></td>
+											</tr>
+											<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+											<?php $__currentLoopData = $value->getInitiatives; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $iKey=>$iValue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+											<tr>
+												<th scope="row"></th>
+												<td><i class="<?php echo $value->icons; ?> heading-icon" style="color:<?php echo $value->bg_color; ?>"></i> <?php echo $value->heading; ?></td>
+												<td></td>
+												<td><i class="<?php echo $iValue->icons; ?> heading-icon" style="color:<?php echo $iValue->bg_color; ?>"></i> <?php echo $iValue->heading; ?></td>
+												
+											</tr>
+											<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+										<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     <?php endif; ?>
-                                   <!--  <tr>
-                                        <th ></th>
-                                        <td></td>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Net Profit</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th></th>
-                                        <td></td>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Expenses</td>
-                                        <td></td>
-                                    </tr>
-                                     -->
-                                    <tr>
-                                        <th scope="row">Customer</th>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Frequent Reliable Departures</td>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Average No. Of Daily Departures Per Route</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th></th>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Comparable to Other Travel</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Customer Experince Survey</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th></th>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Very Low Ticket Prices</td>
-                                        <td><i class="fa fa-arrow-circle-down" style="font-size:23px;color:red;"></i> Ticket Prices Differential</td>
-                                        <td></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th scope="row">Internal Processes</th>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Fast Ground Turn Around</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Time At Gate</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Create New Employee Traning</td>
-                                    </tr>
-                                    <tr>
-                                        <th></th>
-                                        <td></td>
-                                        <td></td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Airport Traffic</td>
-                                    </tr>
-                                    <tr>
-                                        <th ></th>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Good Locations</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> % of population served within 25 miles</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th ></th>
-                                        <td><i class="fa fa-arrow-circle-down" style="font-size:23px;color:red;"></i> Direct Routes</td>
-                                        <td><i class="fa fa-arrow-circle-down" style="font-size:23px;color:red;"></i> % of tickets with direct routes</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Airport Traffic</td>
-                                    </tr>
-                                    
-                                </tbody>
+								</tbody>
                             </table>
                         </div>
                     </div>

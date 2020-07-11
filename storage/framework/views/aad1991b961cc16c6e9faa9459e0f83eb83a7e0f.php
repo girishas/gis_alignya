@@ -1,8 +1,33 @@
 <?php use App\Traits\SortableTrait;  ?>
 
 <?php $__env->startSection('content'); ?>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+#chartdiv {
+  width: 100%;
+  height: 250px;
+}
 
+</style>
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<?php echo $__env->make('Element/objective/view_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/objective/add_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/objective/scorecards', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/objective/add_scorecard', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/objective/themes', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/objective/add_theme', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/objective/add_cycle', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/objective/update_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+
+<?php echo $__env->make('Element/measure/view_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/measure/add_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>       
+<?php echo $__env->make('frontend/objectives/filter', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/measure/task', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/initiative/add_initiative', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/initiative/view_initiative', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
+<?php echo $__env->make('Element/measure/update_task', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
   <main>
         <div class="container-fluid">
             <div class="row">
@@ -12,566 +37,136 @@
 						<a href="javascript:void(0);" class=" btn btn-primary btn-sm top-right-button mr-1" onclick="addObjectivepop()"><?php echo getLabels('add_objective'); ?></a>
                         <button type="button" class="btn btn-outline-primary mb-1" id="filterBtn">Filters</button>
                             
-                    </div>
-                    <?php echo $__env->make('Element/objective/add_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('Element/objective/view_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('Element/measure/add_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>       
-                    <?php echo $__env->make('frontend/objectives/filter', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('Element/measure/task', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-                    <?php echo $__env->make('Element/initiative/add_initiative', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+                    </div>                       
+  
 
-                            <div class="modal modal-right" id="myModal2" role="dialog" >
-                                <div class="modal-dialog" style="max-width: 99.99%;">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Product Sales</h5>
-                                            <button type="button" class="close" id="popup3hide" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                        	
-						        <div class="container-fluid">
-						            <div class="row ">
-						                <div class="col-12 survey-app">
-						                    <ul class="nav nav-tabs separator-tabs ml-0 mb-5" role="tablist">
-						                        <li class="nav-item">
-						                            <a class="nav-link active" id="first-tab" data-toggle="tab" href="#first" role="tab" aria-controls="first" aria-selected="true">Measure</a>
-						                        </li>
-
-						                        <li class="nav-item">
-						                            <a class="nav-link" id="third-tab" data-toggle="tab" href="#third" role="tab"
-						                                aria-controls="third" aria-selected="false">Initiative</a>
-						                        </li>
-						                        <li class="nav-item">
-						                            <a class="nav-link" id="second-tab" data-toggle="tab" href="#second" role="tab"
-						                                aria-controls="second" aria-selected="false">Aligned Objective</a>
-						                        </li>
-						                        
-						                    </ul>
-						                    <div class="tab-content mb-4">
-						                        <div class="tab-pane show active" id="first" role="tabpanel" aria-labelledby="first-tab">
-						                            <div class="row">
-
-						                                <div class="col-lg-8 col-12 mb-4">
-						                                 <div class="card mb-8">
-						                                        <div class="card-body">
-						                            <table class="table table-borderless">
-						                                
-						                                <tbody>
-						                                    <tr>
-						                                        <th scope="row"><i class="fa fa-arrow-up" style="font-size:23px;color:green;"></i> Revenue</th>
-						                                        <td class="mt-3">FY2020-Q3</td>
-						                                        <td></td>
-						                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-						                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="40"
-						                                data-show-percent="true">
-						                            </div>
-						                        </td>
-						                        <td><i class="fa fa-line-chart mt-3" style="font-size:23px;"></i></td>
-						                                    </tr>
-						                                    <tr>
-						                                        <th scope="row"><i class="fa fa-arrow-down" style="font-size:23px;color:red;"></i> Net Profit</th>
-						                                        <td class="mt-3">FY2020-Q1</td>
-						                                        <td></td>
-						                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-						                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="10"
-						                                data-show-percent="true">
-						                            </div></td>
-						                             <td><i class="fa fa-line-chart mt-3" style="font-size:23px;"></i></td>
-						                                    </tr>
-						                                    <tr>
-						                                        <th scope="row"><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Expense</th>
-						                                        <td class="mt-3">FY2020-Q2</td>
-						                                        <td ></td>
-						                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-						                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="20"
-						                                data-show-percent="true">
-						                            </div></td>
-						                             <td><i class="fa fa-line-chart mt-3" style="font-size:23px;"></i></td>
-						                                    </tr> <tr>
-						                                        <th scope="row"><a href="javascript:void(0);" id="myBtn3"><i class="simple-icon-plus btn-group-icon"></i>
-                                                                        Add Measure</a></th>
-						                                        <td colspan="2"></td>
-						                                        <td></td>
-
-						                                    </tr>
-						                                </tbody>
-						                            </table>
-						                        
-						                                </div>
-						                                </div>
-						                                </div>
-
-						                                <div class="col-12 col-lg-4">
-						                                	 <div class="card mb-8">
-						                                        <div class="card-body">
-						                                   
-						                                   <div class="d-flex flex-row mb-2  mb-4">
-						                                                
-						                                                <div class=" d-flex flex-grow-1 min-width-zero">
-						                                                    <div
-						                                                        class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-						                                                        <div class="min-width-zero">
-						                                                            <a href="#">
-						                                                                <p class="mb-0 truncate">Revenue</p>
-						                                                            </a>
-						                                                            <p class="text-muted mb-0 text-small">315 Target</p>
-						                                                        </div>
-						                                                    </div>
-						                                                </div>
-						                                            </div>
-						                                            <div class="dashboard-line-chart">
-						                                                <canvas id="salesChart"></canvas>
-						                                            </div>
-						                                </div>
-						                                </div>
-						                                </div>
-						                            </div>
-						                        </div>
-
-                        <div class="tab-pane fade" id="third" role="tabpanel" aria-labelledby="third-tab">
-                                             <div class="row">
-
-                                <div class="col-lg-8 col-12 mb-4">
-                                 <div class="card mb-8">
-                                        <div class="card-body">
-                            <table class="table table-borderless">
-                                
-                                <tbody>
-                                    <tr>
-                                        <th scope="row"><i class="fa fa-arrow-down" style="font-size:23px;color:red;"></i>  Goods & Sales</th>
-                                        <td class="mt-3">FY2020-Q3</td>
-                                        <td></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="40"
-                                data-show-percent="true">
-                            </div></td>
-                            <td><i class="fa fa-line-chart mt-3" style="font-size:23px;"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><i class="fa fa-arrow-up" style="font-size:23px;color:green;"></i> Targets</th>
-                                       <td class="mt-3">FY2020-Q1</td>
-                                        <td></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="10"
-                                data-show-percent="true">
-                            </div></td>
-                            <td><i class="fa fa-line-chart mt-3" style="font-size:23px;"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Ticket Sold</th>
-                                        <td class="mt-3">FY2020-Q2</td>
-                                        <td ></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="20"
-                                data-show-percent="true">
-                            </div></td>
-                            <td><i class="fa fa-line-chart mt-3" style="font-size:23px;"></i></td>
-                                    </tr><tr>
-                                        <th scope="row"><a href="javascript:void(0);" id="myBtn4"><i class="simple-icon-plus btn-group-icon"></i> Add Initiative</a></th>
-                                        <td colspan="2"></td>
-                                        <td></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        
-                                </div>
-                                </div>
-                                </div>
-
-                                <div class="col-12 col-lg-4">
-                                	 <div class="card mb-8">
-                                        <div class="card-body">
-                                   
-                                   <div class="d-flex flex-row mb-2  mb-4">
-                                                
-                                                <div class=" d-flex flex-grow-1 min-width-zero">
-                                                    <div
-                                                        class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                                        <div class="min-width-zero">
-                                                            <a href="#">
-                                                                <p class="mb-0 truncate">Goods & Sales</p>
-                                                            </a>
-                                                            <p class="text-muted mb-0 text-small">315 Target</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="dashboard-line-chart">
-                                                <canvas id="contributionChart2"></canvas>
-                                            </div>
-                                </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
-                                  <div class="row">
-
-                                <div class="col-lg-8 col-12 mb-4">
-                                 <div class="card mb-8">
-                                        <div class="card-body">
-                            <table class="table table-borderless">
-                                
-                                <tbody>
-                                    <tr>
-                                        <th scope="row"><a href="javascript:void(0);" id="myBtn2"><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Product Sales</a></th>
-                                        <td class="mt-3">FY2020-Q1</td>
-                                        
-                                        <td></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="40"
-                                data-show-percent="true">
-                            </div></td>
-                            <td><i class="fa fa-line-chart mt-3" style="font-size:23px;"></i></td>
+                    <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
+                        <ol class="breadcrumb pt-0">
+                            <li class="breadcrumb-item">
+                                <a class="steamerst_link" href="<?php echo url($route_prefix, 'dashboard'); ?>"><?php echo getLabels('Dashboard'); ?></a>
+                            </li>
                             
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><i class="fa fa-arrow-up" style="font-size:23px;color:green;"></i> Machinery Sales</th>
-                                        <td class="mt-3">FY2020-Q2</td>
-                                        <td></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="10"
-                                data-show-percent="true">
-                            </div></td>
-                            <td><i class="fa fa-line-chart mt-3" style="font-size:23px;"></i></td>
-                            
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><i class="fa fa-arrow-down" style="font-size:23px;color:red;"></i> Commodities & Sales</th>
-                                        <td class="mt-3">FY2020-Q3</td>
-                                        <td ></td>
-                                        <td><div role="progressbar" class="progress-bar-circle position-relative" data-color="#922c88"
-                                data-trailColor="#d7d7d7" aria-valuemax="100" aria-valuenow="20"
-                                data-show-percent="true">
-                            </div></td>
-                            <td><i class="fa fa-line-chart mt-3" style="font-size:23px;"></i></td>
-                            
-                                    </tr>
-                                </tbody>
-                            </table>
-                        
-                                </div>
-                                </div>
-                                </div>
+                            <li class="breadcrumb-item active" aria-current="page"><?php echo getLabels('Objective'); ?></li>
+                        </ol>
+                    </nav>
+                    <div class="separator mb-5"></div>
+                </div>
+            </div>
+			
+			
+			
+            <div class="row mb-4">
+                <div class="col-12 ">
+                    <div class="card">
+                        <div class="card-body">
+							<div class="table-responsive">
+								<table class="table">
+									<thead class="thead-light">
+										<tr>
+										   <th> <?php echo getLabels('Name'); ?></th>
+										   <th> <?php echo getLabels('Cycle'); ?> </th>
+											<th> <?php echo getLabels('Owner'); ?> </th>
+                                            <th> <?php echo getLabels('Status'); ?> </th>
+                                           <th> <?php echo getLabels('Aligned to'); ?> </th>
+											<th> <?php echo getLabels('action'); ?> </th>
+										</tr>
+									</thead>
+									<tbody>
+                                        <?php if(!$data->isEmpty()): ?>
+                                        <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                         <?php
+                                            $remove_url = url("objective/remove/".$value->id); 
+                                            $remove_msg = getLabels('are_you_sure'); ?>
+												<tr>
+													<td>
+									                   <a href="javascript:void(0);" onclick="viewobjective('<?php echo $value->id; ?>')"><i class="<?php echo $value->status_icon; ?> heading-icon" style="color:<?php echo $value->bg_color; ?>"></i> <?php echo $value->heading; ?>
 
-                                <div class="col-12 col-lg-4">
-                                	 <div class="card mb-8">
-                                        <div class="card-body">
-                                   
-                                   <div class="d-flex flex-row mb-2  mb-4">
-                                                
-                                                <div class=" d-flex flex-grow-1 min-width-zero">
-                                                    <div
-                                                        class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                                        <div class="min-width-zero">
-                                                            <a href="#">
-                                                                <p class="mb-0 truncate">Product Sales</p>
-                                                            </a>
-                                                            <p class="text-muted mb-0 text-small">315 Target</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="dashboard-line-chart">
-                                                <canvas id="contributionChart3"></canvas>
-                                            </div>
-                                </div>
-                                </div>
-                                </div>
-                            </div>
-                        </div>
+														</a></td>
+													<td> <?php echo $value->cycle_name; ?></td>
+													<td> <p class="text-semi-muted mb-2"><?php echo $value->owner_name; ?></p></td>
+                                                    <td> <span class="badge badge-pill badge-success" style="background: <?php echo $value->bg_color; ?>"><?php echo $value->status_name; ?></span></td>
+                                                    <td><?php echo $value->parent_objective; ?></td>
+													<td>
+														<a  href="javascript:void(0);" onclick="updateObjective('<?php echo $value->id; ?>')" title="Edit"><i class="simple-icon-pencil heading-icon"></i></a>
+                                                                <a  onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+                                                                 <a href="javascript:void(0);" onclick="viewobjective('<?php echo $value->id; ?>')" title="View"><i class="iconsminds-information heading-icon"></i>
+                                                        </a>
+													</td>
+												</tr>
+                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <?php endif; ?>
+									</tbody>
+								</table>
+							</div>
+							<br />
+							
+							<div class="row">
+								<div class="col-12 text-center">
+									<p class="justify-content-center "><?php echo str_replace(array('{FIRST}', '{LAST}', '{TOTAL}'), array($data->firstItem(), $data->lastItem(), $data->total()), getLabels('showing_first_to_last_of_total_records')); ?></p>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12">
+									<?php echo $data->links('frontend.pagination_custom'); ?>
 
-
-
-
-                        <div class="tab-pane fade" id="no" role="tabpanel" aria-labelledby="no-tab">
-                                             <div class="row">
-
-                                <div class="col-lg-8 col-12 mb-4">
-                                 <div class="card mb-8">
-                                        <div class="card-body">
-                            <table class="table table-borderless">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Tasks</th>
-                                        <th scope="col"></th>
-                                        <th scope="col">Due Date</th>
-                                        <th scope="col">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <th scope="row">Check Progress Return</th>
-                                        <td></td>
-                                        <td>06/06/2020</td>
-                                        <td><i class="fa fa-pencil"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Plan Departures</th>
-                                        <td></td>
-                                        <td>06/06/2020</td>
-                                        <td><i class="fa fa-pencil"></i></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">Discuss Requirements</th>
-                                        <td></td>
-                                        <td>06/06/2020</td>
-                                        <td><i class="fa fa-pencil"></i></td>
-                                    </tr>
-                                     <tr>
-                                        <th scope="row"><a href="javascript:void(0);" id="myBtn5"><i class="simple-icon-plus btn-group-icon"></i> Add Task</a></th>
-                                       
-                                    </tr>
-                                </tbody>
-                            </table>
-                        
-                                </div>
-                                </div>
-                                </div>
-
-                                
-                            </div>
+								</div>
+							</div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
-
-                                        </div>
-                                        <div class="modal-footer">
-                                          
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>							
+    </main>
 
 
+<script>
+    function removetask(id){
+        var token = "<?php echo csrf_token(); ?>";
+        $.ajax({
+            type:"POST",
+            url: "<?php echo url('removetasks'); ?>"+"/"+id,
+            data:'_token='+token,
+            dataType:'JSON',
+            success: function (response) {
 
-                            <div class="modal modal-right" id="myModal3" role="dialog" >
-                                <div class="modal-dialog" >
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Add Measure</h5>
-                                            <button type="button" class="close" id="popup4hide" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                        	<form>
-                                            	<div class="container-fluid">
-                                            	<div class="row">
-                                            		
-                                            	<div class="col-lg-8">
-                                            		<div class="form-group">
-                                                    <label>Title</label>
-                                                    <input type="text" class="form-control" placeholder="">
-                                                </div>
-                                               
-                                                <div class="form-group">
-                                                    <label>Objective</label>
-                                                    <select class="form-control">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">Objective 1</option>
-                                                        <option value="Sass">Objective 2</option>
-                                                        <option value="React">Objective 3</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Cycle</label>
-                                                    <select class="form-control">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">FY2020-Q1</option>
-                                                        <option value="Sass">FY2020-Q2</option>
-                                                        <option value="React">FY2020-Q3</option>
-                                                    </select>
-                                                </div>
-                                                 
-                                                <div class="form-group">	
-                                <label>Ownership</label>
-                               		<br>
-                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                        <label class="btn btn-primary active">
-                                            <input type="radio" name="options" id="option1" value="1" checked> Department
-                                        </label>
-                                        <label class="btn btn-primary">
-                                            <input type="radio" name="options" value="2" id="option2"> Team
-                                        </label>
-                                        <label class="btn btn-primary">
-                                            <input type="radio" name="options" value="3" id="option3"> Individual
-                                        </label>
-                                    </div>
-                                </div>
-
-                           <div class="form-group ">
-								<select class="form-control select2-single" name="department_head" data-width="100%">
-                                	<option label="&nbsp;"></option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	
-                                	
-                                </select>						
-								<div class="invalid-tooltip"></div>
-							</div>
-
-                           						
-                                                </div>
-                                               
-                                                </div>
-                                                </div>
-                                            </form>
-
-                                       	</div>
-                                        <div class="modal-footer">
-                                           
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-<div class="modal modal-right" id="myModal5" role="dialog" >
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Add Task</h5>
-                                            <button type="button" class="close" id="popup8hide" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            
-                                            <form>
-                                                <div class="container-fluid">
-                                                <div class="row">
-                                                    
-                                                <div class="col-lg-8">
-                                                    <div class="form-group">
-                                                    <label>Title</label>
-                                                    <input type="text" class="form-control" placeholder="">
-                                                </div>
-                                                
-                            <div class="form-group ">
-                                                      <label>Due Date</label>
-                                                  <input class="form-control datepicker" placeholder="">
-                                <div class="invalid-tooltip"></div>
-                            </div>
-                            <div class="form-group ">
-                                <button type="button" class="btn btn-primary">Submit</button>
-                                            
-                                <div class="invalid-tooltip"></div>
-                            </div>
-
-
-                                                
-
-                           
-                                                
-                                                </div>
-                                               
-                                                </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                           
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal modal-right" id="myModal4" role="dialog" >
-                                <div class="modal-dialog" >
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Add Initiative</h5>
-                                            <button type="button" class="close" id="popup5hide" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                         <div class="modal-body">
-                                        	
-                                            <form>
-                                            	<div class="container-fluid">
-                                            	<div class="row">
-                                            		
-                                            	<div class="col-lg-8">
-                                            		<div class="form-group">
-                                                    <label>Initiatives Title</label>
-                                                    <input type="text" class="form-control" placeholder="">
-                                                </div>
-                                                 <div class="form-group ">
-                                                      <label>Choose Objective</label>
-                                <select class="form-control select2-single" name="department_head" data-width="100%">
-                                    <option label="&nbsp;"></option>
-                                    <option value="1" >objective 1</option>
-                                    <option value="1" >objective 2</option>
-                                    <option value="1" >objective 3</option>
-                                    <option value="1" >objective 4</option>
-                                    <option value="1" >objective 5</option>
-                                    
-                                    
-                                </select>                       
-                                <div class="invalid-tooltip"></div>
-                            </div>
-
-                                                <div class="form-group">	
-                                <label>Ownership</label>
-                               		<br>
-                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                        <label class="btn btn-primary active">
-                                            <input type="radio" name="options" id="option1" value="1" checked> Department
-                                        </label>
-                                        <label class="btn btn-primary">
-                                            <input type="radio" name="options" value="2" id="option2"> Team
-                                        </label>
-                                        <label class="btn btn-primary">
-                                            <input type="radio" name="options" value="3" id="option3"> Individual
-                                        </label>
-                                    </div>
-                                </div>
-
-                           <div class="form-group ">
-								<select class="form-control select2-single" name="department_head" data-width="100%">
-                                	<option label="&nbsp;"></option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	<option value="1" >dep1</option>
-                                	
-                                	
-                                </select>						
-								<div class="invalid-tooltip"></div>
-							</div>
-
-                           						
-                                                </div>
-                                               
-                                                </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                           <button type="button" class="btn btn-primary">Submit</button>
-                                            
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-  
-  <script>
-     $("#myBtn3").click(function(){
+            }
+        });
+    }
+    function updateTask(id){
+        $("#update_task_id").val(id);
+        var token = "<?php echo csrf_token(); ?>";
+        var company_id = "<?php echo Auth::User()->company_id; ?>";
+        $.ajax({
+            type:"POST",
+            url: "<?php echo url('getTaskDetails'); ?>",
+            data:'_token='+token+'&company_id='+company_id+'&task_id='+id,
+            dataType:'JSON',
+            success: function (response) {
+                var taskdetails = response.task_details;
+                $("#task_name_update_id").val(taskdetails.task_name);
+                $("#task_description_update_id").val(taskdetails.description);
+                var owners = response.owners;
+                for (var own in owners) {
+                    if (owners.hasOwnProperty(own)) {
+                        var owner = owners[own];
+                        if(taskdetails.owners.indexOf(own) != -1){
+                            $("#owners_update_id").append('<option value = "'+own+'" selected="selected">'+owner+'</option>');
+                        }else{
+                            $("#owners_update_id").append('<option value = "'+own+'">'+owner+'</option>');
+                        }
+                      }
+                    }
+                }  
+        });
+        $("#myModalUpdateTask").modal("show");
+    }
+    function addMeasure(){
         var objid = $("#objective_idview").val();
         $("#hideforobj").hide();
         $("#objectiveId").val(objid);
         onchangeobjectivegetcycle();
         $("#myModalAddMeasure").modal("show");
-    });
+    }
     function addObjectivepop(slug){
         if(slug == "sub"){
             var heading = "Add Sub Objective";
@@ -623,13 +218,18 @@ $(document).ready(function(){
     var adderrormessage = "<?php echo session('adderrormessage')?session('adderrormessage'):''; ?>";
     if(adderrormessage != ''){
         $("#myModalAddObjective").modal('show');
-    } 
-  
+    }
+    
+  $("#popupaddhideupdateTask").click(function(){
+    $("#myModalUpdateTask").modal("hide");
+  });
   $("#filterBtn").click(function(){
     $("#filterPop").modal('show');
   });
   
-  
+  $("#viewinitiativemodalhide").click(function(){
+    $("#viewinitiativemodal").modal('hide');
+  });
    $("#myBtn2").click(function(){
     $("#myModal2").modal('show');
   });
@@ -667,91 +267,121 @@ $(document).ready(function(){
   });
    $("#popupaddhideMeasure").click(function(){
     $("#myModalAddMeasure").modal("hide");
+   });
+   $("#view_measuremodal_hide").click(function(){
+    $("#viewmeasuremodal").modal("hide");
+});
+   $("#popupaddhideTask").click(function(){
+    $("#myModalAddTask").modal("hide");
    })
 });
+
 </script>
-                    <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
-                        <ol class="breadcrumb pt-0">
-                            <li class="breadcrumb-item">
-                                <a class="steamerst_link" href="<?php echo url($route_prefix, 'dashboard'); ?>"><?php echo getLabels('Dashboard'); ?></a>
-                            </li>
-                            
-                            <li class="breadcrumb-item active" aria-current="page"><?php echo getLabels('Objective'); ?></li>
-                        </ol>
-                    </nav>
-                    <div class="separator mb-5"></div>
-                </div>
-            </div>
-			
-			
-			
-            <div class="row mb-4">
-                <div class="col-12 ">
-                    <div class="card">
-                        <div class="card-body">
-							<div class="table-responsive">
-								<table class="table">
-									<thead class="thead-light">
-										<tr>
-										   <th> <?php echo getLabels('Name'); ?></th>
-										   <th> <?php echo getLabels('Cycle'); ?> </th>
-											<th> <?php echo getLabels('Owner'); ?> </th>
-                                            <th> <?php echo getLabels('Status'); ?> </th>
-                                           <th> <?php echo getLabels('Aligned to'); ?> </th>
-											<th> <?php echo getLabels('action'); ?> </th>
-										</tr>
-									</thead>
-									<tbody>
-                                        <?php if(!$data->isEmpty()): ?>
-                                        <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-												<tr>
-													<td>
-									<a href="javascript:void(0);" onclick="viewobjective('<?php echo $value->id; ?>')"><i class="<?php echo $value->status_icon; ?> heading-icon" style="color:<?php echo $value->bg_color; ?>"></i> <?php echo $value->heading; ?>
-
-														</a></td>
-													<td> <?php echo $value->cycle_name; ?></td>
-													<td> <p class="text-semi-muted mb-2"><?php echo $value->owner_name; ?></p></td>
-                                                    <td> <span class="badge badge-pill badge-success" style="background: <?php echo $value->bg_color; ?>"><?php echo $value->status_name; ?></span></td>
-                                                    <td><?php echo $value->parent_objective; ?></td>
-													<td>
-														<div class="btn-group float-none-xs">
-															<button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
-																<?php echo getLabels('action'); ?>
-
-															</button>
-															<div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
-																<a class="dropdown-item" href="javascript:void(0);" onclick="updateObjective('<?php echo $value->id; ?>')"><?php echo getLabels('edit'); ?></a>
-																
-															</div>
-														</div>
-													</td>
-												</tr>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            <?php endif; ?>
-									</tbody>
-								</table>
-							</div>
-							<br />
-							
-							<div class="row">
-								<div class="col-12 text-center">
-									<p class="justify-content-center "><?php echo str_replace(array('{FIRST}', '{LAST}', '{TOTAL}'), array($data->firstItem(), $data->lastItem(), $data->total()), getLabels('showing_first_to_last_of_total_records')); ?></p>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-12">
-									<?php echo $data->links('frontend.pagination_custom'); ?>
-
-								</div>
-							</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <?php echo $__env->make('Element/objective/update_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <script type="text/javascript">
+    function chartload(milestones){
+
+        am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("chartdiv", am4charts.XYChart);
+chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
+
+chart.paddingRight = 30;
+chart.dateFormatter.inputDateFormat = "yyyy-MM-dd HH:mm:ss";
+
+var colorSet = new am4core.ColorSet();
+colorSet.saturation = 0.4;
+
+chart.data = milestones;
+
+var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "name";
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.renderer.inversed = true;
+
+var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+dateAxis.dateFormatter.dateFormat = "yyyy-MM-dd HH:mm";
+dateAxis.renderer.minGridDistance = 70;
+dateAxis.baseInterval = { count: 30, timeUnit: "minute" };
+dateAxis.max = new Date(2021, 0, 1, 24, 0, 0, 0).getTime();
+dateAxis.strictMinMax = true;
+dateAxis.renderer.tooltipLocation = 0;
+
+var series1 = chart.series.push(new am4charts.ColumnSeries());
+series1.columns.template.width = am4core.percent(80);
+series1.columns.template.tooltipText = "{name}: {openDateX} - {dateX}";
+
+series1.dataFields.openDateX = "fromDate";
+series1.dataFields.dateX = "toDate";
+series1.dataFields.categoryY = "name";
+series1.columns.template.propertyFields.fill = "color"; // get color from data
+series1.columns.template.propertyFields.stroke = "color";
+series1.columns.template.strokeOpacity = 1;
+
+chart.scrollbarX = new am4core.Scrollbar();
+
+}); // end am4core.ready()
+    
+    }
+    function viewInitiative(id){
+        
+        $("#viewpageinitiativeid").val(id);
+        $("#initiativemilestonelist").html("");
+        var token = "<?php echo csrf_token(); ?>";
+        var company_id = "<?php echo Auth::User()->company_id; ?>"; 
+         $.ajax({
+            type:"POST",
+            url: "<?php echo url('getInitiativeData'); ?>",
+            data:'_token='+token+'&company_id='+company_id+'&id='+id,
+            dataType:'JSON',
+            success: function (response) {
+                var initiative =response.initiatives; 
+                $("#initiativeheading").html('<i class="'+initiative.status_icon+' heading-icon" style="color:'+initiative.bg_color+';"></i>'+initiative.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+initiative.measure_cycle_year+'-'+getQuarter(initiative.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+initiative.owner_name )
+                chartload(response.milestones);
+                for(var i = 0; i < response.milestones.length; i++){
+                    $("#initiativemilestonelist").append('<tr><td>'+response.milestones[i].name+'</td><td>'+response.milestones[i].fromDate+'</td><td>'+response.milestones[i].toDate+'</td><td><a href="javascript:void(0);" onclick="updatemilestoneini('+response.milestones[i].id+')"><i class="simple-icon-pencil"></i></a></td></tr>');
+
+                }
+                for(var i = 0; i < response.tasklist.length; i++){
+                    $("#initiativetasklistview").append('<tr><td>'+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background-color:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>');
+
+                }
+            }
+        })
+        
+        $("#viewinitiativemodal").modal('show');
+     
+    }
+    function viewMeasure(id){
+        $("#measure_id_view").val(id);
+        $("#view_measure_heading").html("");
+        $("#milestonelistmeasureview").html("");
+        $("#addtaskmeasureview").html("");
+        var token = "<?php echo csrf_token(); ?>";
+        var company_id = "<?php echo Auth::User()->company_id; ?>"; 
+        $.ajax({
+            type:"POST",
+            url: "<?php echo url('getMeasureonUpdatePage'); ?>",
+            data:'_token='+token+'&company_id='+company_id+'&measure_id='+id,
+            dataType:'JSON',
+            success: function (response) {
+                var all_response = response.measures;
+                $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
+                var milstonesli = response.milestones;
+                for (var i = 0; i < milstonesli.length; i++) {
+                    $("#milestonelistmeasureview").append('<tr><td>'+milstonesli[i].milestone_name+'</td><td>'+(milstonesli[i].mile_actual == null?"":milstonesli[i].mile_actual)+'</td><td>'+milstonesli[i].sys_target+'</td><td>'+milstonesli[i].start_date+'</td><td>'+milstonesli[i].end_date+'</td><td><a href="javascript:void(0);" onclick="updatemilestone('+milstonesli[i].id+')"><i class="simple-icon-pencil"></i></a></td></tr>');
+                }
+                var taskli = response.tasklist;
+                for (var i = 0; i < taskli.length; i++) {
+                    $("#addtaskmeasureview").html('<tr><td>'+taskli[i].task_name+'</td><td>'+taskli[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+taskli[i].bg_color+'">'+taskli[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updatetask('+taskli[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>');
+                }
+            }
+        })  
+        $("#viewmeasuremodal").modal('show');
+    }
     function updateObjective(id){
         $("#ownership_update").html("");
         var token = "<?php echo csrf_token(); ?>";
@@ -904,6 +534,8 @@ $(document).ready(function(){
         return value;
     }
     function viewobjective(id){
+        localStorage.setItem('key','viewobjctive');
+        localStorage.setItem('keyid',id);
         var token = "<?php echo csrf_token(); ?>";
         var company_id = "<?php echo Auth::User()->company_id; ?>"; 
         $("#measurelistvieww").html("");
@@ -911,6 +543,7 @@ $(document).ready(function(){
         $("#objective_name_view").html("");
         $("#initiativelistobj").html("");
         $("#alignedobjectivelist").html("");
+        var removetasurl = 
         $.ajax({
             type:"POST",
             url: "<?php echo url('/viewobjective'); ?>",
@@ -920,16 +553,16 @@ $(document).ready(function(){
                 $("#objective_name_view").html('<i class="'+response.objectiveinfo.status_icon+' heading-icon" style="color:'+response.objectiveinfo.bg_color+';"></i>'+response.objectiveinfo.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> '+response.objectiveinfo.cycle_name+'  <i class="simple-icon-people"></i> '+response.objectiveinfo.owner_name );
                 $("#objective_idview").val(id);
                 for (var i = 0; i < response.measuresList.length; i++) {
-                    $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td></tr>');
+                    $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewMeasure('+response.measuresList[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
                 }
                 for (var i = 0; i < response.subobjective.length; i++) {
-                    $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td></tr>');
+                    $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewobjective('+response.subobjective[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
                 }
                 for (var i = 0; i < response.initiativeList.length; i++) {
-                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td></tr>');
+                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewInitiative('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
                 }
                 for (var i = 0; i < response.tasklist.length; i++) {
-                    $("#tasklistid").append('<tr><td>'+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger">'+response.tasklist[i].status_name+'</span></td><td><i class="iconsminds-right-1 heading-icon" style="cursor: pointer;"></i> <i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>'); 
+                    $("#tasklistid").append('<tr><td><i class="'+response.tasklist[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; </td></tr>'); 
                 }
             }  
         });

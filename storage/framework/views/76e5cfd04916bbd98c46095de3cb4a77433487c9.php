@@ -32,7 +32,8 @@
                         </div>
                         <div class="form-group">
                             <label>Owners</label>
-                            
+                            <select class="form-control select2-single" name="owners[]" multiple="multiple" id="owners_update_id">
+                            </select>                        
                         </div>
                         <div class="form-group">
                             <label for="inputAboutYou"><?php echo getLabels('summary'); ?></label>

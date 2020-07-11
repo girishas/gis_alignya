@@ -1,6 +1,6 @@
 <?php
 return array( 
-	"SITE_URL" 					=> "http://localhost/gis_alignya/",
+	"SITE_URL" 					=> "http://192.168.43.33/gis_alignya/",
 	"SITE_TITLE" 				=> "Alignya",
 	"SITE_EMAIL" 				=> "noreply@chameleon.love",
 	'SITE_MODE'					=> "live", //change "local" to "live" on server

@@ -11,10 +11,7 @@
 <script src="https://www.amcharts.com/lib/4/charts.js"></script>
 <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
 
-<!-- Chart code -->
-<script>
 
-</script>
 <?php $__env->startSection('content'); ?>
   <main>
         <div class="container-fluid">
@@ -337,7 +334,7 @@ chart.scrollbarX = new am4core.Scrollbar();
             }
         })
         
-        $("#myModal").modal('show');
+        $("#viewinitiativemodal").modal('show');
      }
 $(document).ready(function(){
   $("#popupaddhideinitiativeupdate").click(function(){
@@ -372,6 +369,9 @@ $(document).ready(function(){
   });
   $("#popupaddhideTask").click(function(){
     $("#myModalAddTask").modal("hide");
+  });
+  $("#viewinitiativemodalhide").click(function(){
+    $("#viewinitiativemodal").modal('hide');
   });
 });
 </script>

@@ -27,7 +27,7 @@ Route::any('objectives', array('as'=>'admin.objectives', function(){
 							return App::make('App\Http\Controllers\ObjectiveController')->admin_index(2); }));
 Route::any('setuserdatasession', array('as'=>'users.setuserdatasession', 'uses'=>'UserController@setuserdatasession'));
 Route::any('add_teampopup', array('as'=>'users.add_teampopup', 'uses'=>'TeamController@add_teampopup'));
-Route::any('kpis', array('as'=>'admin.measures', 'uses'=>'ObjectiveController@measures' ));
+Route::any('kpis', array('as'=>'admin.admin_index', 'uses'=>'KPIController@admin_index' ));
 Route::any('measures', array('as'=>'admin.admin_index', 'uses'=>'MeasureController@admin_index' ));
 Route::any('initiatives', array('as'=>'admin.initiatives', 'uses'=>'InitiativeController@admin_index'));
 Route::any('addinitiative', array('as'=>'admin.addinitiative', 'uses'=>'InitiativeController@addinitiative'));
@@ -45,7 +45,7 @@ Route::any('viewobjective', array('as'=>'users.viewobjective', 'uses'=>'Objectiv
 Route::any('getprojectinsightsobjective', array('as'=>'users.getprojectinsightsobjective', 'uses'=>'TeamController@getprojectinsightsobjective'));
 Route::any('addmeasure', array('as'=>'users.addmeasure', 'uses'=>'MeasureController@addmeasure'));
 Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@addtask'));
-Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@addtask'));
+Route::any('removetasks/{id?}', array('as'=>'users.removetasks', 'uses'=>'MeasureController@removetasks'));
 Route::any('updatemeasure', array('as'=>'users.updatemeasure', 'uses'=>'MeasureController@updatemeasure'));
 Route::any('getMeasureonUpdatePage', array('as'=>'users.getMeasureonUpdatePage', 'uses'=>'MeasureController@getMeasureonUpdatePage'));
 
@@ -79,12 +79,23 @@ Route::any('getdepartments', array('as'=>'users.getdepartments', 'uses'=>'Depart
 Route::any('getteams', array('as'=>'users.getteams', 'uses'=>'TeamController@getteams'));
 Route::any('getmembers', array('as'=>'users.getmembers', 'uses'=>'UserController@getmembers'));
 Route::any('getCycles', array('as'=>'users.getCycles', 'uses'=>'ObjectiveController@getCycles'));
+Route::any('getTaskDetails', array('as'=>'users.getTaskDetails', 'uses'=>'ObjectiveController@getTaskDetails'));
 Route::any('submitaddcycle', array('as'=>'users.submitaddcycle', 'uses'=>'ObjectiveController@submitaddcycle'));
 Route::any('getMeasureCycles', array('as'=>'users.getMeasureCycles', 'uses'=>'MeasureController@getMeasureCycles'));
 Route::any('/initiative/remove/{id?}', array('as'=>'users.remove_initiative', 'uses'=>'InitiativeController@remove_initiative'));
-
+Route::any('/objective/remove/{id?}', array('as'=>'users.remove_objective', 'uses'=>'ObjectiveController@remove_objective'));
+Route::any('/measure/remove/{id?}', array('as'=>'users.remove_measure', 'uses'=>'MeasureController@remove_measure'));
 Route::any('auth/{provider?}', 'UserController@redirectToProvider');
 Route::any('auth/{provider?}/callback', 'UserController@handleProviderCallback');
+Route::any('/', array('as'=>'users.home', 'uses'=>'UserController@home'));
+Route::any('/features-strategy-development', array('as'=>'users.features_strategy_development', 'uses'=>'UserController@features_strategy_development'));
+Route::any('/features-alignment-target-initiative', array('as'=>'users.features_alignment_target_initiative', 'uses'=>'UserController@features_alignment_target_initiative'));
+Route::any('/features-progress-tracking-and-insights', array('as'=>'users.features_progress_tracking_and_insights', 'uses'=>'UserController@features_progress_tracking_and_insights'));
+Route::any('/features-collaboration', array('as'=>'users.features_collaboration', 'uses'=>'UserController@features_collaboration'));
+Route::any('/alignya-process', array('as'=>'users.alignya_process', 'uses'=>'UserController@alignya_process'));
+Route::any('/blog', array('as'=>'users.blog', 'uses'=>'UserController@blog'));
+Route::any('/contact', array('as'=>'users.contact', 'uses'=>'UserController@contact'));
+
 Route::any('/login', array('as'=>'users.login', 'uses'=>'UserController@login'));
 Route::any('/register', array('as'=>'users.login', 'uses'=>'UserController@register'));
 Route::any('/forgot-password', array('as'=>'users.forgot_password', 'uses'=>'UserController@forgot_password'));

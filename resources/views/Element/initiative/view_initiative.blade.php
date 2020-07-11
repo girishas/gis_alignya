@@ -1,9 +1,9 @@
-<div class="modal modal-right" id="myModal" role="dialog" >
+<div class="modal modal-right" id="viewinitiativemodal" role="dialog" >
                                 <div class="modal-dialog" style="max-width: 99.99%;">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h5 class="modal-title" id="initiativeheading"></h5>
-                                            <button type="button" class="close" id="popup1hide" aria-label="Close">
+                                            <button type="button" class="close" id="viewinitiativemodalhide" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
@@ -14,18 +14,18 @@
                 <div class="col-12 survey-app">
                     <ul class="nav nav-tabs separator-tabs ml-0 mb-5" role="tablist">
                         <li class="nav-item">
-                            <a class="nav-link active" id="first-tab" data-toggle="tab" href="#first" role="tab"
-                                aria-controls="first" aria-selected="true">Milestones</a>
+                            <a class="nav-link active" id="view_initiative_first-tab" data-toggle="tab" href="#view_initiative_first" role="tab"
+                                aria-controls="view_initiative_first" aria-selected="true">Milestones</a>
                         </li>
 <li class="nav-item">
-                            <a class="nav-link " id="second-tab" data-toggle="tab" href="#second" role="tab"
-                                aria-controls="second" aria-selected="true">Tasks</a>
+                            <a class="nav-link " id="view_initiative_second-tab" data-toggle="tab" href="#view_initiative_second" role="tab"
+                                aria-controls="view_initiative_second" aria-selected="true">Tasks</a>
                         </li>
 
                         
                     </ul>
                     <div class="tab-content mb-4">
-                        <div class="tab-pane show active" id="first" role="tabpanel" aria-labelledby="first-tab">
+                        <div class="tab-pane show active" id="view_initiative_first" role="tabpanel" aria-labelledby="view_initiative_first-tab">
                             <div class="row">
 
                                 <div class="col-lg-12 col-12 mb-4">
@@ -61,7 +61,7 @@
                                 
                             </div>
                         </div>
-                        <div class="tab-pane show" id="second" role="tabpanel" aria-labelledby="second-tab">
+                        <div class="tab-pane show" id="view_initiative_second" role="tabpanel" aria-labelledby="view_initiative_second-tab">
                             <div class="row">
 
                                 <div class="col-lg-12 col-12 mb-4">

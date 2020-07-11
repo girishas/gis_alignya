@@ -1,11 +1,9 @@
-
-
-    <div class="modal modal-right" id="myModal" role="dialog" >
+<div class="modal modal-right" id="viewmeasuremodal" role="dialog" >
         <div class="modal-dialog" style="max-width: 99.99%;">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="view_measure_heading"></h5>
-                    <button type="button" class="close" id="popup1hide" aria-label="Close">
+                    <button type="button" class="close" id="view_measuremodal_hide" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -16,18 +14,18 @@
     <div class="col-12 survey-app">
     <ul class="nav nav-tabs separator-tabs ml-0 mb-5" role="tablist">
     <li class="nav-item">
-    <a class="nav-link active" id="first-tab" data-toggle="tab" href="#first" role="tab"
-        aria-controls="first" aria-selected="true">Milestones</a>
+    <a class="nav-link active" id="measure_view_first-tab" data-toggle="tab" href="#measure_view_first" role="tab"
+        aria-controls="measure_view_first" aria-selected="true">Milestones</a>
     </li>
 
     <li class="nav-item">
-    <a class="nav-link" id="third-tab" data-toggle="tab" href="#third" role="tab"
-        aria-controls="third" aria-selected="false">Tasks</a>
+    <a class="nav-link" id="measure_view_third-tab" data-toggle="tab" href="#measure_view_third" role="tab"
+        aria-controls="measure_view_third" aria-selected="false">Tasks</a>
     </li>
 
     </ul>
     <div class="tab-content mb-4">
-    <div class="tab-pane show active" id="first" role="tabpanel" aria-labelledby="first-tab">
+    <div class="tab-pane show active" id="measure_view_first" role="tabpanel" aria-labelledby="measure_view_first-tab">
     <div class="row">
 
         <div class="col-lg-8 col-12 mb-4">
@@ -103,7 +101,7 @@
     </div>
     </div>
 
-    <div class="tab-pane fade" id="third" role="tabpanel" aria-labelledby="third-tab">
+    <div class="tab-pane fade" id="measure_view_third" role="tabpanel" aria-labelledby="measure_view_third-tab">
     <div class="row">
 
         <div class="col-lg-12 col-12 mb-4">

@@ -122,6 +122,9 @@
             <tbody>
                         @if(!$data->isEmpty())
                         @foreach($data as $key => $value)
+                        <?php
+                            $remove_url = url("measure/remove/".$value->id); 
+                            $remove_msg = getLabels('are_you_sure'); ?>
                         <tr>
                             <td><a href="javascript:void(0);" onclick="viewMeasure('{!!$value->id!!}')"><i class="{!!$value->status_icon!!} heading-icon" style="color:{!!$value->bg_color!!}"></i>{!!$value->heading!!}</td>
                             <td> FY{!!$value->measure_cycle_year!!}-{!!config('constants.Quarter.'.$value->measure_cycle_quarter)!!}</td>
@@ -129,15 +132,9 @@
                             <td> <span class="badge badge-pill badge-success" style="background: {!!$value->bg_color!!}">{!!$value->status_name!!}</span></td>
                             <td>{!!$value->parent_objective!!}</td>
                             <td>
-                                <div class="btn-group float-none-xs">
-                                    <button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        {!! getLabels('action') !!}
-                                    </button>
-                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
-                                        <a class="dropdown-item" href="javascript:void(0);" onclick="updateMeasure('{!!$value->id!!}')">{!! getLabels('edit') !!}</a>
-                                        
-                                    </div>
-                                </div>
+                                <a href="javascript:void(0);" onclick="updateMeasure('{!!$value->id!!}')"><i class="simple-icon-pencil heading-icon"></i></a>
+                                    <a onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);"><i class="heading-icon simple-icon-trash"></i></a>
+                                    <a href="javascript:void(0);" onclick="viewMeasure('{!!$value->id!!}')"><i class="iconsminds-information heading-icon"></i>
                             </td>
                         </tr>
                         @endforeach
@@ -174,6 +171,7 @@
             }
     
     $("#add_objectiveBtn").click(function(){
+        $(".removeattr").attr('id','');
     $("#myModalAddMeasure").modal('show');
     });
 $("#filterBtn").click(function(){
@@ -188,8 +186,8 @@ $("#filterBtn").click(function(){
     $("#myBtn2").click(function(){
     $("#myModal2").modal('show');
     });
-    $("#popup1hide").click(function(){
-    $("#myModal").modal('hide');
+    $("#view_measuremodal_hide").click(function(){
+    $("#viewmeasuremodal").modal('hide');
     });
     $("#popup2hide").click(function(){
     $("#myModal1").modal('hide');
@@ -209,6 +207,9 @@ $("#filterBtn").click(function(){
     $("#popupaddhideTask").click(function(){
         $("#myModalAddTask").hide();
     });
+    $("#view_measuremodal_hide").click(function(){
+    $("#viewmeasuremodal").modal("hide");
+});
     });
     </script>
 <script type="text/javascript">
@@ -290,7 +291,7 @@ $("#filterBtn").click(function(){
                 }
             }
         })  
-        $("#myModal").modal('show');
+        $("#viewmeasuremodal").modal('show');
     }
     function updateMeasure(id){
         $("#ownershipmeasureupdate").html("");

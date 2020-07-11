@@ -122,6 +122,9 @@
             <tbody>
                         <?php if(!$data->isEmpty()): ?>
                         <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <?php
+                            $remove_url = url("measure/remove/".$value->id); 
+                            $remove_msg = getLabels('are_you_sure'); ?>
                         <tr>
                             <td><a href="javascript:void(0);" onclick="viewMeasure('<?php echo $value->id; ?>')"><i class="<?php echo $value->status_icon; ?> heading-icon" style="color:<?php echo $value->bg_color; ?>"></i><?php echo $value->heading; ?></td>
                             <td> FY<?php echo $value->measure_cycle_year; ?>-<?php echo config('constants.Quarter.'.$value->measure_cycle_quarter); ?></td>
@@ -129,16 +132,9 @@
                             <td> <span class="badge badge-pill badge-success" style="background: <?php echo $value->bg_color; ?>"><?php echo $value->status_name; ?></span></td>
                             <td><?php echo $value->parent_objective; ?></td>
                             <td>
-                                <div class="btn-group float-none-xs">
-                                    <button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <?php echo getLabels('action'); ?>
-
-                                    </button>
-                                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
-                                        <a class="dropdown-item" href="javascript:void(0);" onclick="updateMeasure('<?php echo $value->id; ?>')"><?php echo getLabels('edit'); ?></a>
-                                        
-                                    </div>
-                                </div>
+                                <a href="javascript:void(0);" onclick="updateMeasure('<?php echo $value->id; ?>')"><i class="simple-icon-pencil heading-icon"></i></a>
+                                    <a onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);"><i class="heading-icon simple-icon-trash"></i></a>
+                                    <a href="javascript:void(0);" onclick="viewMeasure('<?php echo $value->id; ?>')"><i class="iconsminds-information heading-icon"></i>
                             </td>
                         </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -176,6 +172,7 @@
             }
     
     $("#add_objectiveBtn").click(function(){
+        $(".removeattr").attr('id','');
     $("#myModalAddMeasure").modal('show');
     });
 $("#filterBtn").click(function(){
@@ -190,8 +187,8 @@ $("#filterBtn").click(function(){
     $("#myBtn2").click(function(){
     $("#myModal2").modal('show');
     });
-    $("#popup1hide").click(function(){
-    $("#myModal").modal('hide');
+    $("#view_measuremodal_hide").click(function(){
+    $("#viewmeasuremodal").modal('hide');
     });
     $("#popup2hide").click(function(){
     $("#myModal1").modal('hide');
@@ -211,6 +208,9 @@ $("#filterBtn").click(function(){
     $("#popupaddhideTask").click(function(){
         $("#myModalAddTask").hide();
     });
+    $("#view_measuremodal_hide").click(function(){
+    $("#viewmeasuremodal").modal("hide");
+});
     });
     </script>
 <script type="text/javascript">
@@ -292,7 +292,7 @@ $("#filterBtn").click(function(){
                 }
             }
         })  
-        $("#myModal").modal('show');
+        $("#viewmeasuremodal").modal('show');
     }
     function updateMeasure(id){
         $("#ownershipmeasureupdate").html("");

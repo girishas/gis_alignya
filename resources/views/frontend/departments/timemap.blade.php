@@ -23,55 +23,54 @@
              
             <div class="row mb-4">
                 <div class="col-lg-12 col-md-12 mb-4">
+                {!! Form::open(array('url' => array('/timemap'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+                
                 <div class="card mb-4">
                     <div class="card-body">
                         <h5 class="mb-4">Filters</h5>
                         <div class="row">
                         <div class="col-md-2">
                             <label>Goal Cycle</label>
-                            <select class="form-control select2-single" data-width="100%">
+                            {!! Form::select('cycle_id', array(0=>'Select Goal Cycle')+$al_goal_cycles, isset($_POST['cycle_id'])?$_POST['cycle_id']:null, array('class' => 'form-control select2-single'))!!}
+							<!--<select class="form-control select2-single" data-width="100%">
                                 <option >5 Year Strategy</option>
                                 <option >3 Year Strategy</option>
                                 <option >FY-2020</option>
-                            </select>
+                            </select>-->
                         </div>
                         <div class="col-md-2">
-                            <label>Org Unit</label>
-                            <select class="form-control select2-single" data-width="100%">
-                                <option label="&nbsp;">Org Unit 1</option>
-                                <option label="&nbsp;">Org Unit 2</option>
-                                <option label="&nbsp;">Org Unit 3</option>
-                            </select>
+                            <label>Department</label>
+                            {!! Form::select('department_id', array(0=>'Select Department')+$all_department, isset($_POST['department_id'])?$_POST['department_id']:null, array('class' => 'form-control select2-single'))!!}
+							
                         </div>
                         <div class="col-md-2">
                             <label>Owner</label>
-                            <select class="form-control select2-single" data-width="100%">
-                                <option label="&nbsp;">Mark</option>
-                                <option label="&nbsp;">John</option>
-                                <option label="&nbsp;">Kunal</option>
-                            </select>
+                            {!! Form::select('owner_id', array(0=>'Select Owner')+$all_users, isset($_POST['owner_id'])?$_POST['owner_id']:null, array('class' => 'form-control select2-single'))!!}
+							
                         </div>
                         <div class="col-md-2">
                             <label>Perspective</label>
-                            <select class="form-control select2-single" data-width="100%">
-                                <option label="&nbsp;">Perspective 1</option>
-                                <option label="&nbsp;">Perspective 2</option>
-                                <option label="&nbsp;">Perspective 3</option>
-                            </select>
+                             {!! Form::select('perspective_id', array(0=>'Select Perspective')+$all_perspective, isset($_POST['perspective_id'])?$_POST['perspective_id']:null, array('class' => 'form-control select2-single'))!!}
+							
                         </div>
 						
 						<div class="col-md-2">
                             <label>Strategic Theme</label>
-                            <select class="form-control select2-single" data-width="100%">
-                                <option label="&nbsp;">Theme 1</option>
-                                <option label="&nbsp;">Theme 2</option>
-                                <option label="&nbsp;">Theme 3</option>
-                            </select>
+                             {!! Form::select('theme_id', array(0=>'Select Theme')+$al_themes, isset($_POST['theme_id'])?$_POST['theme_id']:null, array('class' => 'form-control select2-single'))!!}
+							
+                        </div>
+						<div class="col-md-2">
+                         
+                   <button type="submit" style="width:100%;" class="btn btn-primary">Search</button>
+                <a class="btn btn-dark mb-1 steamerst_link" style="width:100%;" href="{!!url('timemap')!!}">Show All</a>
+
+							
                         </div>
                     </div>
                     </div>
                 </div>
-                    <div class="card">
+				 {!!Form::close()!!}
+				    <div class="card">
                         <div class="card-body">
                            
                             <table class="table">
@@ -84,69 +83,39 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <th scope="row">5 Years</th>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Increase Share Holder Value</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Revenue</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th ></th>
-                                        <td></td>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Net Profit</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th></th>
-                                        <td></td>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Expenses</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row">3 Years</th>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Frequent Reliable Departures</td>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Average No. Of Daily Departures Per Route</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th></th>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Comparable to Other Travel</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Customer Experince Survey</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th></th>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Very Low Ticket Prices</td>
-                                        <td><i class="fa fa-arrow-circle-down" style="font-size:23px;color:red;"></i> Ticket Prices Differential</td>
-                                        <td></td>
-                                    </tr>
-                                    
-                                    <tr>
-                                        <th scope="row">FY-2020</th>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Fast Ground Turn Around</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Time At Gate</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Create New Employee Traning</td>
-                                    </tr>
-                                    <tr>
-                                        <th></th>
-                                        <td></td>
-                                        <td></td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Airport Traffic</td>
-                                    </tr>
-                                    <tr>
-                                        <th ></th>
-                                        <td><i class="fa fa-arrow-circle-up" style="font-size:23px;color:green;"></i> Good Locations</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> % of population served within 25 miles</td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th ></th>
-                                        <td><i class="fa fa-arrow-circle-down" style="font-size:23px;color:red;"></i> Direct Routes</td>
-                                        <td><i class="fa fa-arrow-circle-down" style="font-size:23px;color:red;"></i> % of tickets with direct routes</td>
-                                        <td><i class="fa fa-square" style="font-size:23px;color:yellow;"></i> Airport Traffic</td>
-                                    </tr>
-                                    
-                                </tbody>
+                                    @if(!empty($timemap_data))
+                                    @foreach($timemap_data as $skey => $svalue)
+										@foreach($svalue as $key => $value)
+											<tr>
+												@if($key == '0')
+												<th scope="row">{!!$value->cycle_name!!}</th>
+												@else
+												<th scope="row"></th>
+												@endif
+												<td><i class="{!!$value->icons !!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}</td>
+												<td></td>
+												<td></td>
+											</tr>
+											@foreach($value->getMeasures as $mKey=>$mValue)
+											<tr>
+												<th scope="row"></th>
+												<td><i class="{!!$value->icons !!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}</td>
+												<td><i class="{!!$mValue->icons !!} heading-icon" style="color:{!!$mValue->bg_color!!}"></i> {!!$mValue->heading!!}</td>
+												<td></td>
+											</tr>
+											@endforeach
+											@foreach($value->getInitiatives as $iKey=>$iValue)
+											<tr>
+												<th scope="row"></th>
+												<td><i class="{!!$value->icons !!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}</td>
+												<td></td>
+												<td><i class="{!!$iValue->icons !!} heading-icon" style="color:{!!$iValue->bg_color!!}"></i> {!!$iValue->heading!!}</td>
+											</tr>
+											@endforeach
+										@endforeach
+									@endforeach
+                                    @endif
+								</tbody>
                             </table>
                         </div>
                     </div>

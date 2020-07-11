@@ -1,7 +1,7 @@
 
                   <div class="modal modal-right" id="myModal" role="dialog" >
                       <div class="modal-dialog" style="max-width: 99.99%;">
-                          <div class="modal-content">
+                          <div class="modal-content view_objective_background_popup">
                               <div class="modal-header">
                                   <h5 class="modal-title" id="objective_name_view"></h5>
                                   <button type="button" class="close" id="popup1hide" aria-label="Close">
@@ -44,7 +44,7 @@
                                                                       <tbody id="measurelistvieww"></tbody>
                                                                       <tbody>
                                                                           <tr>
-                                                                              <th scope="row"><a href="javascript:void(0);" ><h6 id="myBtn3"><i class="simple-icon-plus btn-group-icon"></i>
+                                                                              <th scope="row"><a href="javascript:void(0);" onclick="addMeasure()"><h6><i class="simple-icon-plus btn-group-icon"></i>
                                                                                       Add Measure</h6></a></th>
                                                                               <td colspan="2"></td>
                                                                               <td></td>
@@ -172,17 +172,17 @@
                                <table class="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th scope="col"><h6>Tasks</h6></th>
-                                        <th scope="col"><h6>Owner</h6></th>
-                                        <th scope="col"><h6>Status</h6></th>
-                                        <th scope="col"><h6>Action</h6></th>
+                                        <th scope="col"><h6><strong>Tasks</strong></h6></th>
+                                        <th scope="col"><h6><strong>Owner</strong></h6></th>
+                                        <th scope="col"><h6><strong>Status</strong></h6></th>
+                                        <th scope="col"><h6><strong>Action</strong></h6></th>
                                     </tr>
                                 </thead>
                                 <tbody id="tasklistid">
                                 </tbody>
                                 <tbody>
                                   <tr>
-                                      <th scope="row"><a href="javascript:void(0);" onclick="addtask()"><h6><i class="simple-icon-plus btn-group-icon"></i> Add Task</a></h6></th>
+                                      <th scope="row"><a href="javascript:void(0);" onclick="addtask()"><h6><strong><i class="simple-icon-plus btn-group-icon"></i> Add Task</strong></a></h6></th>
                                   </tr>
                                 </tbody>
                             </table>

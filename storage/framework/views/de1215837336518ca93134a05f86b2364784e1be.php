@@ -81,7 +81,7 @@
                                             <div class="card-body text-center">
                                                 <i class="simple-icon-list"></i>
                                                 <p class="card-text mb-0">Tasks</p>
-                                                <p class="lead text-center">512</p>
+                                                <p class="lead text-center"><?php echo $tasks_count; ?></p>
                                             </div>
                                         </a>
                                     </div>
@@ -148,91 +148,24 @@
                                         <th>Task</th> 
                                         <th>Owner</th> 
                                         <th>Status</th>
-                                        <th>Action</th>
                                     </tr>
                                 </thead> 
                                 <tbody>
-                                    <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <span class="align-middle d-inline-block">Complete FY2020 Targets</span>
-                                    </a>
-                                        </td>
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Mark</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-primary">In-Progress</span>  
-                                        </td>
-                                        <td><a href="javascript:void(0);"><i class="simple-icon-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);"><i class="simple-icon-action-undo"></i></a></td>
-                                       
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <span class="align-middle d-inline-block">Assign sales orders</span>
-                                    </a>
-                                        </td>
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Susie</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-primary">In-Progress</span>  
-                                        </td>
-                                        <td><a href="javascript:void(0);"><i class="simple-icon-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);"><i class="simple-icon-action-undo"></i></a></td>
-                                       
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <span class="align-middle d-inline-block">Check assignments</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">John</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-danger">AT RISK</span>  
-                                        </td>
-                                        <td><a href="javascript:void(0);"><i class="simple-icon-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);"><i class="simple-icon-action-undo"></i></a></td>
-                                    </tr>
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <span class="align-middle d-inline-block">UI updates</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Zac</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-success">Completed</span>  
-                                        </td>
-                                        <td><a href="javascript:void(0);"><i class="simple-icon-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);"><i class="simple-icon-action-undo"></i></a></td>
-                                       
-                                    </tr>
-                                     
-                                     <tr>
-                                        <td>
-                                          <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="Apps.Todo.Details.html">
-                                        <span class="align-middle d-inline-block">Report submission</span>
-                                    </a>
-                                        </td>
-                                        
-                                         
-                                         <td> 
-                                            <p class="text-semi-muted mb-2">Lie</p>  
-                                        </td>
-                                          <td> 
-                                            <span class="badge badge-pill badge-success">Completed</span>  
-                                        </td>
-                                        <td><a href="javascript:void(0);"><i class="simple-icon-pencil"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);"><i class="simple-icon-action-undo"></i></a></td>
-                                       
-                                    </tr>
+                                    <?php if(!empty($tasklist)): ?>
+                                        <?php $__currentLoopData = $tasklist; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <tr>
+                                            <td>
+                                                <span class="align-middle d-inline-block"><?php echo $value['task_name']; ?></span>
+                                            </td>
+                                            <td> 
+                                                <p class="text-semi-muted mb-2"><?php echo $value['owners']; ?></p>  
+                                            </td>
+                                            <td> 
+                                                <span class="badge badge-pill badge-primary" style="background: <?php echo $value['bg_color']; ?> !important"><?php echo $value['status_name']; ?></span>  
+                                            </td>
+                                        </tr>
+                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>

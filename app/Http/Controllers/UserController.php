@@ -7,6 +7,7 @@ use App\Models\Country;
 use App\Models\Notification;
 use App\Models\SubscriptionPlan;
 use App\Models\Objective;
+use App\Models\Tasks;
 use App\Models\Measure;
 use App\Models\GoalCycles;
 use App\Models\Perspective;
@@ -42,11 +43,41 @@ class UserController extends Controller
 	public function __construct()
     {
        Parent::__construct();
-		$this->middleware('auth', ['except' => ['resizeProfileImageGoogle', 'resizeProfileImage', 'profile', 'resizeProfileImageFacebook', 'verifyMail', 'findOrCreateUser', 'redirectToProvider', 'handleProviderCallback', 'admin_login', 'admin_register', 'login', 'register', 'forgot_password', 'resetpassword', 'admin_forgot_password','checkemailexist']]);
-		
-		
-    }
+		$this->middleware('auth', ['except' => ['resizeProfileImageGoogle', 'resizeProfileImage', 'profile', 'resizeProfileImageFacebook', 'verifyMail', 'findOrCreateUser', 'redirectToProvider', 'handleProviderCallback', 'admin_login', 'admin_register', 'home','features_strategy_development','features_alignment_target_initiative','features_progress_tracking_and_insights','features_collaboration','alignya_process','blog','contact','login', 'register', 'forgot_password', 'resetpassword', 'admin_forgot_password','checkemailexist']]);
+	}
 	
+	public function home(){
+		$page_title = "Home";
+		return view('frontend.users.home', compact('page_title'));
+	}
+	public function features_strategy_development(){
+		$page_title = "Home";
+		return view('frontend.users.features_strategy_development', compact('page_title'));
+	}
+	public function features_alignment_target_initiative(){
+		$page_title = "Home";
+		return view('frontend.users.features_alignment_target_initiative', compact('page_title'));
+	}
+	public function features_progress_tracking_and_insights(){
+		$page_title = "Home";
+		return view('frontend.users.features_progress_tracking_and_insights', compact('page_title'));
+	}
+	public function features_collaboration(){
+		$page_title = "Home";
+		return view('frontend.users.features_collaboration', compact('page_title'));
+	}
+	public function alignya_process(){
+		$page_title = "Home";
+		return view('frontend.users.alignya_process', compact('page_title'));
+	}
+	public function blog(){
+		$page_title = "Home";
+		return view('frontend.users.blog', compact('page_title'));
+	}
+	public function contact(){
+		$page_title = "Home";
+		return view('frontend.users.contact', compact('page_title'));
+	}
 	
 	
 	
@@ -262,7 +293,7 @@ class UserController extends Controller
 						return json_encode(array("status" => "error", "message" => getLabels('credentials_not_valid')));
 					} 
 				}else {	
-					return json_encode(array("status" => "error",  "message" => getLabels('incorrect_username_pwd')));	
+					return json_encode(array("status" => "error",  "message" => getLabels('incorrect_username_password')));	
 				}
 			}
 		}
@@ -277,8 +308,9 @@ class UserController extends Controller
 		$page_title = getLabels('Dashboard');
 		$objectives_count = Objective::where('company_id',Auth::User()->company_id)->count();
 		$measure_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',1)->count();
-		$initiative_count = Measure::where('category_type',2)->count();
-		$kpi_count = Measure::where('category_type',3)->count();
+		$initiative_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',2)->count();
+		$kpi_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',3)->count();
+		$tasks_count = Tasks::where('company_id',Auth::User()->company_id)->count();
 		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('role_id',5)->pluck('full_name','id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck("department_name","id");
 		$teamleads = User::where('role_id',4)->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
@@ -287,8 +319,15 @@ class UserController extends Controller
 		$contributers = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
 		$objlist = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color','o.heading as parent_objective','al_goal_cycles.cycle_name','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
-		
-		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist'));
+		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('company_id',Auth::User()->company_id)->orderBy('id','desc')->select('al_tasks.*','al_master_status.name as status_name','al_master_status.icons as status_icon','al_master_status.bg_color')->get();
+		if(!empty($tasklist)){
+			$tasklist = $tasklist->toArray();
+			foreach ($tasklist as $key => $tasks) {
+				$owners = User::whereIn('id',explode(',',$tasks['owners']))->pluck('first_name');
+				$tasklist[$key]['owners'] = implode(',', $owners->toArray());
+			}
+		}
+		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist','tasks_count','tasklist'));
 	}
 	
 	

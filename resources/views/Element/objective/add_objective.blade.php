@@ -98,11 +98,7 @@
                                 </div>
                             </div>
 
-@include('Element/objective/scorecards')
-@include('Element/objective/add_scorecard')
-@include('Element/objective/themes')
-@include('Element/objective/add_theme')
-@include('Element/objective/add_cycle')
+
 
 <script type="text/javascript">
     function scorecardpopup(){

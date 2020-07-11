@@ -82,7 +82,7 @@ class ObjectiveController extends Controller
 		}
 		
 		
-		$data  = $data->select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color','o.heading as parent_objective','al_goal_cycles.cycle_name','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->paginate(config('constants.PAGINATION'));
+		$data  = $data->orderBy('al_objectives.id','desc')->select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color','o.heading as parent_objective','al_goal_cycles.cycle_name','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->paginate(config('constants.PAGINATION'));
 		
 		if(isset($_GET['s']) and $_GET['s']){
 			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
@@ -288,7 +288,7 @@ class ObjectiveController extends Controller
 		}else{
 			$subobjective = array();
 		}
-		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',0)->where('al_tasks.objective_id',$input['id'])->select('al_master_status.name as status_name','al_tasks.*')->get();
+		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',0)->where('al_tasks.objective_id',$input['id'])->select('al_master_status.name as status_name','al_master_status.icons as status_icon','al_master_status.bg_color','al_tasks.*')->get();
 		if (!empty($tasklist)) {
 			$tasklist = $tasklist->toArray();
 			foreach ($tasklist as $key => $value) {
@@ -356,4 +356,22 @@ class ObjectiveController extends Controller
 			return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
 		}
 	} 
+
+	public function getTaskDetails(){
+		$inputs = $this->request->all();
+		$task_id = $inputs['task_id'];
+		$data['task_details'] = Tasks::find($task_id);
+		$data['owners'] = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as owner_name'), 'id')->where('company_id',Auth::User()->company_id)->pluck('owner_name','id');
+		return json_encode($data);
+	}
+
+	public function remove_objective($id = null){		
+		$data = Objective::destroy($id);
+		if($data){
+			$results = array("type" => "success", "url" => url('objectives'), "message" => getLabels('objective_removed'));
+		}else{
+			$results = array("type" => "error", "url" => url('objectives'), "message" => getLabels('objective_not_removed'));
+		}
+		return json_encode($results);
+	}
 }

@@ -31,7 +31,7 @@
                             <input type="hidden" name="owner_user_id" id="owner_user_id">
                             <input type="hidden" name="measure_department_id" id="measure_department_id">
                             <input type="hidden" name="measure_team_id" id="measure_team_id">
-                            <input type="hidden" name="objective_id" id="objectiveId">
+                            <input type="hidden" name="objective_id" id="objectiveId" class="removeattr">
                         </div>
                        
                         <div class="form-group" id = "hideforobj">
@@ -288,6 +288,7 @@
         var objective_id =  $("#objectiveId").val();
         var token = "<?php echo csrf_token(); ?>";
         var company_id = "<?php echo Auth::User()->company_id; ?>";
+        $("#measureCycle").html("");
         $.ajax({
             type:"POST",
             url: "<?php echo url('getMeasureCycles'); ?>",
