@@ -69,6 +69,7 @@
 											<th> {!!  getLabels('Owner') !!} </th>
                                             <th> {!!  getLabels('Status') !!} </th>
                                            <th> {!! getLabels('Aligned to') !!} </th>
+                                           <th>{!!"% ".getLabel('complete')!!}</th>
 											<th> {!! getLabels('action') !!} </th>
 										</tr>
 									</thead>
@@ -86,6 +87,13 @@
 													<td> <p class="text-semi-muted mb-2">{!!$value->owner_name!!}</p></td>
                                                     <td> <span class="badge badge-pill badge-success" style="background: {!!$value->bg_color!!}">{!!$value->status_name!!}</span></td>
                                                     <td>{!!$value->parent_objective!!}</td>
+                                                    <td> <div class="c100 p{!!getPercentComplateObjective($value->id)>100?100:getPercentComplateObjective($value->id)!!} small" style="font-size: 50px;">
+                                                        <span>{!!getPercentComplateObjective($value->id)!!}%</span>
+                                                        <div class="slice">
+                                                            <div class="bar"></div>
+                                                            <div class="fill"></div>
+                                                        </div>
+                                                    </div></td>
 													<td>
 														<a  href="javascript:void(0);" onclick="updateObjective('{!!$value->id!!}')" title="Edit"><i class="simple-icon-pencil heading-icon"></i></a>
                                                                 <a  onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
@@ -119,6 +127,108 @@
 
 
 <script>
+function measureGraph(target_data,labels,actual_data,max_value,projection_data){
+
+    document.getElementById("linechartformeasureobj").innerHTML = " ";
+    var contributionChartOptions = {
+    type: "LineWithShadow",
+    options: {
+      plugins: {
+        datalabels: {
+          display: false
+        }
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [
+          {
+            gridLines: {
+              display: true,
+              lineWidth: 1,
+              color: "rgba(0,0,0,0.1)",
+              drawBorder: false
+            },
+            ticks: {
+              beginAtZero: true,
+              stepSize: 50,
+              min: 0,
+              max: parseInt(max_value),
+              padding: 20
+            }
+          }
+        ],
+        xAxes: [
+          {
+            gridLines: {
+              display: false
+            }
+          }
+        ]
+      },
+      legend: {
+        display: false
+      },
+      
+    },
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          borderWidth: 2,
+          label: "",
+          data: target_data,
+          borderColor: "red",
+       
+          pointBorderColor: "orange",
+          pointHoverBackgroundColor: "#2b6ca1",
+         
+          pointRadius: 4,
+          pointBorderWidth: 2,
+          pointHoverRadius: 5,
+          fill: false
+        },
+        {
+          borderWidth: 2,
+          label: "",
+          data: actual_data,
+          borderColor: "primary",
+       
+          pointBorderColor: "blue",
+          pointHoverBackgroundColor: "#2b6ca1",
+         
+          pointRadius: 4,
+          pointBorderWidth: 2,
+          pointHoverRadius: 5,
+          fill: false
+        },
+        {
+          borderWidth: 2,
+          label: "",
+          data: projection_data,
+          borderColor: "yellow",
+       
+          pointBorderColor: "blue",
+          pointHoverBackgroundColor: "#2b6ca1",
+         
+          pointRadius: 4,
+          pointBorderWidth: 2,
+          pointHoverRadius: 5,
+          fill: false
+        },
+        
+      ]
+    }
+  };
+
+  if (document.getElementById("linechartformeasureobj")) {
+    var contributionChart1 = new Chart(
+      document.getElementById("linechartformeasureobj").getContext("2d"),
+      contributionChartOptions
+    );
+  }
+
+}
     function removetask(id){
         var token = "{!!csrf_token()!!}";
         $.ajax({
@@ -161,9 +271,11 @@
     }
     function addMeasure(){
         var objid = $("#objective_idview").val();
-        $("#hideforobj").hide();
+        $("#hideforobj").html("");
         $("#objectiveId").val(objid);
         onchangeobjectivegetcycle();
+        localStorage.setItem('popup_id',objid);
+        $(".is_popup_id").val(1);
         $("#myModalAddMeasure").modal("show");
     }
     function addObjectivepop(slug){
@@ -214,6 +326,14 @@
     }
 
 $(document).ready(function(){
+     var is_popup_content = "{!!session('popup_content_message')?session('popup_content_message'):''!!}";
+        if(is_popup_content != ""){
+            viewobjective(localStorage.getItem('popup_id'));
+        }
+    var is_popup = "{!!session('is_popup')?session('is_popup'):''!!}";
+    if(is_popup != ''){
+        viewobjective(localStorage.getItem('popup_id'));
+    }
     var adderrormessage = "{!!session('adderrormessage')?session('adderrormessage'):''!!}";
     if(adderrormessage != ''){
         $("#myModalAddObjective").modal('show');
@@ -277,6 +397,7 @@ $(document).ready(function(){
 
 </script>
 <script type="text/javascript">
+
     function chartload(milestones){
 
         am4core.ready(function() {
@@ -532,9 +653,23 @@ chart.scrollbarX = new am4core.Scrollbar();
         }
         return value;
     }
+    function viewmeasureGraph(id){
+        var token = "{!!csrf_token()!!}";
+        var company_id = "{!!Auth::User()->company_id!!}"; 
+        $.ajax({
+            type:"POST",
+            url: "{!!url('getMeasureonUpdatePage')!!}",
+            data:'_token='+token+'&company_id='+company_id+'&measure_id='+id,
+            dataType:'JSON',
+            success: function (response) {
+                measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
+              }
+        });
+      
+    }
     function viewobjective(id){
-        localStorage.setItem('key','viewobjctive');
-        localStorage.setItem('keyid',id);
+        $(".is_popup").val(1);
+        localStorage.setItem('popup_id',id);
         var token = "{!!csrf_token()!!}";
         var company_id = "{!!Auth::User()->company_id!!}"; 
         $("#measurelistvieww").html("");
@@ -549,19 +684,30 @@ chart.scrollbarX = new am4core.Scrollbar();
             data:'_token='+token+'&company_id='+company_id+'&id='+id,
             dataType:'JSON',
             success: function (response) {
+                var numberofmeasure = response.measuresList.length;
+                if(numberofmeasure > 0){
+                    $("#thisdivshoworhide").show();
+                    var firstmeasure = response.measuresList[0];
+                    $('#graphtitleobjmeasure').html('<p class="mb-0 truncate"><i class="'+response.measuresList[0].status_icon+' heading-icon" style="color:'+response.measuresList[0].bg_color+';"></i>'+response.measuresList[0].heading+'</p><p class="text-muted mb-0 text-small" style="margin-left: 35px">FY'+response.measuresList[0].measure_cycle_year+'-'+getQuarter(response.measuresList[0].measure_cycle_quarter)+'</p>');
+                        measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
+                }else{
+                    $("#thisdivshoworhide").hide();
+
+                }
+
                 $("#objective_name_view").html('<i class="'+response.objectiveinfo.status_icon+' heading-icon" style="color:'+response.objectiveinfo.bg_color+';"></i>'+response.objectiveinfo.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> '+response.objectiveinfo.cycle_name+'  <i class="simple-icon-people"></i> '+response.objectiveinfo.owner_name );
                 $("#objective_idview").val(id);
                 for (var i = 0; i < response.measuresList.length; i++) {
-                    $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewMeasure('+response.measuresList[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
+                    $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick = "viewmeasureGraph('+response.measuresList[i].id+')"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.measuresList[i].percentage)>100?100:Math.round(response.measuresList[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.measuresList[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewMeasure('+response.measuresList[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
                 }
                 for (var i = 0; i < response.subobjective.length; i++) {
                     $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewobjective('+response.subobjective[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
                 }
                 for (var i = 0; i < response.initiativeList.length; i++) {
-                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewInitiative('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
+                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewInitiative('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
                 }
                 for (var i = 0; i < response.tasklist.length; i++) {
-                    $("#tasklistid").append('<tr><td><i class="'+response.tasklist[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; </td></tr>'); 
+                   $("#tasklistid").append('<tr><td><i class="'+response.tasklist[i].status_icon+' heading-icon" style="color:'+response.tasklist[i].bg_color+';"></i> '+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; </td></tr>'); 
                 }
             }  
         });

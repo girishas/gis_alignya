@@ -28,7 +28,7 @@
 
                             <?php if($errors->first('task_name')): ?><div class="error"><?php echo $errors->first('task_name'); ?></div><?php endif; ?>
                             <input type="hidden" name="task_id" id="update_task_id">
-                            
+                             <input type="hidden" name="is_popup" class="is_popup">
                         </div>
                         <div class="form-group">
                             <label>Owners</label>

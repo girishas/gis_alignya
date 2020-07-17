@@ -32,11 +32,12 @@
                             <input type="hidden" name="measure_department_id" id="measure_department_id">
                             <input type="hidden" name="measure_team_id" id="measure_team_id">
                             <input type="hidden" name="objective_id" id="objectiveId" class="removeattr">
+                            <input type="hidden" name="is_popup" class="is_popup_id">
                         </div>
                        
                         <div class="form-group" id = "hideforobj">
                             <label>Objective</label>
-                            <?php echo Form::select('objective_id',$objectives,null,array('class'=>'form-control select2-single','id'=>'objectiveId', 'onchange'=>'onchangeobjectivegetcycle()')); ?>
+                            <?php echo Form::select('objective_id',array(""=>"plae") + $objectives->toArray(),null,array('class'=>'form-control select2-single','id'=>'objectiveId', 'onchange'=>'onchangeobjectivegetcycle()')); ?>
 
                             <?php if($errors->first('objective_id')): ?><div class="error"><?php echo $errors->first('objective_id'); ?></div><?php endif; ?>
                         </div>
@@ -74,8 +75,9 @@
 
                        <div class="form-group col-md-6">
                          <label>Please Select</label>
-                            <select class="form-control ownership" onchange="ownershipdrop()" name="ownership" data-width="100%" id = "ownershipmeasure">
+                            <select class="form-control ownership select2-single" onchange="ownershipdropmea()" name="ownership" data-width="100%" id = "ownershipmeasure">
                                 <?php if(!empty($departments)): ?>
+                                <option value="">Please Select</option>
                                 <?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $vale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <option value="<?php echo $key; ?>"><?php echo $vale; ?></option>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -187,7 +189,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="custom-control custom-checkbox "><input type="checkbox" class="custom-control-input" id="customCheckThis" name="is_auto"> <label class="custom-control-label" for="customCheckThis">Do you want to create dynamic milestones</label></div>
+                                <div class="custom-control custom-checkbox "><input type="checkbox" class="custom-control-input" id="customCheckThis" name="is_auto" checked="checked"> <label class="custom-control-label" for="customCheckThis">Do you want to create dynamic milestones</label></div>
                                 
                             </div>
                              <div class="col-md-6">
@@ -256,11 +258,11 @@
             }  
         });
     }
-    function ownershipdrop(){
-        $("#obj_department_id").val("");
-        $("#obj_teamid").val("");
-        $("#obj_ind_owner_user_id").val(""); 
-        var id = $("#ownership").val();
+    function ownershipdropmea(){
+        $("#measure_department_id").val("");
+        $("#measure_team_id").val("");
+        $("#owner_user_id").val(""); 
+        var id = $("#ownershipmeasure").val();
         var team_type = $("#measure_team_type").val();
         if(team_type == "department"){
             $("#measure_department_id").val(id);

@@ -11,6 +11,7 @@ use App\Models\Perspective;
 use App\Models\Department;
 use App\Models\DepartmentMember;
 use App\Models\TeamsMembers;
+use App\Models\Milestones;
 use App\Models\Status;
 use App\Models\Objective;
 use App\Models\Measure;
@@ -258,7 +259,12 @@ class ObjectiveController extends Controller
 			$objective = Objective::create($input);
 			
 			if($objective){
-				return redirect()->back()->with('message',getLabels('objective_saved_successfully'));
+				if($this->request->get('is_popup')){
+					return redirect()->back()->with('popup_content_message',getLabels('objective_saved_successfully'));
+				}else{
+					//return redirect()->back();
+					return redirect()->back()->with('message',getLabels('objective_saved_successfully'));
+				}
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
 			}
@@ -269,12 +275,29 @@ class ObjectiveController extends Controller
 		$data = array();
 		$input = $this->request->all();
 		$objectiveinfo = Objective::leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->where('al_objectives.id',$input['id'])->select('al_objectives.*','al_goal_cycles.cycle_name','al_master_status.name as status_name','al_master_status.bg_color','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->first();
-		$measuresList = Measure::leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.objective_id',$input['id'])->where('al_measures.category_type',1)->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
+		$measuresList = Measure::leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.objective_id',$input['id'])->where('al_measures.category_type',1)->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->orderBy('id','desc')->get();
 		if(!empty($measuresList)){
 			$measuresList = $measuresList->toArray();
+			foreach ($measuresList as $key => $value) {
+				$avg = Milestones::where('measure_id',$value['id'])->avg('sys_progress');
+				$measuresList[$key]['percentage'] = (!empty($avg))?$avg:0;
+				$measuresList[$key]['plucked_milestone'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->orderBy('start_date','asc')->pluck('sys_target')->toArray();
+				$measuresList[$key]['actual_graph_data'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->orderBy('start_date','asc')->pluck('mile_actual')->toArray();
+				$measuresList[$key]['graph_labels'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->orderBy('start_date','asc')->pluck('milestone_name')->toArray();
+				$measuresList[$key]['max_mile'] = Milestones::select(DB::raw('MAX(GREATEST(COALESCE(mile_actual,0),COALESCE(sys_target,0),COALESCE(projection_target,0))) as max_value'))->where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->value('max_value');
+				$measuresList[$key]['pojected_graph_data'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->orderBy('start_date','asc')->pluck('projection_target')->toArray();
+			}
+			if(!empty($measuresList)){
+				$data['plucked_milestone'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$measuresList[0]['id'])->orderBy('start_date','asc')->pluck('sys_target')->toArray();
+				$data['actual_graph_data'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$measuresList[0]['id'])->orderBy('start_date','asc')->pluck('mile_actual')->toArray();
+				$data['graph_labels'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$measuresList[0]['id'])->orderBy('start_date','asc')->pluck('milestone_name')->toArray();
+				$data['max_mile'] = Milestones::select(DB::raw('MAX(GREATEST(COALESCE(mile_actual,0),COALESCE(sys_target,0),COALESCE(projection_target,0))) as max_value'))->where('company_id',Auth::User()->company_id)->where('measure_id',$measuresList[0]['id'])->value('max_value');
+				$data['pojected_graph_data'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$measuresList[0]['id'])->orderBy('start_date','asc')->pluck('projection_target')->toArray();
+			}
 		}else{
 			$measuresList = array();
 		}
+
 		$initiativeList = Measure::leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.objective_id',$input['id'])->where('al_measures.category_type',2)->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
 
 		if(!empty($initiativeList)){
@@ -297,6 +320,7 @@ class ObjectiveController extends Controller
 				$tasklist[$key]['owners'] = implode(',', $list);
 			}
 		}
+
 		$data['objectiveinfo'] = $objectiveinfo;
 		$data['measuresList'] = $measuresList;
 		$data['initiativeList'] = $initiativeList;

@@ -102,16 +102,9 @@
 													</td>
 													<td class="text-center">{!!config('constants.STATUS.'.$val->status)!!}</td>
 													<td>
-														<div class="btn-group float-none-xs">
-															<button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																{!! getLabels('action') !!}
-															</button>
-															<div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
-																<a class="dropdown-item" href="javascript:void(0);" onclick="updatemember({!!$val->id!!})">{!! getLabels('edit') !!}</a>
-																<a class="dropdown-item" href="javascript:void(0);" onclick="viewmember({!!$val->id!!})">{!! getLabels('view') !!}</a>
+														<a href="javascript:void(0);" onclick="updatemember({!!$val->id!!})"><i class="simple-icon-pencil"></i></a>
+																<a href="javascript:void(0);" onclick="viewmember({!!$val->id!!})"><i class="iconsminds-information"></i></a>
 																
-															</div>
-														</div>
 													</td>
 												</tr>
 											@endforeach
@@ -141,7 +134,7 @@
             </div>
         </div>
     </main>
-    @extends('Element/users/addmember')
+    @include('Element/users/addmember')
     <div id="viewMemberShow"></div>
     <div id="modalShow"></div>
     <script type="text/javascript">

@@ -29,6 +29,9 @@
                             <input type="hidden" name="measure_team_id" id="measure_team_id_update">
                             <input type="hidden" name="id" id="measure_id_update">
                             <input type="hidden" name="measure_target" class ="measure_target_updateval">
+                            <input type="hidden" name="measure_actual" id ="measure_actual">
+                            <input type="hidden" name="calculation_type" id ="calculation_type">
+                            <input type="hidden" name="is_popup" class="is_popup">
                         </div>
                        
                         <div class="form-group" id = "hideforobj">
@@ -109,12 +112,15 @@
 
 
                         </div>
+
                         <div class="col-md-6">
+                           
                             <div class="form-group">
-                            <label>Confidence Level</label>
-                            {!!Form::select('confidence_level',config('constants.CONFIDANCE_LEVEL'),null,array('class'=>'form-control','id'=>'measure_confidence_level'))!!}
-                            
-                        </div>
+                                <label>Confidence Level</label>
+                                {!!Form::select('confidence_level',config('constants.CONFIDANCE_LEVEL'),null,array('class'=>'form-control','id'=>'measure_confidence_level'))!!}
+                                
+                            </div>
+
                           <div class="form-group">
                             <label>Status</label>
                             {!!Form::select('status',$status,null,array('class'=>'form-control','id'=>'measure_status_id'))!!}

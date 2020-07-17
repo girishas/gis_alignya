@@ -256,7 +256,7 @@ $(document).ready(function(){
                 
                    
                 <?php else: ?>
-                no record found 
+                No Record Founds 
 			<?php endif; ?>		
 		   </div>
 

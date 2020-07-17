@@ -19,6 +19,8 @@
                         <label>Milestone Name</label>
                         {!!Form::text('milestone_name', null, array('class'=>'form-control','id'=>'milestone_name_measure_view_id'))!!}
                         <input type="hidden" name="id" id="milestone_id_measue_view">
+                        <input type = "hidden" name="is_popup" class="is_popup">
+                        
                     </div>
                      <div class="form-group ">
                         <label>Actual</label>

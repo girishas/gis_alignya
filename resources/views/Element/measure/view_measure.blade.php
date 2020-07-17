@@ -91,9 +91,10 @@
                             </div>
                         </div>
                     </div>
+                    <div style="position: absolute;top: 10px;right: 10px" id="viewLargePlot"></div>
                     <!--<div id="chartdiv"></div>-->
-                    <div class="dashboard-line-chart">
-                        <canvas id="contributionChart1"></canvas>
+                    <div class="chart-container chart">
+                        <canvas id="measuregraph"></canvas>
                     </div> 
         </div>
         </div>
@@ -211,3 +212,14 @@
             </div>
         </div>
     </div>
+    @include('Element/measure/view_large_measure_graph')
+<script type="text/javascript">
+    function viewLargeGraph(){
+        $("#viewLargeMeasureShow").modal('show');
+    }
+    $(document).ready(function(){
+        $("#viewLargeMeasureHide").click(function(){
+            $("#viewLargeMeasureShow").modal("hide");
+        });
+    });
+</script>

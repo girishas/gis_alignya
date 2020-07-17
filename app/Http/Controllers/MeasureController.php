@@ -84,7 +84,7 @@ class MeasureController extends Controller
 		}
 		
 		
-		$data  = $data->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->paginate(config('constants.PAGINATION'));
+		$data  = $data->orderBy('al_measures.id','desc')->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->paginate(config('constants.PAGINATION'));
 		
 		if(isset($_GET['s']) and $_GET['s']){
 			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
@@ -234,16 +234,15 @@ class MeasureController extends Controller
 	}
 
 	public function addmeasure(){
-		 
+		//pr($this->request->all()); 
 		$validator = Measure::validate($this->request->all());
 		if($validator->fails()){
 			return redirect()->back()->with('adderrormessage',getLabels('measure_saved_errors'))->withErrors($validator->errors());
 		}else{
 			
-			//dd($this->request->all());
 			
 			$input = $this->request->except('contributers');
-			
+			//pr($input);
 			if($input['measure_type'] == "revenue"){
 				$input['measure_target'] = $input['revenue_target'];
 				$input['measure_actual'] = $input['revenue_actual']; 
@@ -300,11 +299,12 @@ class MeasureController extends Controller
 					$input['quarter_start_month'] = 1;
 				}
 			}
-		//	pr($input);  
-		//	$measure = Measure::create($input);
+				
+				$input['measure_target_new'] = $input['measure_target'] ;  
+				$measure = Measure::create($input);
 		
 //----------- Start Creating Milestone Dynamic --------------------------- 		
-		if($input['is_auto'] == 'on'){
+		if(isset($input['is_auto']) and $input['is_auto'] == 'on'){
 			
 			$mile_target = $input['measure_actual'] ;
   			$quarterly_target = $input['measure_target'] -  $mile_target;  
@@ -323,21 +323,21 @@ class MeasureController extends Controller
     			$quarterly_ebitda = $input['target_ebitda'] -  $target_ebitda;      
   			}
 			
-			//$measure_id = $measure->id;  
-			$measure_id =10;  
+			$measure_id = $measure->id;  
+			// $measure_id =10;  
   			$frequency = $input['check_in_frequency'];
   			$year = substr($this->request->get('measure_cycle'),2,4);
 			if($input['measure_cycle_quarter'] == 1){
 				$date1 =  $year."-01-01";
 				$date2 =  date("Y-m-t", strtotime($year."-03-01"));
 			}elseif($input['measure_cycle_quarter'] == 2){
-				$date1 =  $year."-03-01";
+				$date1 =  $year."-04-01";
 				$date2 =  date("Y-m-t", strtotime($year."-06-01"));
 			}elseif($input['measure_cycle_quarter'] == 3){
-				$date1 =  $year."-06-01"; 
+				$date1 =  $year."-07-01"; 
 				$date2 =  date("Y-m-t", strtotime($year."-09-01"));
 			}elseif($input['measure_cycle_quarter'] == 4){
-				$date1 =  $year."-09-01"; 
+				$date1 =  $year."-10-01"; 
 				$date2 =  date("Y-m-t", strtotime($year."-12-01"));
 			}elseif($input['measure_cycle_quarter'] == 0){ // Full Yearly Create Q1,Q2,Q3,Q4
 				$date1 =  $year."-01-01"; 
@@ -346,13 +346,13 @@ class MeasureController extends Controller
 				$date1 =  $year."-01-01"; 
 				$date2 =  date("Y-m-t", strtotime($year."-06-01"));
 			}elseif($input['measure_cycle_quarter'] == 6){ 
-				$date1 =  $year."-06-01"; 
+				$date1 =  $year."-07-01"; 
 				$date2 =  date("Y-m-t", strtotime($year."-12-01"));
 			}   
 			// echo $date1,' - ', $date2 ;
 			
 			
-			  if($frequency ==1){
+			if($frequency ==1){
 
 		      $single_target = $quarterly_target / dateDiff($date1,$date2); 
 		      if($input['measure_type'] == "revenue"){         
@@ -391,21 +391,22 @@ class MeasureController extends Controller
 		        $milestonesArr['measure_id'] = $measure_id;//measure id
 		        $milestonesArr['is_automatic'] = 1;// is automtic
 		        $milestonesArr['start_date'] = $start_date;//start date
-		        $milestonesArr['end_date'] = $start_date;//end date
+		        $milestonesArr['end_date'] = $end_date;//end date
 
 		        $mile_target = ($input['measure_target'] > $mile_target)?$mile_target:$input['measure_target'];
 		        
-		        
+		         
+				
 				if($input['calculation_type'] ==1){ // Target value divide in all milestones equally.
 					$milestonesArr['sys_target'] = $single_target; 
-					$milestonesArr['projection_target'] = $single_target; 
+					$milestonesArr['projection_target'] = round($single_target); 
 				}elseif($input['calculation_type'] ==2){ // Target value achieve in incremental order.
 					$milestonesArr['sys_target'] = $mile_target; 
-					$milestonesArr['projection_target'] = $mile_target; 
+					$milestonesArr['projection_target'] = round($mile_target); 
 				}else{ // Fixed calculate value
 					$milestonesArr['sys_target'] = $input['measure_target']; 
-					$milestonesArr['projection_target'] = $input['measure_target']; 
-				} 
+					$milestonesArr['projection_target'] = round($input['measure_target']); 
+				}  
 
 				$milestonesArr['mile_status'] = 2; // status	
 				$milestonesArr['milestone_name'] = "FY".$year."-Q".$quarter.": Milestone ".$i ;
@@ -519,41 +520,48 @@ class MeasureController extends Controller
 		        $single_ebitda = 0 ;
 		      }
 			  
-			/*    $i = 1 ;
+			  
+			  $i = 1 ;
 		      while($date1 <= $date2){   
 		        $year = date('Y',strtotime($date1));
 		        $weekNumber = getWeek($date1); 
 		        $dayNumber = getDayNumber($date1); 
 		        $days = date('d',strtotime($date1));  
-		        $month = date('m',strtotime($date1)); 
-		        $quarter = $month / 3 ;  
-
-		        $start_date = $year."-".$month."-".$days;  
-		        $end_date =  $start_date; 
-		         
-		        $milestonesArr = array();
+			   if($dayNumber != 6){
+				   $date1 = date('Y-m-d', strtotime($date1.'+ '.(6 - $dayNumber).' days'));
+					
+			   }
+				 $week_start_date =  $start_date = $date1 ;
+				 $date1 = $start_date = date('Y-m-d', strtotime($week_start_date.'- 6 days'));
+				 $end_date = date('Y-m-d', strtotime($date1.'+ 6 days')); 
+		         $month = date('m',strtotime($date1)); 
+		         $quarter = ceil($month / 3) ;  
+				 $mile_target = $mile_target + $single_target ;
+				
+				// echo $date1.'-'. $end_date.'  <br/>' ;
+				$milestonesArr = array();
 		        $milestonesArr['user_id'] = Auth::User()->id;//user id
 		        $milestonesArr['company_id'] = Auth::User()->company_id;//company id
 		        $milestonesArr['objective_id'] = $input['objective_id'];
 		        $milestonesArr['measure_id'] = $measure_id;//measure id
 		        $milestonesArr['is_automatic'] = 1;// is automtic
 		        $milestonesArr['start_date'] = $start_date;//start date
-		        $milestonesArr['end_date'] = $start_date;//end date
+		        $milestonesArr['end_date'] = $end_date;//end date
 
 		        $mile_target = ($input['measure_target'] > $mile_target)?$mile_target:$input['measure_target'];
-		        
-		        
+		         
+				
 				if($input['calculation_type'] ==1){ // Target value divide in all milestones equally.
 					$milestonesArr['sys_target'] = $single_target; 
-					$milestonesArr['projection_target'] = $single_target; 
+					$milestonesArr['projection_target'] = round($single_target); 
 				}elseif($input['calculation_type'] ==2){ // Target value achieve in incremental order.
 					$milestonesArr['sys_target'] = $mile_target; 
-					$milestonesArr['projection_target'] = $mile_target; 
+					$milestonesArr['projection_target'] = round($mile_target); 
 				}else{ // Fixed calculate value
 					$milestonesArr['sys_target'] = $input['measure_target']; 
-					$milestonesArr['projection_target'] = $input['measure_target']; 
-				} 
-
+					$milestonesArr['projection_target'] = round($input['measure_target']); 
+				}  
+				
 				$milestonesArr['mile_status'] = 2; // status	
 				$milestonesArr['milestone_name'] = "FY".$year."-Q".$quarter.": Milestone ".$i ;
 				$milestonesArr['year'] = $year; // year
@@ -563,130 +571,244 @@ class MeasureController extends Controller
 				$milestonesArr['day'] = $dayNumber; // day		 
 		        
 		        $milestone = Milestones::create($milestonesArr);
-		             //---------- Revenue fields added in milestone revenue table - Daily---------
-	            if($input['measure_type'] == "revenue"){
-	              $target_gm = ($input['target_gm'] > $target_gm)?$target_gm:$input['target_gm'];
-	              $target_mm = ($input['target_mm'] > $target_mm)?$target_mm:$input['target_mm'];
-	              $target_nm = ($input['target_nm'] > $target_nm)?$target_nm:$input['target_nm'];
-	              $target_expense = ($input['target_expense'] > $target_expense)?$target_expense:$input['target_expense'];
-	              $target_net = ($input['target_net'] > $target_net)?$target_net:$input['target_net'];
-	              $target_ebitda = ($input['target_ebitda'] > $target_ebitda)?$target_ebitda:$input['target_ebitda'];
-	             
-	              $RevenuesArr = array(); 
-	              $RevenuesArr['milestone_id'] = $milestone->id;
-	              $RevenuesArr['company_id'] = Auth::User()->company_id;  
+				
+				if($milestone){
+				  //---------- Revenue fields added in milestone revenue table ---------     
+					if($input['measure_type'] == "revenue"){
+						
+						  $target_gm = $target_gm + $single_gm ;
+					   $target_mm = $target_mm + $single_mm ;
+					   $target_nm = $target_nm + $single_nm ;
+					   $target_expense = $target_expense + $single_expense ;
+					   $target_net = $target_net + $single_net ;
+					   $target_ebitda = $target_ebitda + $single_ebitda ;
+					   
+					   
+					  $target_gm = ($input['target_gm'] > $target_gm)?$target_gm:$input['target_gm'];
+					  $target_mm = ($input['target_mm'] > $target_mm)?$target_mm:$input['target_mm'];
+					  $target_nm = ($input['target_nm'] > $target_nm)?$target_nm:$input['target_nm'];
+					  $target_expense = ($input['target_expense'] > $target_expense)?$target_expense:$input['target_expense'];
+					  $target_net = ($input['target_net'] > $target_net)?$target_net:$input['target_net'];
+					  $target_ebitda = ($input['target_ebitda'] > $target_ebitda)?$target_ebitda:$input['target_ebitda'];
+					 
+					  $RevenuesArr = array(); 
+					  $RevenuesArr['milestone_id'] = $milestone->id;
+					  $RevenuesArr['company_id'] = Auth::User()->company_id;  
 
-	              if($input['calculation_type'] ==1){ // Target value divide in all milestones equally.
-	                  $RevenuesArr['target_gm'] = $single_gm;  
-	                  $RevenuesArr['target_mm'] = $single_mm;  
-	                  $RevenuesArr['target_nm'] = $single_nm;  
-	                  $RevenuesArr['target_expense'] = $single_expense;  
-	                  $RevenuesArr['target_net'] = $single_net;  
-	                  $RevenuesArr['target_ebitda'] = $single_ebitda;
-	                  $RevenuesArr['projection_gm'] = $single_gm;  
-	                  $RevenuesArr['projection_mm'] = $single_mm;  
-	                  $RevenuesArr['projection_nm'] = $single_nm;  
-	                  $RevenuesArr['projection_expense'] = $single_expense;  
-	                  $RevenuesArr['projection_net'] = $single_net;  
-	                  $RevenuesArr['projection_ebitda'] = $single_ebitda;
-	               }elseif($input['calculation_type'] ==2){ // Target value achieve in incremental order.
-	                  $RevenuesArr['target_gm'] = $target_gm;  
-	                  $RevenuesArr['target_mm'] = $target_mm;  
-	                  $RevenuesArr['target_nm'] = $target_nm;  
-	                  $RevenuesArr['target_expense'] = $target_expense;  
-	                  $RevenuesArr['target_net'] = $target_net;  
-	                  $RevenuesArr['target_ebitda'] = $target_ebitda;
-	                  $RevenuesArr['projection_gm'] = $target_gm;  
-	                  $RevenuesArr['projection_mm'] = $target_mm;  
-	                  $RevenuesArr['projection_nm'] = $target_nm;  
-	                  $RevenuesArr['projection_expense'] = $target_expense;  
-	                  $RevenuesArr['projection_net'] = $target_net;  
-	                  $RevenuesArr['projection_ebitda'] = $target_ebitda;
-	               }else{ // Fixed calculate value
-	                $RevenuesArr['target_gm'] = $input['target_gm'];
-	                $RevenuesArr['target_mm'] = $input['target_mm'];
-	                $RevenuesArr['target_nm'] = $input['target_nm'];
-	                $RevenuesArr['target_expense'] = $input['target_expense'];  
-	                $RevenuesArr['target_net'] = $input['target_net']; 
-	                $RevenuesArr['target_ebitda'] = $input['target_ebitda'];
-	                $RevenuesArr['projection_gm'] = $input['target_gm'];
-	                $RevenuesArr['projection_mm'] = $input['target_mm'];
-	                $RevenuesArr['projection_nm'] = $input['target_nm'];
-	                $RevenuesArr['projection_expense'] = $input['target_expense'];  
-	                $RevenuesArr['projection_net'] = $input['target_net']; 
-	                $RevenuesArr['projection_ebitda'] = $input['target_ebitda)'];
-	            }
-	              MilestoneRevenue::create($RevenuesArr);
-
-	               $target_gm = $target_gm + $single_gm ;
-	               $target_mm = $target_mm + $single_mm ;
-	               $target_nm = $target_nm + $single_nm ;
-	               $target_expense = $target_expense + $single_expense ;
-	               $target_net = $target_net + $single_net ;
-	               $target_ebitda = $target_ebitda + $single_ebitda ;
-	 
-	  
-	             }
-		           
-		          //res.json(result) ; 
-		         
-		 
-		        $mile_target = $mile_target + $single_target ;
-		        $date1 = date('Y-m-d', strtotime($date1. ' + 1 days'));
+						if($input['calculation_type'] ==1){ // Target value divide in all milestones equally.
+						  $RevenuesArr['target_gm'] = $single_gm;  
+						  $RevenuesArr['target_mm'] = $single_mm;  
+						  $RevenuesArr['target_nm'] = $single_nm;  
+						  $RevenuesArr['target_expense'] = $single_expense;  
+						  $RevenuesArr['target_net'] = $single_net;  
+						  $RevenuesArr['target_ebitda'] = $single_ebitda;
+						  $RevenuesArr['projection_gm'] = $single_gm;  
+						  $RevenuesArr['projection_mm'] = $single_mm;  
+						  $RevenuesArr['projection_nm'] = $single_nm;  
+						  $RevenuesArr['projection_expense'] = $single_expense;  
+						  $RevenuesArr['projection_net'] = $single_net;  
+						  $RevenuesArr['projection_ebitda'] = $single_ebitda;
+						}elseif($input['calculation_type'] ==2){ // Target value achieve in incremental order.
+						  $RevenuesArr['target_gm'] = $target_gm;  
+						  $RevenuesArr['target_mm'] = $target_mm;  
+						  $RevenuesArr['target_nm'] = $target_nm;  
+						  $RevenuesArr['target_expense'] = $target_expense;  
+						  $RevenuesArr['target_net'] = $target_net;  
+						  $RevenuesArr['target_ebitda'] = $target_ebitda;
+						  $RevenuesArr['projection_gm'] = $target_gm;  
+						  $RevenuesArr['projection_mm'] = $target_mm;  
+						  $RevenuesArr['projection_nm'] = $target_nm;  
+						  $RevenuesArr['projection_expense'] = $target_expense;  
+						  $RevenuesArr['projection_net'] = $target_net;  
+						  $RevenuesArr['projection_ebitda'] = $target_ebitda;
+						}else{ // Fixed calculate value
+							$RevenuesArr['target_gm'] = $input['target_gm'];
+							$RevenuesArr['target_mm'] = $input['target_mm'];
+							$RevenuesArr['target_nm'] = $input['target_nm'];
+							$RevenuesArr['target_expense'] = $input['target_expense'];  
+							$RevenuesArr['target_net'] = $input['target_net']; 
+							$RevenuesArr['target_ebitda'] = $input['target_ebitda'];
+							$RevenuesArr['projection_gm'] = $input['target_gm'];
+							$RevenuesArr['projection_mm'] = $input['target_mm'];
+							$RevenuesArr['projection_nm'] = $input['target_nm'];
+							$RevenuesArr['projection_expense'] = $input['target_expense'];  
+							$RevenuesArr['projection_net'] = $input['target_net']; 
+							$RevenuesArr['projection_ebitda'] = $input['target_ebitda)'];
+						}
+						MilestoneRevenue::create($RevenuesArr);  
+					 } 
+				}   
+				
+				 $date1 = date('Y-m-d', strtotime($date1. ' + 7 days'));
 		        $i++;
-
-		        } 
-		    
-			  */
-			  
-			  
-			  
-			  
-			  
-			  
-			  
-			  
-			  
-			  
-			
-			
+				
+			  } 
 			
 			}else if($frequency ==3){  
 			// --------------------- Count Weeks in Quater -------------------	
+			
+			if($input['measure_cycle_quarter'] == 0){
+				$single_target = $quarterly_target / 12 ;
+			}elseif($input['measure_cycle_quarter'] == 5){
+				$single_target = $quarterly_target / 6 ;
+			}else{
+				$single_target = $quarterly_target / 3 ;
+			}
+			
+			 if($input['measure_type'] == "revenue"){         
+		        $single_gm = $quarterly_gm /3;  
+		        $single_nm = $quarterly_nm /3;  
+		        $single_mm = $quarterly_mm /3;  
+		        $single_expense = $quarterly_expense /3;  
+		        $single_net = $quarterly_net /3;  
+		        $single_ebitda = $quarterly_ebitda /3;   
+		    
+		      }else{
+		        $single_gm = 0 ;
+		        $single_nm = 0 ;
+		        $single_mm = 0 ;
+		        $single_expense = 0 ;
+		        $single_net = 0 ;
+		        $single_ebitda = 0 ;
+		      }
+			  
+			 
+			  
+			  $i = 1 ;
+		      while($date1 <= $date2){   
+		        $year = date('Y',strtotime($date1));
+				$month = date('m',strtotime($date1)); 
+				$quarter = ceil($month / 3) ;  
+		        $weekNumber = getWeek($date1); 
+		        $dayNumber = getDayNumber($date1); 
+		        $days = date('d',strtotime($date1));  
+			   
+			    $start_date = date('Y-m-1', strtotime($date1));
+				$end_date = date('Y-m-t', strtotime($date1));  
+			   
+			    $mile_target = $mile_target + $single_target ;  
 				
+				//  echo $date1.'-'. $end_date.'  <br/>' ;
+				$milestonesArr = array();
+		        $milestonesArr['user_id'] = Auth::User()->id;//user id
+		        $milestonesArr['company_id'] = Auth::User()->company_id;//company id
+		        $milestonesArr['objective_id'] = $input['objective_id'];
+		        $milestonesArr['measure_id'] = $measure_id;//measure id
+		        $milestonesArr['is_automatic'] = 1;// is automtic
+		        $milestonesArr['start_date'] = $start_date;//start date
+		        $milestonesArr['end_date'] = $end_date;//end date
+				  
+
+		        $mile_target = ($input['measure_target'] > ceil($mile_target))?$mile_target:$input['measure_target'];
+		        
 				
-			} 
+				if($input['calculation_type'] ==1){ // Target value divide in all milestones equally.
+					$milestonesArr['sys_target'] = $single_target; 
+					$milestonesArr['projection_target'] = round($single_target); 
+				}elseif($input['calculation_type'] ==2){ // Target value achieve in incremental order.
+					$milestonesArr['sys_target'] = $mile_target; 
+					$milestonesArr['projection_target'] = round($mile_target); 
+				}else{ // Fixed calculate value
+					$milestonesArr['sys_target'] = $input['measure_target']; 
+					$milestonesArr['projection_target'] = round($input['measure_target']); 
+				}  
 			
+				$milestonesArr['mile_status'] = 2; // status	
+				$milestonesArr['milestone_name'] = "FY".$year."-Q".$quarter.": Milestone ".$i ;
+				$milestonesArr['year'] = $year; // year
+				$milestonesArr['quarter'] = $quarter; // quarter
+				$milestonesArr['month'] = $month; // month	
+				$milestonesArr['week'] = 0; // week
+				$milestonesArr['day'] = 0; // day	
 			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+		        
+		        $milestone = Milestones::create($milestonesArr);
+		// pr(($milestone));				
+				if($milestone){
+				  //---------- Revenue fields added in milestone revenue table ---------     
+					if($input['measure_type'] == "revenue"){
+						
+					   $target_gm = $target_gm + $single_gm ;
+					   $target_mm = $target_mm + $single_mm ;
+					   $target_nm = $target_nm + $single_nm ;
+					   $target_expense = $target_expense + $single_expense ;
+					   $target_net = $target_net + $single_net ;
+					   $target_ebitda = $target_ebitda + $single_ebitda ;
+					   
+					   
+					  $target_gm = ($input['target_gm'] > $target_gm)?$target_gm:$input['target_gm'];
+					  $target_mm = ($input['target_mm'] > $target_mm)?$target_mm:$input['target_mm'];
+					  $target_nm = ($input['target_nm'] > $target_nm)?$target_nm:$input['target_nm'];
+					  $target_expense = ($input['target_expense'] > $target_expense)?$target_expense:$input['target_expense'];
+					  $target_net = ($input['target_net'] > $target_net)?$target_net:$input['target_net'];
+					  $target_ebitda = ($input['target_ebitda'] > $target_ebitda)?$target_ebitda:$input['target_ebitda'];
+					 
+					  $RevenuesArr = array(); 
+					  $RevenuesArr['milestone_id'] = $milestone->id;
+					  $RevenuesArr['company_id'] = Auth::User()->company_id;  
+
+						if($input['calculation_type'] ==1){ // Target value divide in all milestones equally.
+						  $RevenuesArr['target_gm'] = $single_gm;  
+						  $RevenuesArr['target_mm'] = $single_mm;  
+						  $RevenuesArr['target_nm'] = $single_nm;  
+						  $RevenuesArr['target_expense'] = $single_expense;  
+						  $RevenuesArr['target_net'] = $single_net;  
+						  $RevenuesArr['target_ebitda'] = $single_ebitda;
+						  $RevenuesArr['projection_gm'] = $single_gm;  
+						  $RevenuesArr['projection_mm'] = $single_mm;  
+						  $RevenuesArr['projection_nm'] = $single_nm;  
+						  $RevenuesArr['projection_expense'] = $single_expense;  
+						  $RevenuesArr['projection_net'] = $single_net;  
+						  $RevenuesArr['projection_ebitda'] = $single_ebitda;
+						}elseif($input['calculation_type'] ==2){ // Target value achieve in incremental order.
+						  $RevenuesArr['target_gm'] = $target_gm;  
+						  $RevenuesArr['target_mm'] = $target_mm;  
+						  $RevenuesArr['target_nm'] = $target_nm;  
+						  $RevenuesArr['target_expense'] = $target_expense;  
+						  $RevenuesArr['target_net'] = $target_net;  
+						  $RevenuesArr['target_ebitda'] = $target_ebitda;
+						  $RevenuesArr['projection_gm'] = $target_gm;  
+						  $RevenuesArr['projection_mm'] = $target_mm;  
+						  $RevenuesArr['projection_nm'] = $target_nm;  
+						  $RevenuesArr['projection_expense'] = $target_expense;  
+						  $RevenuesArr['projection_net'] = $target_net;  
+						  $RevenuesArr['projection_ebitda'] = $target_ebitda;
+						}else{ // Fixed calculate value
+							$RevenuesArr['target_gm'] = $input['target_gm'];
+							$RevenuesArr['target_mm'] = $input['target_mm'];
+							$RevenuesArr['target_nm'] = $input['target_nm'];
+							$RevenuesArr['target_expense'] = $input['target_expense'];  
+							$RevenuesArr['target_net'] = $input['target_net']; 
+							$RevenuesArr['target_ebitda'] = $input['target_ebitda'];
+							$RevenuesArr['projection_gm'] = $input['target_gm'];
+							$RevenuesArr['projection_mm'] = $input['target_mm'];
+							$RevenuesArr['projection_nm'] = $input['target_nm'];
+							$RevenuesArr['projection_expense'] = $input['target_expense'];  
+							$RevenuesArr['projection_net'] = $input['target_net']; 
+							$RevenuesArr['projection_ebitda'] = $input['target_ebitda)'];
+						}
+						MilestoneRevenue::create($RevenuesArr);  
+					 } 
+				}   
+				 
+				
+				$date1 = date('Y-m-d', strtotime($date1. ' + 1 months'));
+		        $i++;
+				
+			  }   
+				
+			}  
 			
 		}
 		
-		
-		
-		
-		
-			pr($input);  
-		
-		
+		if($measure){
+				if($this->request->get('is_popup')){
 
-			
-			
-		  
-			
-			
-			die;
-			if($measure){
+				return redirect()->back()->with('is_popup',getLabels('measure_saved_successfully'));
+				}else{
+
 				return redirect()->back()->with('message',getLabels('measure_saved_successfully'));
+				}
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
 			}
@@ -737,12 +859,17 @@ class MeasureController extends Controller
 		if($this->request->get('owners')){
 			$inputs['owners'] = implode(',', $this->request->get('owners'));
 		}
+		//pr($inputs);
 		if(isset($inputs['task_id'])){
 			$update = $data->update($inputs);
 		}else{
 			$tasks = Tasks::create($inputs);
 		}
-		return redirect()->back();
+		if($this->request->get('is_popup')){
+			return redirect()->back()->with('popup_content_message','Task update successfully');
+		}else{
+			return redirect()->back();
+		}
 	}
 
 	public function updatemeasure(){
@@ -762,9 +889,115 @@ class MeasureController extends Controller
 			$input['contributers'] = implode(',', $this->request->get('contributers'));
 		}
 		
-		$measure = $data->update($input);
+		if(isset($input['is_updated_target']) and $input['is_updated_target'] == 'on' and $input['measure_target_new'] > 0){
+			$MilestoneTargetArr = array();
+			$mileArray = Milestones::where('measure_id',$input['id'])->where('company_id', Auth::User()->company_id)->orderBy('start_date','asc')->get();
+			$mileCount = $mileArray->count();
+			$stepno = 0; 
+		    if(isset($input['calculation_type']) and $input['calculation_type'] ==2){   
+				if($mileCount > 0){
+					$i = ($input['measure_target_new'] - $input['measure_actual'])/$mileCount   ;
+					 $stepno = $i + $input['measure_actual'] ;
+				foreach($mileArray->toArray() as $item){
+					// echo "<pre>"; print_r($item);
+					//echo $stepno ;
+					DB::select('update al_project_milestones set projection_target = ROUND('.$stepno.',0) where id = '.$item['id']);
+					  $stepno +=$i ;
+				}
+				} 
+			 }elseif(isset($input['calculation_type']) and $input['calculation_type'] ==0){
+				 $stepno = $input['measure_target_new'] ;
+				 DB::select('update al_project_milestones set projection_target = ROUND('.$stepno.',0) where measure_id = '.$input['id']); 
+				
+			}else{ // Fixed calculate value
+				if($mileCount > 0){
+					$stepno = ($input['measure_target_new'] - $input['measure_target'])/$mileCount   ;
+				} 
+				 DB::select('update al_project_milestones set projection_target = ROUND(sys_target + '.$stepno.',0) where measure_id = '.$input['id']); 
+			}  
+			
+		}
+		
+		// pr($input); die;
+		//
+		
+		$measure = $data->update($input); 
+		if($measure){
+				if($this->request->get('is_popup')){
 
-		return redirect()->back();
+				return redirect()->back()->with('popup_content_message',getLabels('measure_saved_successfully'));
+				}else{
+
+				return redirect()->back()->with('message',getLabels('measure_saved_successfully'));
+				}
+			}else{
+				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+			}
+			 
+
+	}
+	public function updatekpi(){
+		$input = $this->request->except('contributers');
+		$input['user_id'] = Auth::User()->id;
+		$input['company_id'] = Auth::User()->company_id;
+		$input['category_type'] = 3;
+		$data = Measure::find($input['id']);
+		if($this->request->get('measure_team_type') == 'team'){
+			$owner_user_id = TeamsMembers::where('team_id',$this->request->get('measure_team_id'))->where('is_head',1)->value('member_id');
+			$input['owner_user_id'] = $owner_user_id;
+		}elseif($this->request->get('measure_team_type') == 'department'){
+			$owner_user_id = DepartmentMember::where('department_id',$this->request->get('measure_department_id'))->where('is_head',1)->value('member_id');
+			$input['owner_user_id'] = $owner_user_id;
+		}
+		if($this->request->get('contributers')){
+			$input['contributers'] = implode(',', $this->request->get('contributers'));
+		}
+		
+		if(isset($input['is_updated_target']) and $input['is_updated_target'] == 'on' and $input['measure_target_new'] > 0){
+			$MilestoneTargetArr = array();
+			$mileArray = Milestones::where('measure_id',$input['id'])->where('company_id', Auth::User()->company_id)->orderBy('start_date','asc')->get();
+			$mileCount = $mileArray->count();
+			$stepno = 0; 
+		    if(isset($input['calculation_type']) and $input['calculation_type'] ==2){   
+				if($mileCount > 0){
+					$i = ($input['measure_target_new'] - $input['measure_actual'])/$mileCount   ;
+					 $stepno = $i + $input['measure_actual'] ;
+				foreach($mileArray->toArray() as $item){
+					// echo "<pre>"; print_r($item);
+					//echo $stepno ;
+					DB::select('update al_project_milestones set projection_target = ROUND('.$stepno.',0) where id = '.$item['id']);
+					  $stepno +=$i ;
+				}
+				} 
+			 }elseif(isset($input['calculation_type']) and $input['calculation_type'] ==0){
+				 $stepno = $input['measure_target_new'] ;
+				 DB::select('update al_project_milestones set projection_target = ROUND('.$stepno.',0) where measure_id = '.$input['id']); 
+				
+			}else{ // Fixed calculate value
+				if($mileCount > 0){
+					$stepno = ($input['measure_target_new'] - $input['measure_target'])/$mileCount   ;
+				} 
+				 DB::select('update al_project_milestones set projection_target = ROUND(sys_target + '.$stepno.',0) where measure_id = '.$input['id']); 
+			}  
+			
+		}
+		
+		// pr($input); die;
+		//
+		
+		$measure = $data->update($input); 
+		if($measure){
+				if($this->request->get('is_popup')){
+
+				return redirect()->back()->with('popup_content_message',getLabels('measure_saved_successfully'));
+				}else{
+
+				return redirect()->back()->with('message',getLabels('measure_saved_successfully'));
+				}
+			}else{
+				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+			}
+			 
 
 	}
 
@@ -774,7 +1007,13 @@ class MeasureController extends Controller
 		$data['departments'] = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$data['teams'] = Teams::where('company_id',Auth::User()->company_id)->pluck('team_name','id');
 		$data['members'] = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
-		$milestone = Milestones::where('measure_id',$inputs['measure_id'])->where('milestone_type',0)->get();
+		$data['plucked_milestone'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$inputs['measure_id'])->orderBy('start_date','asc')->pluck('sys_target')->toArray();
+		$data['actual_graph_data'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$inputs['measure_id'])->orderBy('start_date','asc')->pluck('mile_actual')->toArray();
+		$data['graph_labels'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$inputs['measure_id'])->orderBy('start_date','asc')->pluck('milestone_name')->toArray();
+		$data['max_mile'] = Milestones::select(DB::raw('MAX(GREATEST(COALESCE(mile_actual,0),COALESCE(sys_target,0),COALESCE(projection_target,0))) as max_value'))->where('company_id',Auth::User()->company_id)->where('measure_id',$inputs['measure_id'])->value('max_value');
+		//pr($data['max_mile']);
+		$data['pojected_graph_data'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$inputs['measure_id'])->orderBy('start_date','asc')->pluck('projection_target')->toArray();
+		$milestone = Milestones::where('measure_id',$inputs['measure_id'])->where('milestone_type',0)->orderBy('start_date','asc')->get();
 		if(!empty($milestone)){
 			$milestone = $milestone->toArray();
 		}else{
@@ -811,16 +1050,62 @@ class MeasureController extends Controller
 		$end_date = date('Y-m-d',strtotime($this->request->get('end_date')));
 		$inputs['start_date'] = $start_date;
 		$inputs['end_date'] = $end_date;
-		$inputs['user_id'] = Auth::User()->id;
-		$inputs['sys_progress'] = ($this->request->get('mile_actual')/$this->request->get('sys_target'))*100;
+		$inputs['sys_progress'] = ($this->request->get('mile_actual')/$this->request->get('sys_target'))*100; 
+		
+		
 		if(isset($inputs['id'])){
+			
+			
+			
+			 $measureArr = Milestones::where('id',$inputs['id'])->pluck('measure_id')->toArray(); 
+			 $measure_id = (isset($measureArr[0]))?$measureArr[0]:0;
+			 $calculArr = Measure::where('id',$measure_id)->pluck('calculation_type')->toArray(); 
+			 
+			
+			$MilestoneTargetArr = array();
+			$mileArray = Milestones::where('measure_id',$measure_id)->where('start_date','>' ,$end_date)->orderBy('start_date','asc')->get();
+			$mileCount = $mileArray->count();
+			$stepno = 0;
+			 
+			 if(isset($calculArr[0]) and $calculArr[0] ==2){ 
+				if($mileCount > 0){
+					$measure_target_new = Milestones::where('measure_id',$measure_id)->max('projection_target'); 
+					
+					$i = ($measure_target_new - $inputs['mile_actual'])/$mileCount   ;
+					 $stepno = $i + $inputs['mile_actual'] ;
+				foreach($mileArray->toArray() as $item){
+					 // echo "<pre>"; print_r($item);
+					// echo $stepno ;
+					DB::select('update al_project_milestones set projection_target = ROUND('.$stepno.',0) where id = '.$item['id']);
+					  $stepno +=$i ;
+				}
+				}
+				
+				
+			  }else{ // Fixed calculate value
+				 if($mileCount > 0){
+					$stepno = ($inputs['mile_actual'] - $inputs['sys_target'])/$mileCount   ;
+				} 
+				 DB::select('update al_project_milestones set projection_target = ROUND(projection_target + '.$stepno.',0) where start_date > "'.$end_date.'" and measure_id = '.$measure_id); 
+			}  
+			
+			 // pr($inputs); 
 			$data = Milestones::find($inputs['id']);
 			$update = $data->update($inputs);
 		}else{
+			
+			$inputs['company_id'] = Auth::User()->company_id;
+			$inputs['user_id'] = Auth::User()->id; 
+			$inputs['objective_id'] = Measure::where('id',$this->request->get('measure_id'))->value('objective_id');
+			$inputs['projection_target'] = $inputs['sys_target']; 
+			
 			Milestones::create($inputs);
 		}
-		
-		return redirect()->back();
+		if($this->request->get('is_popup')){
+			return redirect()->back()->with('popup_content_message','Milestone update successfully');
+		}else{
+			return redirect()->back();
+		}
 		
 	}
 

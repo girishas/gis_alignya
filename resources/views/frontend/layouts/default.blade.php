@@ -46,6 +46,7 @@ Website: http://www.mosaddek.com
 			{!! HTML::style('public/css/dore.light.blue.min.css') !!}
 			{!! HTML::style('public/css/main.css') !!}
 			{!! HTML::style('public/css/style.css') !!}
+			{!! HTML::style('public/hierarchy/hierarchy-select.min.css') !!}
 			
 			{!! HTML::style('public/summernote/summernote.css') !!}
 			{!! HTML::script('public/js/vendor/jquery-3.3.1.min.js') !!}
@@ -169,6 +170,7 @@ Website: http://www.mosaddek.com
 	{!! HTML::script('public/js/ch_functions.js') !!}
 			
 			{!! HTML::script('public/js/app.js') !!}
+			{!! HTML::script('public/hierarchy/hierarchy-select.min.js') !!}
 	
 			<div class="modal fade" id="showConfirmationModal" tabindex="-1" role="dialog" aria-hidden="true">
 				<div class="modal-dialog" role="document">

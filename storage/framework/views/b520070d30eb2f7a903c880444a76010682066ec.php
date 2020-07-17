@@ -32,6 +32,7 @@
                             <input type="hidden" name="measure_department_id" id="initiative_department_id">
                             <input type="hidden" name="measure_team_id" id="initiative_team_id">
                             <input type="hidden" name="objective_id" id="initiative_objectiveId" class = "hideindivi">
+                           <input type="hidden" name="is_popup" class="is_popup">
                         </div>
                        
                         <div class="form-group" id = "hideforobjini">

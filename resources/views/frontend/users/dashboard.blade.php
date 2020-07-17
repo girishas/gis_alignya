@@ -1,7 +1,7 @@
 @extends('frontend/layouts/default')
 
 @section('content')
-
+@include('Element/users/addmember')
 	 <main>
         <div class="container-fluid">
             <div class="row">
@@ -21,7 +21,7 @@
                                 <a class="dropdown-item" href="#">Add Task</a>
                                 <a class="dropdown-item" href="javascript:void(0);" id= "add_department_btn">Add Department</a>
                                 <a class="dropdown-item" href="javascript:void(0);" id= "add_team_btn">Add Team</a>
-                                <a class="dropdown-item" href="#">Add Member</a>
+                                <a class="dropdown-item" href="javascript:void(0);" onclick="addMember()">Add Member</a>
                             </div>
                         </div>
 						
@@ -126,7 +126,7 @@
                                             <span class="badge badge-pill badge-secondary" style="background-color: {!!$obj->bg_color!!} !important;">{!!$obj->status_name!!}</span>  
                                         </td>
                                         <td>
-                                            <div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div>
+                                            <div class="c100 p{!!getPercentComplateObjective($obj->id)>100?100:getPercentComplateObjective($obj->id)!!} small" style="font-size:50px"><span>{!!getPercentComplateObjective($obj->id)!!}%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div>
                                         </td>
                                        
                                     </tr>
@@ -510,6 +510,9 @@
                         @include('Element/department/add_department')
                         @include('Element/team/add_team')
 	<script type="text/javascript">
+        function addMember(){
+            $("#addmember").modal("show");
+        }
      function filterShow(){
         $(".showClass").show();
      } function Closepop(){

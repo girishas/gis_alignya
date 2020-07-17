@@ -257,7 +257,7 @@ $(document).ready(function(){
                 @extends('Element/department/add_department')
                 @extends('Element/department/update_department')   
                 @else
-                no record found 
+                No Record Founds 
 			@endif		
 		   </div>
 

@@ -66,6 +66,8 @@ Website: http://www.mosaddek.com
 
 			<?php echo HTML::style('public/css/style.css'); ?>
 
+			<?php echo HTML::style('public/hierarchy/hierarchy-select.min.css'); ?>
+
 			
 			<?php echo HTML::style('public/summernote/summernote.css'); ?>
 
@@ -222,6 +224,8 @@ Website: http://www.mosaddek.com
 
 			
 			<?php echo HTML::script('public/js/app.js'); ?>
+
+			<?php echo HTML::script('public/hierarchy/hierarchy-select.min.js'); ?>
 
 	
 			<div class="modal fade" id="showConfirmationModal" tabindex="-1" role="dialog" aria-hidden="true">

@@ -230,7 +230,7 @@
 					
 						$class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['payout_history','payout_history_detail']))?"active":""; ?>
 						<li class="{!! $class_subnav !!}">
-							<a class="" href="javascript:void(0);" onclick="onFunc('tree')" data-main-link="st_analytics">
+							<a class="" href="javascript:void(0);" onclick="onFunc('roadmap')" data-main-link="st_analytics">
 								<i class="simple-icon-cursor"></i>
 								{!! getLabels('Roadmap') !!}
 							</a>

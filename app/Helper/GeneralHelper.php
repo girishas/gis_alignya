@@ -9,6 +9,7 @@
 	use App\Models\LevelCommission;
 	use App\Models\GroupMember;
 	use App\Models\SubscriptionPlan;
+	use App\Models\Milestones;
 	use App\Models\Subscription;
 	use App\Models\Notification;
 	use App\Models\Post;
@@ -661,6 +662,11 @@
 	    $second = DateTime::createFromFormat('m/d/Y', $date2);
 	    if($date1 > $date2) return week_between_two_dates($date2, $date1);
 	    return floor($first->diff($second)->days/7);
+	}
+
+	function getPercentComplateObjective($objective_id){
+		$avg = Milestones::where('objective_id',$objective_id)->avg('sys_progress');
+		return round($avg);
 	}
 
 	?>

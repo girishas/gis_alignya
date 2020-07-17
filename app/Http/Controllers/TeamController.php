@@ -9,6 +9,8 @@ use App\Models\Teams;
 use App\Models\TeamsMembers;
 use App\Models\Objective;
 use App\Models\GoalCycles;
+use App\Models\Measure;
+use App\Models\Milestones;
 use App\Models\Theme;
 use App\Models\Perspective;
 use App\Models\Post;
@@ -348,9 +350,28 @@ class TeamController extends Controller
 		}
 	}
 	
-	public function reports(){
+	public function reports($id=null){
 		$page_title = "Reports";
-		return view('frontend/teams/reports',compact('page_title'));
+		$objectives = Objective::where('company_id',Auth::User()->company_id)->orderBy('id','desc')->pluck('heading','id');
+		if($id){
+			$single_objective = Objective::select('al_objectives.*','al_master_status.bg_color','al_master_status.name as status_name','al_master_status.icons as status_icon','al_theme.theme_name')->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_theme','al_theme.id','=','al_objectives.theme_id')->where('al_objectives.id',$id)->first();
+			$measures = Measure::select('al_measures.*',DB::raw('CONCAT_WS(" ",first_name,last_name) as owner_name'))->leftjoin('users','users.id','=','al_measures.owner_user_id')->where('al_measures.category_type',1)->where('al_measures.objective_id',$id)->where('al_measures.company_id',Auth::User()->company_id)->orderBy('al_measures.id','desc')->get();
+			if(!empty($measures)){
+				$measures = $measures->toArray();
+				foreach ($measures as $key => $value) {
+					$measures[$key]['plucked_milestone'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->orderBy('start_date','asc')->pluck('sys_target')->toArray();
+					$measures[$key]['actual_graph_data'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->orderBy('start_date','asc')->pluck('mile_actual')->toArray();
+					$measures[$key]['graph_labels'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->orderBy('start_date','asc')->pluck('milestone_name')->toArray();
+					$measures[$key]['max_mile'] = Milestones::select(DB::raw('MAX(GREATEST(COALESCE(mile_actual,0),COALESCE(sys_target,0),COALESCE(projection_target,0))) as max_value'))->where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->value('max_value');
+					$measures[$key]['pojected_graph_data'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->orderBy('start_date','asc')->pluck('projection_target')->toArray();
+					$avg = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->orderBy('start_date','asc')->avg('sys_progress');
+					$measures[$key]['percent_complete'] = $avg;
+					$total_milestone = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$value['id'])->count();
+					$measures[$key]['total_milestone'] = $total_milestone;
+				}
+			}
+		}
+		return view('frontend/teams/reports',compact('page_title','objectives','measures','id','single_objective'));
 	}
 	public function ideas(){
 		$page_title = "Ideas";
@@ -427,7 +448,7 @@ class TeamController extends Controller
 			if(!empty($owner_id)){
 				$data = $data->where('al_objectives.owner_user_id',$owner_id);
 			}
-			$scorecard_data[] = $data->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.bg_color','al_master_status.icons','al_master_status.name as status_name1','al_perspectives.name as perspective_name')->get();
+			$scorecard_data[] = $data->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.bg_color','al_master_status.icons','al_master_status.name as status_name','al_perspectives.name as perspective_name')->get();
 		
 		}
 		
@@ -435,12 +456,72 @@ class TeamController extends Controller
 	}
 	public function startegic_map(){
 		$page_title = "Startegic Map";
-		$financial = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.perspective_id',1)->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.bg_color')->get();
-		//echo "<pre>"; print_r($financial); die;
-		$customer = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.perspective_id',2)->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.bg_color')->get();
-		$process = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.perspective_id',3)->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.bg_color')->get();
-		$people = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.perspective_id',4)->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.bg_color')->get();
-		return view('frontend/teams/strategic_map',compact('page_title','financial','customer','process','people'));
+		
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		$cycle_id ='';
+		$department_id ='';
+		$owner_id ='';
+		$perspective_id ='';
+		$theme_id ='';
+		if(! empty($_POST)){
+			if(isset($_POST['cycle_id']) and $_POST['cycle_id'] !=0){
+				$cycle_id = $_POST['cycle_id'];
+				$this->request->session()->put('usearch.cycle_id', $cycle_id);
+			}
+			if(isset($_POST['department_id']) and $_POST['department_id'] !=0){
+				$department_id = $_POST['department_id'];
+				$this->request->session()->put('usearch.department_id', $department_id);
+			}
+			if(isset($_POST['owner_id']) and $_POST['owner_id'] !=0){
+				$owner_id = $_POST['owner_id'];
+				$this->request->session()->put('usearch.owner_id', $owner_id);
+			}
+			if(isset($_POST['perspective_id']) and $_POST['perspective_id'] !=0){
+				$perspective_id = $_POST['perspective_id'];
+				$this->request->session()->put('usearch.perspective_id', $perspective_id);
+			}
+			if(isset($_POST['theme_id']) and $_POST['theme_id'] !=0){
+				$theme_id = $_POST['theme_id'];
+				$this->request->session()->put('usearch.theme_id', $theme_id);
+			}
+			
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		$al_goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id')->toArray();
+		$al_themes = Theme::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('theme_name','id')->toArray();
+		$all_perspective = Perspective::where('status',1)->pluck('name','id')->toArray();
+		$all_department = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('department_name','id')->toArray();
+		$all_users = User::select(DB::Raw('CONCAT(COALESCE(`first_name`,"")," ",COALESCE(`last_name`,"")) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('status',1)->get()->pluck('full_name','id')->toArray();
+		
+		if(!empty($perspective_id)){
+			$perspective_data = Perspective::where('id',$perspective_id)->where('status',1)->get();
+		}else{
+			$perspective_data = Perspective::where('status',1)->get();
+		}
+		$strategic_data = array();
+		foreach($perspective_data as $val){
+			$data = Objective::with('getMeasures','getInitiatives')->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_perspectives','al_perspectives.id','=','al_objectives.perspective_id')->where('al_objectives.perspective_id',$val->id);
+			if(!empty($cycle_id)){
+				$data = $data->where('al_objectives.cycle_id',$cycle_id);
+			}
+			if(!empty($theme_id)){
+				$data = $data->where('al_objectives.theme_id',$theme_id);
+			}
+			if(!empty($department_id)){
+				$data = $data->where('al_objectives.department_id',$department_id);
+			}
+			if(!empty($owner_id)){
+				$data = $data->where('al_objectives.owner_user_id',$owner_id);
+			}
+			$strategic_data[] = $data->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.bg_color','al_master_status.icons','al_master_status.name as status_name','al_perspectives.name as perspective_name')->get();
+		
+		}
+		return view('frontend/teams/strategic_map',compact('page_title','perspective_data','strategic_data','al_goal_cycles','all_perspective','al_themes','all_department','all_users'));
 	}
 
 	public function add_teampopup(){

@@ -4,13 +4,7 @@
 @section('content')
   <main>
         <div class="container-fluid"> 
-                            
-            
             <div class="row">
-            
-        
-                            
-                            
                 <div class="col-12">
                     <h1> <span class="align-middle d-inline-block pt-1">Team Insights</span>   
                         </h1><nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
@@ -190,7 +184,7 @@ $(document).ready(function(){
                 </div>
             </div>
               @else
-              no record found
+              No Record Founds
               @endif
            </div>
 

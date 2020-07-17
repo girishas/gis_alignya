@@ -29,6 +29,7 @@
                                                     <input type="hidden" name="department_id" value="" id = obj_department_id>
                                                     <input type="hidden" name="owner_user_id" value="" id="obj_ind_owner_user_id">
                                                     <input type="hidden" name="objective_id" value="" id = "parent_objective_id">
+                                                    <input type="hidden" name="is_popup" class="is_popup">
                                                 </div>
                                                
 
@@ -64,8 +65,9 @@
                                                 </div>
 
                                                <div class="form-group">
-                    								<select class="form-control select2-single" onchange="ownershipdrop()" name="ownership" data-width="100%" id = "ownership">
+                    								<select class="form-control select2-single" onchange="ownershipdropobj()" name="ownership" data-width="100%" id = "ownership">
                                                         @if(!empty($departments))
+                                                        <option value="">Please Select</option>
                                                     	@foreach($departments as $key => $vale)
                                                         <option value="{!!$key!!}">{!!$vale!!}</option>
                                                         @endforeach
@@ -258,7 +260,7 @@
         hidethemelistpop();
     }
 
-    function ownershipdrop(){
+    function ownershipdropobj(){
         $("#obj_department_id").val("");
         $("#obj_teamid").val("");
         $("#obj_ind_owner_user_id").val(""); 

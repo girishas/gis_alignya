@@ -108,17 +108,9 @@
 													</td>
 													<td class="text-center"><?php echo config('constants.STATUS.'.$val->status); ?></td>
 													<td>
-														<div class="btn-group float-none-xs">
-															<button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-																<?php echo getLabels('action'); ?>
-
-															</button>
-															<div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
-																<a class="dropdown-item" href="javascript:void(0);" onclick="updatemember(<?php echo $val->id; ?>)"><?php echo getLabels('edit'); ?></a>
-																<a class="dropdown-item" href="javascript:void(0);" onclick="viewmember(<?php echo $val->id; ?>)"><?php echo getLabels('view'); ?></a>
+														<a href="javascript:void(0);" onclick="updatemember(<?php echo $val->id; ?>)"><i class="simple-icon-pencil"></i></a>
+																<a href="javascript:void(0);" onclick="viewmember(<?php echo $val->id; ?>)"><i class="iconsminds-information"></i></a>
 																
-															</div>
-														</div>
 													</td>
 												</tr>
 											<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -149,7 +141,7 @@
             </div>
         </div>
     </main>
-    
+    <?php echo $__env->make('Element/users/addmember', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <div id="viewMemberShow"></div>
     <div id="modalShow"></div>
     <script type="text/javascript">
@@ -199,5 +191,4 @@
     	
     </script>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('Element/users/addmember', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('frontend/layouts/default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

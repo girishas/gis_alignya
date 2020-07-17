@@ -244,7 +244,13 @@ class InitiativeController extends Controller
 				}
 			}
 			if($measure){
+				if($this->request->get('is_popup')){
+					return redirect()->back()->with('popup_content_message',getLabels('initiative_saved_successfully'));
+				}else{
+					//return redirect()->back();
+					//return redirect()->back()->with('message',getLabels('objective_saved_successfully'));
 				return redirect()->back()->with('message',getLabels('initiative_saved_successfully'));
+				}
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
 			}

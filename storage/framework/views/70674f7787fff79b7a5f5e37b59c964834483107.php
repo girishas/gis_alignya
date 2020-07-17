@@ -56,23 +56,18 @@
                                                               </div>
                                                             </div>
 
-                                                            <div class="col-12 col-lg-4">
+                                                            <div class="col-12 col-lg-4" id = "thisdivshoworhide" style="display: none;">
                                                                  <div class="card mb-8">
                                                                     <div class="card-body">
                                                                         <div class="d-flex flex-row mb-2  mb-4"> 
                                                                             <div class=" d-flex flex-grow-1 min-width-zero">
                                                                                 <div class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                                                                    <div class="min-width-zero">
-                                                                                        <a href="#">
-                                                                                          <p class="mb-0 truncate"><i class="iconsminds-up-1 heading-icon" style="color:#0fe50f;"></i>Revenue</p>
-                                                                                        </a>
-                                                                                        <p class="text-muted mb-0 text-small" style="margin-left: 35px">FY2020-Q3</p>
-                                                                                    </div>
+                                                                                    <div class="min-width-zero" id="graphtitleobjmeasure"></div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                         <div class="dashboard-line-chart">
-                                                                            <canvas id="contributionChart1"></canvas>
+                                                                            <canvas id="linechartformeasureobj"></canvas>
                                                                         </div>
                                                                       </div>
                                                                     </div>
@@ -266,107 +261,11 @@
       $("#hideforobjini").hide();
       $(".hideindivi").val($("#objective_idview").val());
       onchangeobjectivegetcycleinitiative();
+      localStorage.setItem('popup_id',$("#objective_idview").val());
+      $(".is_popup_id").val(1);
       $("#myModalAddInitiative").modal('show');
     }
-    function onclickgraph(){
-
-         var contributionChartOptions = {
-        type: "LineWithShadow",
-        options: {
-          plugins: {
-            datalabels: {
-              display: false
-            }
-          },
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            yAxes: [
-              {
-                gridLines: {
-                  display: true,
-                  lineWidth: 1,
-                  color: "rgba(0,0,0,0.1)",
-                  drawBorder: false
-                },
-                ticks: {
-                  beginAtZero: true,
-                  stepSize: 5,
-                  min: 50,
-                  max: 70,
-                  padding: 20
-                }
-              }
-            ],
-            xAxes: [
-              {
-                gridLines: {
-                  display: false
-                }
-              }
-            ]
-          },
-          legend: {
-            display: false
-          },
-          
-        },
-        data: {
-          labels: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sep",
-            "Oct",
-            "Nov",
-            "Dec"
-          ],
-          datasets: [
-            {
-              borderWidth: 2,
-              label: "",
-              data: [40, 54, 63, 60, 65, 60, 68, 60, 63, 60, 65, 60, 80],
-              borderColor: "red",
-           
-              pointBorderColor: "orange",
-              pointHoverBackgroundColor: "#2b6ca1",
-             
-              pointRadius: 4,
-              pointBorderWidth: 2,
-              pointHoverRadius: 5,
-              fill: false
-            },
-             {
-              borderWidth: 2,
-              label: "",
-              data: [20, 27, 31, 120, 65, 60, 68, 60, 63, 60, 65, 60, 80],
-              borderColor: "yellow",
-           
-              pointBorderColor: "red",
-              pointHoverBackgroundColor: "#2b6ca1",
-             
-              pointRadius: 4,
-              pointBorderWidth: 2,
-              pointHoverRadius: 5,
-              fill: false
-            }
-          ]
-        }
-      };
-
-      if (document.getElementById("contributionChart1")) {
-        var contributionChart1 = new Chart(
-          document.getElementById("contributionChart1").getContext("2d"),
-          contributionChartOptions
-        );
-      }
-
-    }
+  
     function addtask(){
       var objective_id = $("#objective_idview").val();
       $("#objectivetaskid").val(objective_id);

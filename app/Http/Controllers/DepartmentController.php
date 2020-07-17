@@ -867,9 +867,70 @@ class DepartmentController extends Controller
 		$page_title = "Subscription";
 		return view("/frontend/departments/subscription",compact('page_title'));
 	}
-	public function tree(){
-		$page_title = "Tree View";
-		return view("/frontend/departments/tree",compact('page_title'));
+	public function roadmap(){
+		$page_title = "Road Map";
+		$objective_data = Objective::with('subObjectives','getMeasures','getInitiatives')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->where('al_objectives.company_id',Auth::User()->company_id)->whereNull('al_objectives.objective_id')->select('al_objectives.*','al_goal_cycles.cycle_name')->get();
+		//echo "<pre>"; print_r($objective_data); die;
+		$jsonData = array();
+		$i=1;
+		foreach($objective_data as $dkey => $dvalue){
+			$jsonData[] = array('id'=>$i,'name'=>$dvalue->heading,'title'=>'Objective','description'=>$dvalue->summary,'period'=>$dvalue->cycle_name,'img'=>"{!!url('public/img/75.png')!!}");
+			$j=$i;
+			$i++;	
+				
+			foreach($dvalue->subObjectives as $sdkey => $sdvalue){
+				$jsonData[] = array('id'=>$i,'pid'=>$j,'name'=>$sdvalue->heading,'title'=>'Sub Objective','description'=>$sdvalue->summary,'period'=>$sdvalue->cycle_name,'img'=>"{!!url('public/img/75.png')!!}");
+				$k = $i;
+				$i++;			
+				foreach($sdvalue->subObjectives as $sd1key => $sd1value){
+					$jsonData[] = array('id'=>$i,'pid'=>$k,'name'=>$sd1value->heading,'title'=>'Sub Objective','description'=>$sd1value->summary,'period'=>$sd1value->cycle_name,'img'=>"{!!url('public/img/75.png')!!}");
+					$n = $i;
+					$i++;			
+					foreach($sd1value->getMeasures as $sdtkey => $sdtvalue){
+						$jsonData[] = array('id'=>$i,'pid'=>$n,'name'=>$sdtvalue->heading,'title'=>'Measure','description'=>$sdtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+						$p = $i;
+						$i++;
+					}
+					foreach($sd1value->getInitiatives as $sdtkey => $sdtvalue){
+						$jsonData[] = array('id'=>$i,'pid'=>$n,'name'=>$sdtvalue->heading,'title'=>'Initiative','description'=>$sdtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+						$q = $i;
+						$i++;
+					}
+				}
+				foreach($sdvalue->getMeasures as $sdtkey => $sdtvalue){
+					$jsonData[] = array('id'=>$i,'pid'=>$k,'name'=>$sdtvalue->heading,'title'=>'Measure','description'=>$sdtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+					$l = $i;
+					$i++;
+				}
+				foreach($sdvalue->getInitiatives as $sdtkey => $sdtvalue){
+					$jsonData[] = array('id'=>$i,'pid'=>$k,'name'=>$sdtvalue->heading,'title'=>'Measure','description'=>$sdtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+					$m = $i;
+					$i++;
+				}
+			}
+			foreach($dvalue->getMeasures as $dtkey => $dtvalue){
+				$jsonData[] = array('id'=>$i,'pid'=>$j,'name'=>$dtvalue->heading,'title'=>'Measure','description'=>$dtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+				$n = $i;
+				$i++;
+			}
+			foreach($dvalue->getInitiatives as $dtkey => $dtvalue){
+				$jsonData[] = array('id'=>$i,'pid'=>$j,'name'=>$dtvalue->heading,'title'=>'Measure','description'=>$dtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+				$o = $i;
+				$i++;
+			}
+		}
+		$jsonData = json_encode($jsonData);
+		//echo "<pre>"; print_r($jsonData); die;
+		//$jsonData = '{"id":1,"tags":["Company"]},{"id":2,"tags":["Company"]},{"id":3,"tags":["Company"]}';
+		/*$jsonData = '{ "id": 1, "name": "Sales Objective", "title": "In Progress","description": "Sales Target for FY-2020", "period": "FY 2020", "img": "{!!url('public/img/40.png')!!}" },
+            { id: 2, pid: 1, name: "H1 Sales", title: "On Track",description: "Sales Target for H1 FY-2020", period: "H1 FY 2020", img: "{!!url('public/img/75.png')!!}" },
+            { id: 3, pid: 1, name: "H2 Sales", title: "Out Of Track",description: "Sales Target for H2 FY-2020", period: "H2 FY 2020", img: "{!!url('public/img/32.png')!!}" },
+            { id: 4, pid: 2, name: "Q1 Sales", title: "On Track",description: "Sales Target for Q1 FY-2020", period: "Q1 FY 2020", img: "{!!url('public/img/64.png')!!}" },
+            { id: 5, pid: 2, name: "Q2 Sales", title: "On Track", description: "Sales Target for Q2 FY-2020", period: "Q2 FY 2020",img: "{!!url('public/img/40.png')!!}" },
+            { id: 6, pid: 3, name: "Q3 Sales", title: "Out Of Track", description: "Sales Target for Q3 FY-2020", period: "Q3 FY 2020",img: "{!!url('public/img/32.png')!!}" },
+            { id: 7, pid: 3, name: "Q4 Sales", title: "Out Of Track", description: "Sales Target for Q4 FY-2020", period: "Q4 FY 2020",img: "{!!('public/img/32.png')!!}" }';*/
+           
+		return view("/frontend/departments/roadmap",compact('page_title','objective_data','jsonData'));
 	}
 	public function timemap(){
 		$page_title = "Time Map";
@@ -948,8 +1009,68 @@ class DepartmentController extends Controller
 	}
 	public function departmental(){
 		$page_title = "Departmental View";
-		return view("/frontend/departments/departmental",compact('page_title'));
-	}public function invoice(){
+		
+		$department_data = Department::with('subDepartments','getTeams')->where('company_id',Auth::User()->company_id)->whereNull('parent_department_id')->where('status',1)->get();
+		//echo "<pre>"; print_r($department_data); die;
+		$jsonData = array();
+		$i=1;
+		foreach($department_data as $dkey => $dvalue){
+			$jsonData[] = array('id'=>$i,'tags'=>array('Company'),'name'=>$dvalue->department_name,'smallName'=>'Department');
+			$j=$i;
+			$i++;	
+				
+			foreach($dvalue->subDepartments as $sdkey => $sdvalue){
+				$jsonData[] = array('id'=>$i,'pid'=>$j,'tags'=>array('Company'),'name'=>$sdvalue->department_name,'smallName'=>'Department');
+				$k = $i;
+				$i++;			
+				foreach($sdvalue->subDepartments as $sd1key => $sd1value){
+					$jsonData[] = array('id'=>$i,'pid'=>$k,'tags'=>array('Company'),'name'=>$sd1value->department_name,'smallName'=>'Department');
+					$n = $i;
+					$i++;			
+					foreach($sd1value->getTeams as $sdtkey => $sdtvalue){
+						$jsonData[] = array('id'=>$i,'pid'=>$n,'tags'=>array('Department'),'name'=>$sdtvalue->team_name,'smallName'=>'Team');
+						$o = $i;
+						$i++;
+						foreach($sdtvalue->getTeamMembers as $sdtmkey => $sdtmvalue){
+							$jsonData[] = array('id'=>$i,'pid'=>$o,'tags'=>array('Staff'),'name'=>$sdtmvalue->first_name .' '.$sdtmvalue->last_name,'smallName'=>'Member');
+							$i++;			
+						}
+					}
+				}
+				foreach($sdvalue->getTeams as $sdtkey => $sdtvalue){
+					$jsonData[] = array('id'=>$i,'pid'=>$k,'tags'=>array('Department'),'name'=>$sdtvalue->team_name,'smallName'=>'Team');
+					$l = $i;
+					$i++;
+					foreach($sdtvalue->getTeamMembers as $sdtmkey => $sdtmvalue){
+						$jsonData[] = array('id'=>$i,'pid'=>$l,'tags'=>array('Staff'),'name'=>$sdtmvalue->first_name .' '.$sdtmvalue->last_name,'smallName'=>'Member');
+						$i++;			
+					}
+				}
+			}
+			foreach($dvalue->getTeams as $dtkey => $dtvalue){
+				$jsonData[] = array('id'=>$i,'pid'=>$j,'tags'=>array('Department'),'name'=>$dtvalue->team_name,'smallName'=>'Team');
+				$m = $i;
+				$i++;
+				foreach($dtvalue->getTeamMembers as $sdtmkey => $sdtmvalue){
+					$jsonData[] = array('id'=>$i,'pid'=>$m,'tags'=>array('Staff'),'name'=>$sdtmvalue->first_name .' '.$sdtmvalue->last_name,'smallName'=>'Member');
+					$i++;			
+				}
+			}
+		}
+		$jsonData = json_encode($jsonData);
+		//echo "<pre>"; print_r($jsonData); die;
+		//$jsonData = '{"id":1,"tags":["Company"]},{"id":2,"tags":["Company"]},{"id":3,"tags":["Company"]}';
+		/*$jsonData = '{ id: 1, tags: ["Company"] },
+            { id: 2, pid: 1, tags: ["Department"], name: "Develepment Department" },
+            { id: 3, pid: 1, tags: ["Department"], name: "QA Department" },
+            { id: 4, pid: 1, tags: ["Department"], name: "Marketing Department" },
+            { id: 5, pid: 2, tags: ["Staff"], name: "Elliot Ross" },
+            { id: 6, pid: 2, tags: ["Staff"], name: "Anahi Gordon" }';*/
+           
+		return view("/frontend/departments/departmental",compact('page_title','department_data','jsonData'));
+	}
+	
+	public function invoice(){
 		$page_title = "Invoice";
 		return view("/frontend/departments/invoice",compact('page_title'));
 	}

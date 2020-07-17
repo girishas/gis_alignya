@@ -3,7 +3,7 @@
 
 @section('content')
     
-<script src="https://balkangraph.com/js/latest/OrgChart.js"></script>
+{!! HTML::script('public/balkangraph/OrgChart.js') !!}
   <main>
 
 <div id="tree"></div>
@@ -12,7 +12,7 @@
 window.onload = function () { 
     var chart = new OrgChart(document.getElementById("tree"), {
         template: "ula",
-        enableDragDrop: true,
+        //enableDragDrop: true,
         menu: {
             pdf: { text: "Export PDF" },
             png: { text: "Export PNG" },

@@ -38,15 +38,17 @@ Route::any('getInitiativeData', array('as'=>'admin.getInitiativeData', 'uses'=>'
 Route::any('department/remove/{id?}', array('as'=>'admin.department_remove', 'uses'=>'DepartmentController@department_remove'));
 Route::any('team/remove/{id?}', array('as'=>'admin.team_remove', 'uses'=>'TeamController@team_remove'));
 
-Route::any('reports', array('as'=>'users.reports', 'uses'=>'TeamController@reports'));
+Route::any('reports/{id?}', array('as'=>'users.reports', 'uses'=>'TeamController@reports'));
 Route::any('addobjective', array('as'=>'users.addobjective', 'uses'=>'ObjectiveController@addobjective'));
 Route::any('updateobjective', array('as'=>'users.updateobjective', 'uses'=>'ObjectiveController@updateobjective'));
 Route::any('viewobjective', array('as'=>'users.viewobjective', 'uses'=>'ObjectiveController@viewobjective'));
 Route::any('getprojectinsightsobjective', array('as'=>'users.getprojectinsightsobjective', 'uses'=>'TeamController@getprojectinsightsobjective'));
 Route::any('addmeasure', array('as'=>'users.addmeasure', 'uses'=>'MeasureController@addmeasure'));
+Route::any('addkpi', array('as'=>'users.addkpi', 'uses'=>'KPIController@addkpi'));
 Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@addtask'));
 Route::any('removetasks/{id?}', array('as'=>'users.removetasks', 'uses'=>'MeasureController@removetasks'));
 Route::any('updatemeasure', array('as'=>'users.updatemeasure', 'uses'=>'MeasureController@updatemeasure'));
+Route::any('updatekpi', array('as'=>'users.updatekpi', 'uses'=>'MeasureController@updatekpi'));
 Route::any('getMeasureonUpdatePage', array('as'=>'users.getMeasureonUpdatePage', 'uses'=>'MeasureController@getMeasureonUpdatePage'));
 
 
@@ -63,6 +65,7 @@ Route::any('subscription', array('as'=>'users.subscription', 'uses'=>'Department
 Route::any('checkemailexist', array('as'=>'users.checkemailexist', 'uses'=>'UserController@checkemailexist'));
 Route::any('invoice', array('as'=>'users.invoice', 'uses'=>'DepartmentController@invoice'));
 Route::any('tree', array('as'=>'users.tree', 'uses'=>'DepartmentController@tree'));
+Route::any('roadmap', array('as'=>'users.roadmap', 'uses'=>'DepartmentController@roadmap'));
 Route::any('timemap', array('as'=>'users.timemap', 'uses'=>'DepartmentController@timemap'));
 Route::any('departmental', array('as'=>'users.departmental', 'uses'=>'DepartmentController@departmental'));
 Route::any('supports', array('as'=>'users.supports', 'uses'=>'DepartmentController@supports'));

@@ -38,7 +38,10 @@ public static function validate($input){
 		);
 		return validator($input, $rules, $messages);
 	}
-	
+	public function subObjectives()
+	{
+		return $this->hasMany('App\Models\Objective', 'objective_id', 'id')->with('subObjectives');
+	}
 	public function getMeasures(){
        return $this->hasMany('App\Models\Measure', 'objective_id', 'id')->leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->where('category_type',1)->select('al_measures.*','al_master_status.bg_color','al_master_status.icons','al_master_status.name as status_name')->orderBy('al_measures.id', 'DESC');
     }

@@ -127,19 +127,19 @@ class UserController extends Controller
 			$company['email'] = $input['email'];
 			$company['plan_id'] = $input['plan_id'];
 			$createcompany = Company::create($company);
-			$subscription = stripeSubscription($input['stripeToken'],$input['email'],$input['price_id']);
+			//$subscription = stripeSubscription($input['stripeToken'],$input['email'],$input['price_id']);
 			$validator = User::register($this->request->all());
 			$data                = $this->request->except('password');
 			$data['password']    = Hash::make($this->request->get('password'));
 			$data['role_id']     = 2;
 			$data['status']      = 1;
-			$data['stripe_customer_id'] = $subscription['customer_id'];
+			// $data['stripe_customer_id'] = $subscription['customer_id'];
 			$data['company_id'] = $createcompany->id;
 			$data['full_name'] = $input['first_name'].' '.$input['last_name'];
-			$data['trial_expiry_date'] = $subscription['subscription']->trial_end;
+			// $data['trial_expiry_date'] = $subscription['subscription']->trial_end;
 			$data['user_ip'] = $_SERVER['REMOTE_ADDR'];
 			$data['last_activity'] = date('Y-m-d h:i:s');
-			$data['trial_expiry_date'] = $subscription['subscription']->trial_end;
+			// $data['trial_expiry_date'] = $subscription['subscription']->trial_end;
 			$data['current_membership_plan'] = $input['plan_id'];
 			$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
 			$user = User::create($data);
@@ -150,14 +150,16 @@ class UserController extends Controller
 			$subscriptioncreate['plan_fee'] = $input['plan_amount'];
 			$subscriptioncreate['total_stripe_payment'] = $input['plan_amount'];
 			$subscriptioncreate['period'] = 1;
-			$subscriptioncreate['stripe_subscription_id'] = $subscription['subscription']->id;
+			// $subscriptioncreate['stripe_subscription_id'] = $subscription['subscription']->id;
 			$subscriptioncreate['stripe_plan_id'] = $input['price_id'];
 			$subscriptioncreate['plan_id'] = $input['plan_id'];
-			$subscriptioncreate['start_date'] = $subscription['subscription']->trial_start;
-			$subscriptioncreate['end_date'] = $subscription['subscription']->trial_end;
-			$subscriptioncreate['stripe_status'] = $subscription['subscription']->status;
-			$subscriptioncreate['stripe_dump'] = json_encode($subscription);
-			$subscriptions = Subscription::create($subscriptioncreate);
+			//pr($subscriptioncreate);
+			// $subscriptioncreate['start_date'] = $subscription['subscription']->trial_start;
+			// $subscriptioncreate['end_date'] = $subscription['subscription']->trial_end;
+			// $subscriptioncreate['stripe_status'] = $subscription['subscription']->status;
+			// $subscriptioncreate['stripe_dump'] = json_encode($subscription);
+
+			//$subscriptions = Subscription::create($subscriptioncreate);
 			return redirect('login')->with("message","register successfully");
 		}
 	

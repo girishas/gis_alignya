@@ -164,11 +164,221 @@
 
 
     <script>
+    function areaMeasureGraph(){
+        if (document.getElementById("measuregraph")) {
+            var areaChartNoShadow = document
+              .getElementById("measuregraph")
+              .getContext("2d");
+            var myChart = new Chart(areaChartNoShadow, {
+              type: "line",
+              options: {
+                plugins: {
+                  datalabels: {
+                    display: false
+                  }
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                  yAxes: [
+                    {
+                      gridLines: {
+                        display: true,
+                        lineWidth: 1,
+                        color: "rgba(0,0,0,0.1)",
+                        drawBorder: false
+                      },
+                      ticks: {
+                        beginAtZero: true,
+                        stepSize: 5,
+                        min: 50,
+                        max: 70,
+                        padding: 0
+                      }
+                    }
+                  ],
+                  xAxes: [
+                    {
+                      gridLines: {
+                        display: false
+                      }
+                    }
+                  ]
+                },
+                legend: {
+                  display: false
+                },
+                tooltips: chartTooltip
+              },
+              data: {
+                labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                datasets: [
+                  {
+                    label: "",
+                    data: [54, 63, 60, 65, 60, 68, 60],
+                    borderColor: themeColor1,
+                    pointBackgroundColor: foregroundColor,
+                    pointBorderColor: themeColor1,
+                    pointHoverBackgroundColor: themeColor1,
+                    pointHoverBorderColor: foregroundColor,
+                    pointRadius: 4,
+                    pointBorderWidth: 2,
+                    pointHoverRadius: 5,
+                    fill: true,
+                    borderWidth: 2,
+                    backgroundColor: themeColor1_10
+                  }
+                ]
+              }
+            });
+          }
+    }
+    function updateTask(id){
+        $("#update_task_id").val(id);
+        var token = "{!!csrf_token()!!}";
+        var company_id = "{!!Auth::User()->company_id!!}";
+        $.ajax({
+            type:"POST",
+            url: "{!!url('getTaskDetails')!!}",
+            data:'_token='+token+'&company_id='+company_id+'&task_id='+id,
+            dataType:'JSON',
+            success: function (response) {
+                var taskdetails = response.task_details;
+                $("#task_name_update_id").val(taskdetails.task_name);
+                $("#task_description_update_id").val(taskdetails.description);
+                var owners = response.owners;
+                for (var own in owners) {
+                    if (owners.hasOwnProperty(own)) {
+                        var owner = owners[own];
+                        if(taskdetails.owners.indexOf(own) != -1){
+                            $("#owners_update_id").append('<option value = "'+own+'" selected="selected">'+owner+'</option>');
+                        }else{
+                            $("#owners_update_id").append('<option value = "'+own+'">'+owner+'</option>');
+                        }
+                      }
+                    }
+                }  
+        });
+        $("#myModalUpdateTask").modal("show");
+    }
+function measureGraph(target_data,labels,actual_data,max_value,projection_data){
+    document.getElementById("viewlargemeasuregraph").innerHTML = " ";
+    document.getElementById("measuregraph").innerHTML = " ";
+    var contributionChartOptions = {
+    type: "LineWithShadow",
+    options: {
+      plugins: {
+        datalabels: {
+          display: false
+        }
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        yAxes: [
+          {
+            gridLines: {
+              display: true,
+              lineWidth: 1,
+              color: "rgba(0,0,0,0.1)",
+              drawBorder: false
+            },
+            ticks: {
+              beginAtZero: true,
+              stepSize: 50,
+              min: 0,
+              max: parseInt(max_value),
+              padding: 20
+            }
+          }
+        ],
+        xAxes: [
+          {
+            gridLines: {
+              display: false
+            }
+          }
+        ]
+      },
+      legend: {
+        display: false
+      },
+      
+    },
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          borderWidth: 2,
+          label: "",
+          data: target_data,
+          borderColor: "red",
+       
+          pointBorderColor: "red",
+          pointHoverBackgroundColor: "red",
+         
+          pointRadius: 4,
+          pointBorderWidth: 2,
+          pointHoverRadius: 5,
+          fill: false
+        },
+        {
+          borderWidth: 2,
+          label: "",
+          data: actual_data,
+          borderColor: "blue",
+       
+          pointBorderColor: "blue",
+          pointHoverBackgroundColor: "blue",
+         
+          pointRadius: 4,
+          pointBorderWidth: 2,
+          pointHoverRadius: 5,
+          fill: false
+        },
+        {
+          borderWidth: 2,
+          label: "",
+          data: projection_data,
+          borderColor: "yellow",
+       
+          pointBorderColor: "yellow",
+          pointHoverBackgroundColor: "yellow",
+         
+          pointRadius: 4,
+          pointBorderWidth: 2,
+          pointHoverRadius: 5,
+          fill: false
+        },
+        
+      ]
+    }
+  };
+
+  if (document.getElementById("viewlargemeasuregraph")) {
+    var contributionChart1 = new Chart(
+      document.getElementById("viewlargemeasuregraph").getContext("2d"),
+      contributionChartOptions
+    );
+  }
+
+  if (document.getElementById("measuregraph")) {
+    var contributionChart1 = new Chart(
+      document.getElementById("measuregraph").getContext("2d"),
+      contributionChartOptions
+    );
+  }
+}
+
     $(document).ready(function(){
         var adderrormessage = "{!!session('adderrormessage')?session('adderrormessage'):''!!}";
             if(adderrormessage != ''){
                 $("#myModalAddMeasure").show();
             }
+        var is_popup_content = "{!!session('popup_content_message')?session('popup_content_message'):''!!}";
+        if(is_popup_content != ""){
+            viewMeasure(localStorage.getItem('popup_id'));
+        }
     
     $("#add_objectiveBtn").click(function(){
         $(".removeattr").attr('id','');
@@ -213,9 +423,7 @@ $("#filterBtn").click(function(){
     });
     </script>
 <script type="text/javascript">
-    function updatetask(id){
-        $("#myModalUpdateTask").modal('show');
-    }
+    
     function addTask(){
         $("#typetaskid").val(1);
         $("#measuretaskid").val($("#measure_id_view").val());
@@ -245,6 +453,7 @@ $("#filterBtn").click(function(){
     }
     function updatemilestone(id){
         $("#milestone_id_measue_view").val(id);
+       
         var token = "{!!csrf_token()!!}";
         var company_id = "{!!Auth::User()->company_id!!}"; 
         $.ajax({
@@ -267,6 +476,8 @@ $("#filterBtn").click(function(){
 
     }
     function viewMeasure(id){
+        $(".is_popup").val(1);
+        localStorage.setItem('popup_id',id);
         $("#measure_id_view").val(id);
         $("#view_measure_heading").html("");
         $("#milestonelistmeasureview").html("");
@@ -279,16 +490,19 @@ $("#filterBtn").click(function(){
             data:'_token='+token+'&company_id='+company_id+'&measure_id='+id,
             dataType:'JSON',
             success: function (response) {
+                measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
+                
                 var all_response = response.measures;
-                $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
+                $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+' <a href="javascript:void(0);" onclick="updateMeasure('+all_response.id+')"><i class="simple-icon-pencil"></i></a><p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
                 var milstonesli = response.milestones;
                 for (var i = 0; i < milstonesli.length; i++) {
                     $("#milestonelistmeasureview").append('<tr><td>'+milstonesli[i].milestone_name+'</td><td>'+(milstonesli[i].mile_actual == null?"":milstonesli[i].mile_actual)+'</td><td>'+milstonesli[i].sys_target+'</td><td>'+milstonesli[i].start_date+'</td><td>'+milstonesli[i].end_date+'</td><td><a href="javascript:void(0);" onclick="updatemilestone('+milstonesli[i].id+')"><i class="simple-icon-pencil"></i></a></td></tr>');
                 }
                 var taskli = response.tasklist;
                 for (var i = 0; i < taskli.length; i++) {
-                    $("#addtaskmeasureview").html('<tr><td>'+taskli[i].task_name+'</td><td>'+taskli[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+taskli[i].bg_color+'">'+taskli[i].status_name+'</span></td><td><i class="iconsminds-right-1 heading-icon" style="cursor: pointer;"></i> <a href="javascript:void(0);" onclick="updatetask('+taskli[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>');
+                    $("#addtaskmeasureview").html('<tr><td>'+taskli[i].task_name+'</td><td>'+taskli[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+taskli[i].bg_color+'">'+taskli[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+taskli[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>');
                 }
+                $("#viewLargePlot").html('<a href="javascript:void(0);" onclick="viewLargeGraph('+measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data)+')"><i class="iconsminds-maximize heading-icon"></i></a>');
             }
         })  
         $("#viewmeasuremodal").modal('show');
@@ -312,10 +526,13 @@ $("#filterBtn").click(function(){
                 $("#measure_team_type_update").val(all_response.measure_team_type);
                 $(".measure_target_updatehtml").html("Measure Target : $"+all_response.measure_target);
                 $(".measure_target_updateval").val(all_response.measure_target);
+        				$('#measure_actual').val(all_response.measure_actual);
+        				$('#calculation_type').val(all_response.calculation_type);
                 $("#measure_target_color").val(all_response.target_color);
                 $("#actual_color_measure").val(all_response.actual_color);
                 $("#measure_projection_color").val(all_response.projection_color);
                 $("#measuretargetnew").val(all_response.measure_target_new);
+                $("#measure_graph_type").val(all_response.measure_graph_type);
                 var teamsmeasli = response.teams;
                 var departmentmeasli = response.departments;
                 var membermeasli = response.members;

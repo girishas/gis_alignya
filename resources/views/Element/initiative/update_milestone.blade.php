@@ -20,6 +20,7 @@
                         {!!Form::text('milestone_name', null, array('class'=>'form-control','id'=>'milestonenameini'))!!}
                         <input type="hidden" name="initiative_id" id="ini_idformilestoneup">
                         <input type="hidden" name="id" id="milestone_id_ini">
+                        <input type = "hidden" name="is_popup" class="is_popup">
                     </div>
                      <div class="form-group ">
                         <label>Start Date</label>

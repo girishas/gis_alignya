@@ -70,7 +70,7 @@ html {
     margin-top: 2px;
     width: 100%;
     box-sizing: border-box;
-    font-family: montserrat;
+    /* font-family: montserrat; */
     color: #2C3E50;
     font-size: 16px;
     letter-spacing: 1px
@@ -272,7 +272,7 @@ select.list-dt:focus {
                 <div class="row">
                     <div class="col-md-12 mx-0">
                        
-                            <?php echo Form::open(array('url' => url('/register'), 'class'=>'steamerstudio_form needs-validation tooltip-label-right', 'id'=>'msform', 'files' => true)); ?>
+                            <?php echo Form::open(array('url' => url('/register'), 'class'=>' needs-validation tooltip-label-right', 'id'=>'msform', 'files' => true)); ?>
 
                             <!-- progressbar -->
                             <ul id="progressbar">
@@ -372,8 +372,9 @@ select.list-dt:focus {
                                             <input type="hidden" name="plan_amount" value="<?php echo $values->plan_fee; ?>">
                                         </ul>
                                         <div class="text-center">
-                                            <a href="javascript:void(0);" rel="1" class="btn btn-link btn-empty btn-lg" onclick="submitForm(1)">
-                                           <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                                            <a href="javascript:void(0);" rel="1" class="btn btn-primary btn-sm" onclick="submitForm(1)">Pay $<?php echo $values->plan_fee; ?>
+
+                                           <!-- <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
                                             data-key="pk_test_XBiHnVt8ZN2PFMvDa0wG6sUP"
                                             data-image=""
                                             data-email="gaurav.sadda@outlook.com"
@@ -382,7 +383,7 @@ select.list-dt:focus {
                                             data-panel-label="Pay $<?php echo $values->plan_fee; ?>"
                                             data-label="Pay $<?php echo $values->plan_fee; ?>"
                                             data-locale="auto">
-                                            </script>
+                                            </script> -->
             </a>
                                         </div>
                                     </div>
@@ -522,8 +523,9 @@ select.list-dt:focus {
 
 		});
 		function submitForm(id){
+
             $("#hiddenFields").val(id);
-          //  $("form").submit();
+            $("form").submit();
 
         }
 	</script>

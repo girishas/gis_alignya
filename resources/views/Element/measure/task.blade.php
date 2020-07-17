@@ -27,6 +27,7 @@
                             <input type="hidden" name="objective_id" id="objectivetaskid" >
                             <input type="hidden" name="measure_id" id="measuretaskid">
                             <input type="hidden" name="type" id="typetaskid">
+                            <input type="hidden" name="is_popup" class="is_popup">
                             
                         </div>
                         <div class="form-group">

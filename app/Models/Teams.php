@@ -6,7 +6,8 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\SortableTrait;
-
+use App\User;
+use App\Models\TeamsMembers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -26,5 +27,11 @@ class Teams extends Model
 		);
 		return validator($input, $rules, $messages);
 	}
+	
+	
+	public function getTeamMembers(){
+       return $this->hasMany('App\Models\TeamsMembers', 'team_id', 'id')->leftjoin('users','users.id','=','al_teams_members.member_id')->where('users.status',1);
+    }
+	
 
 }
