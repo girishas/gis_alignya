@@ -123,23 +123,5 @@
         }
     }
 
-    function onchangeobjectivegetcycle(){
-        var objective_id =  $("#objectiveId").val();
-        var token = "<?php echo csrf_token(); ?>";
-        var company_id = "<?php echo Auth::User()->company_id; ?>";
-        $.ajax({
-            type:"POST",
-            url: "<?php echo url('getMeasureCycles'); ?>",
-            data:'_token='+token+'&company_id='+company_id+'&objective_id='+objective_id,
-            dataType:'JSON',
-            success: function (response) {
-                for (var key in response) {
-                  if (response.hasOwnProperty(key)) {
-                    var val = response[key];
-                    $("#measureCycle").append('<option value = "'+val+'">'+val+'</option>');
-                  }
-                }
-            }  
-        });
-    }
+   
     </script>

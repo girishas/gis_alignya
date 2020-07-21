@@ -22,7 +22,7 @@
                         </div>
                         <div class="form-side">
 							<a class="steamerst_link" href="{!! url($route_prefix, 'login') !!}">
-								{!! HTML::image("public/images/logo.png", "Logo", array("class"=>"", 'style'=>"width:250px;margin-bottom:40px;")) !!}
+								{!! HTML::image("public/img/logo.png", "Logo", array("class"=>"", 'style'=>"width:250px;margin-bottom:40px;")) !!}
 							</a>
                             <h6 class="mb-4">Reset Password</h6>
                            {!! Form::open(array('url' => url('/resetpassword/'.$prefix.'?q='.$hash), 'class'=>'steamerstudio_form needs-validation tooltip-left-bottom', 'id'=>'login', 'files' => true))!!}

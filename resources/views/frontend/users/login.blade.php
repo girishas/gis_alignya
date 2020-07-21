@@ -11,15 +11,15 @@
                     <div class="card auth-card">
                         <div class="position-relative image-side ">
 
-                            <p class=" text-white h2">{!! getLabels('magic_is_in_the_details') !!}</p>
+                            <p class=" text-white h2">Let's Get Started</p>
 
-                            <p class="white mb-0">
-                                {!! getLabels('use_credentials_for_login') !!}
-								@if($route_prefix != env('ADMIN_PREFIX'))
-									<br>{!! getLabels('not_a_member') !!}
-									 <a href="{!! url('register') !!}" class="steamerst_link white">{!! getLabels('register') !!}</a>.
-								@endif
+                            <p class="white mt-3 mb-5">
+                                Join Alignya and develop strategy, create and align goals, set targets and initiatives, get prescriptive insights, manage execution and track progress both in real time and collaboratively. 
                             </p>
+							@if($route_prefix != env('ADMIN_PREFIX'))
+								  <p class="white mt-0 mb-0"><a href="{!! url('register') !!}" style="width: 100%;" class="btn btn-primary">{!! getLabels('Create_your_account') !!}</a></p>
+								@endif
+							
                         </div>
                         <div class="form-side">
 							<a class="steamerst_link" href="{!! url($route_prefix, 'login') !!}">
@@ -49,10 +49,13 @@
 							{!! Form::Close() !!}
 							<div style="clear:both;"></div>
 							@if($route_prefix != env('ADMIN_PREFIX'))
-								 <div class="d-flex flex-row mb-3 mt-3">
+								<!--  <div class="d-flex flex-row mb-3 mt-3">
 									<a class="btn btn-primary" onclick="applogin(this)" rel="{{ url('auth/facebook') }}" href="javascript:void(0);" style="width:100%;"><b>Facebook</b></a>&nbsp;&nbsp;
-									<a class="btn btn-primary" onclick="applogin(this)" rel="{{ url('auth/google') }}" href="javascript:void(0);" style=" background-color:#d9534f;border-color:#d9534f;width:100%;"><b>YouTube</b></a>
+									<a class="btn btn-primary" onclick="applogin(this)" rel="{{ url('auth/google') }}" href="javascript:void(0);" style="background-color:#d9534f;border-color:#d9534f;width:100%;"><b>YouTube</b></a>
 								</div>
+								 -->
+								
+								
 								 
 							@endif
                         </div>

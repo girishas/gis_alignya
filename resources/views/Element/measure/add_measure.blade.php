@@ -165,10 +165,10 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="custom-control custom-checkbox "><input type="checkbox" class="custom-control-input" id="customCheckThis" name="is_auto" checked="checked"> <label class="custom-control-label" for="customCheckThis">Do you want to create dynamic milestones</label></div>
+                                <div class="custom-control custom-checkbox "><input type="checkbox" class="custom-control-input" id="customCheckThis" name="is_auto" checked="checked" onclick="calc_type_hide()"> <label class="custom-control-label" for="customCheckThis">Do you want to create dynamic milestones</label></div>
                                 
                             </div>
-                             <div class="col-md-6">
+                             <div class="col-md-6" id="hide_calc_type">
                                 <label>Calculation Type</label>
                                 <div class="custom-control custom-radio">
                                     <input type="radio" id="calculation_type1" name="calculation_type" value = "0" class="custom-control-input">
@@ -280,5 +280,13 @@
                 }
             }  
         });
+    }
+     function calc_type_hide(){
+        if($("input[name=is_auto]").is(":checked")){           
+            $("#hide_calc_type").show();
+        }   
+        else{
+            $("#hide_calc_type").hide();
+        }
     }
     </script>

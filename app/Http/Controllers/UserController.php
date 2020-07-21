@@ -101,7 +101,10 @@ class UserController extends Controller
 					return redirect('login')->with('errormessage', getLabels('verification_link_expired'));
 				}else{
 					User::where('varify_hash', $has_key)->update(array('varify_account' =>1, 'status' =>1));
-					return redirect('login')->with('message', getLabels('email_address_confirmed'));
+					if(Auth::loginUsingId($userdata->id,true)){
+
+						return redirect('dashboard')->with('message', getLabels('email_address_confirmed'));
+					}
 				}
 			}else{
 				return redirect('login')->with('errormessage', getLabels('account_already_verified'));
@@ -115,55 +118,62 @@ class UserController extends Controller
 
 	public function register(){
 		$page_title = getLabels('register');
-		$plans = Plans::where('status',1)->get();
+		$plans = Plans::where('status',1)->where('period',1)->orderBy('id','asc')->get();
+		$yearly = Plans::where('status',1)->where('period',2)->orderBy('id','asc')->get();	
 		if ($this->request->isMethod('post')) {
 			$input = $this->request->all();
-			$company = array();
-			$company['company_name'] = $input['company_name'];
-			$company['slogan'] = $input['slogan'];
-			$company['com_vision'] = $input['com_vision'];
-			$company['com_values'] = $input['com_values'];
-			$company['com_mission'] = $input['com_mission'];
-			$company['email'] = $input['email'];
-			$company['plan_id'] = $input['plan_id'];
-			$createcompany = Company::create($company);
-			//$subscription = stripeSubscription($input['stripeToken'],$input['email'],$input['price_id']);
 			$validator = User::register($this->request->all());
-			$data                = $this->request->except('password');
-			$data['password']    = Hash::make($this->request->get('password'));
-			$data['role_id']     = 2;
-			$data['status']      = 1;
-			// $data['stripe_customer_id'] = $subscription['customer_id'];
-			$data['company_id'] = $createcompany->id;
-			$data['full_name'] = $input['first_name'].' '.$input['last_name'];
-			// $data['trial_expiry_date'] = $subscription['subscription']->trial_end;
-			$data['user_ip'] = $_SERVER['REMOTE_ADDR'];
-			$data['last_activity'] = date('Y-m-d h:i:s');
-			// $data['trial_expiry_date'] = $subscription['subscription']->trial_end;
-			$data['current_membership_plan'] = $input['plan_id'];
-			$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-			$user = User::create($data);
-			$update_emp_code = User::where('id',$user->id)->update(array('emp_code'=>"EMP-".$user->id."-".$createcompany->id));
-			$subscriptioncreate = array();
-			$subscriptioncreate['user_id'] = $user->id;
-			$subscriptioncreate['company_id'] = $createcompany->id;
-			$subscriptioncreate['plan_fee'] = $input['plan_amount'];
-			$subscriptioncreate['total_stripe_payment'] = $input['plan_amount'];
-			$subscriptioncreate['period'] = 1;
-			// $subscriptioncreate['stripe_subscription_id'] = $subscription['subscription']->id;
-			$subscriptioncreate['stripe_plan_id'] = $input['price_id'];
-			$subscriptioncreate['plan_id'] = $input['plan_id'];
-			//pr($subscriptioncreate);
-			// $subscriptioncreate['start_date'] = $subscription['subscription']->trial_start;
-			// $subscriptioncreate['end_date'] = $subscription['subscription']->trial_end;
-			// $subscriptioncreate['stripe_status'] = $subscription['subscription']->status;
-			// $subscriptioncreate['stripe_dump'] = json_encode($subscription);
-
-			//$subscriptions = Subscription::create($subscriptioncreate);
-			return redirect('login')->with("message","register successfully");
+			if($validator->fails()){
+				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+			}else{
+				$company = array();
+				$company['company_name'] = $input['company_name'];
+				$company['plan_id'] = $input['plan_id'];
+				$createcompany = Company::create($company);
+				$data                = $this->request->except('password');
+				$data['password']    = Hash::make($this->request->get('password'));
+				$data['role_id']     = 2;
+				$data['status']      = 0;
+				$data['company_id'] = $createcompany->id;
+				$data['full_name'] = $input['first_name'].' '.$input['last_name'];
+				$data['user_ip'] = $_SERVER['REMOTE_ADDR'];
+				$data['last_activity'] = date('Y-m-d h:i:s');
+				$data['current_membership_plan'] = $input['plan_id'];
+				$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+				$data['trial_expiry_date'] = date('Y-m-d', strtotime(date('Y-m-d'). ' + '.config('constants.TRIAL_DAYS').' days'));
+				$user = User::create($data);
+				if($user){
+					$last_id = $user->id;
+					$uniq_username = User::createUsername($last_id);
+					$emp_code = "EMP-".$user->id.'-'.$createcompany->id;
+					$updateempcode = User::where('id',$user->id)->update(array('emp_code'=>$emp_code));
+					$varify_hash = base64_encode($last_id.$uniq_username);
+					User::where('id', $user->id)->update(array('varify_hash'=>$varify_hash ));
+					if(config('constants.SITE_MODE') == 'live'){
+						$mail_data  	=     getEmailTemplate('registration');
+						if($mail_data){
+							$usr_name       = $user->first_name." ".$user->last_name;
+							$email          = $user->email; 
+							$link           = config('constants.SITE_URL').'verify-mail?q='.$varify_hash;                       
+							$site_name      = config('constants.SITE_TITLE');
+							$admin_email    = config('constants.SITE_EMAIL'); 
+							$message        = str_replace(array('{NAME}', '{EMAIL}', '{LINK}', '{SITE}'), array($usr_name, $email, $link, $site_name), $mail_data->template_body);
+							$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data->subject);
+							mail($email, $subject, $message);
+							//return view('frontend.my_email')->with('data',$message);
+							// Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
+							// 	$message->from($admin_email, $site_name);
+							// 	$message->to($email, $usr_name)->subject($subject);
+							// }); 	
+						}
+					}
+				}
+				$update_emp_code = User::where('id',$user->id)->update(array('emp_code'=>"EMP-".$user->id."-".$createcompany->id));
+				return response()->json(array("type" => "success", "url" => url('login'), "message" => getLabels('verification_link_sent_on_registered_email')));
+			}
 		}
 	
-		return view('frontend.users.register', compact('page_title','plans'));
+		return view('frontend.users.register', compact('page_title','plans','yearly'));
 	}
 
 	
@@ -183,31 +193,32 @@ class UserController extends Controller
 			} else {
 				$email = $this->request->get("email");
 				$usr_data  = (array)DB::table('users')->where('email', $email)->whereIn('role_id', [1,2])->first();
-				
 				if($usr_data){
-					$mail_data  	= getEmailTemplate('forgot_password'); //DB::table('templates')->where('slug', '=', 'forgot_password')->first();
+					
+					$mail_data  	= getEmailTemplate('forgot_password');
 					if($mail_data){
 						$number =   rand(0,100000);
-                    
-                        $varify_hash    =   base64_encode($usr_data['id'].$usr_data['uniq_username'].time());
+                    	$varify_hash    =   base64_encode($usr_data['id'].$usr_data['emp_code'].time());
                         User::where('id', $usr_data['id'])->update(array('varify_hash'=>$varify_hash ));
                         $usr_name       = $usr_data['first_name']." ".$usr_data['last_name'];
+                        // pr($usr_data['email']);
                         $email          = $usr_data['email']; 
                         $link           = config('constants.SITE_URL').'resetpassword/'.$number.'?q='.$varify_hash; 
                         $site_name      = config('constants.SITE_TITLE');
                         $admin_email    = config('constants.SITE_EMAIL'); 
-                        
 						if($email){
-							$message        = str_replace(array('{NAME}','{LINK}', '{SITE}'), array($usr_name, $link, $site_name),  $mail_data['content']);
-							$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data['subject']);
-							//return view('frontend.my_email')->with('data',$message);
-							Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
-								$message->from($admin_email, $site_name);
-								$message->to($email, $usr_name)->subject($subject);
-							}); 
+							if(config('constants.SITE_MODE') == 'live'){
+								$message        = str_replace(array('{NAME}','{LINK}', '{SITE}'), array($usr_name, $link, $site_name),  $mail_data['content']);
+								$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data['subject']);
+								Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
+									$message->from($admin_email, $site_name);
+									$message->to($email, $usr_name)->subject($subject);
+								}); 
+							}
 						}
 						return response()->json(array("type" => "success", "url" => url('login'), "message" => getLabels('email_sent_recover_pwd')));
 					}
+					
 				}else{
 					return response()->json(array("type" => "error", "url" => url('login'), "message" => getLabels('email_not_exist')));
 				}
@@ -218,7 +229,7 @@ class UserController extends Controller
 	
 	
 	
-	public function resetpassword($prefix=null,$verify_key=null){
+	public function resetpassword($prefix=null){
 		$page_title = getLabels("reset_password");
 		if($this->request->get('q')){
 			$hash = $this->request->get('q');
@@ -322,6 +333,8 @@ class UserController extends Controller
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
 		$objlist = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color','o.heading as parent_objective','al_goal_cycles.cycle_name','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
 		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('company_id',Auth::User()->company_id)->orderBy('id','desc')->select('al_tasks.*','al_master_status.name as status_name','al_master_status.icons as status_icon','al_master_status.bg_color')->get();
+		$members_count = User::count();
+		$transaction_count = Subscription::count();
 		if(!empty($tasklist)){
 			$tasklist = $tasklist->toArray();
 			foreach ($tasklist as $key => $tasks) {
@@ -329,7 +342,7 @@ class UserController extends Controller
 				$tasklist[$key]['owners'] = implode(',', $owners->toArray());
 			}
 		}
-		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist','tasks_count','tasklist'));
+		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist','tasks_count','tasklist','members_count','transaction_count'));
 	}
 	
 	
@@ -339,7 +352,11 @@ class UserController extends Controller
 	
 	
 	public function admin_index($role_id = null){
-		$page_title  = getLabels("Members");
+		$page_title  = getLabels("Members");		
+		 $data  = User::sortable()->where('users.company_id', Auth::User()->company_id)->leftjoin('countries', 'countries.id', '=', 'users.country_id');
+		 
+		
+		
 		
 		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
 			$_POST = $this->request->session()->get('usearch');
@@ -347,7 +364,6 @@ class UserController extends Controller
 			$this->request->session()->forget('usearch');
 		}
 		
-		$data  = User::sortable()->where('users.company_id', Auth::User()->company_id)->leftjoin('countries', 'countries.id', '=', 'users.country_id');
 		
 		if(! empty($_POST)){
 			if(isset($_POST['first_name']) and $_POST['first_name'] !=''){
@@ -378,8 +394,125 @@ class UserController extends Controller
 		$page_title  = getLabels("Members");
 		return view('frontend/users/admin_index', compact('data','role_id','page_title'));
 	}
+
+	public function companies($role_id = null){
+		$page_title  = getLabels("companies");		
+		$data  = User::where('users.role_id',2)->sortable()->leftjoin('al_comp_plans','al_comp_plans.id','=','users.current_membership_plan')->leftjoin('al_companies','al_companies.id','=','users.company_id')->leftjoin('countries', 'countries.id', '=', 'users.country_id');
 	
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		
+		if(! empty($_POST)){
+			if(isset($_POST['first_name']) and $_POST['first_name'] !=''){
+				$first_name = $_POST['first_name'];
+				$this->request->session()->put('usearch.first_name', $first_name);
+				$data = $data->whereRaw('CONCAT_WS("",users.first_name,users.last_name) like ?', "%{$first_name}%");
+			}
+			if(isset($_POST['email']) and $_POST['email'] !=''){
+				$email = $_POST['email'];
+				$this->request->session()->put('usearch.email', $email);
+				$data = $data->where('users.email',  $email);
+			}
+			if(isset($_POST['status']) and $_POST['status'] !=''){
+				$status = $_POST['status'];
+				$this->request->session()->put('usearch.status', $status);
+				$data = $data->where('users.status', $status);
+			}
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		
+		$data  = $data->select('users.*', 'countries.name as country','al_comp_plans.heading','al_comp_plans.plan_fee','al_comp_plans.period','al_companies.id as company_id','al_companies.company_name')->orderBy('users.created_at', 'desc')->paginate(config('constants.PAGINATION'));
+		
+		if(isset($_GET['s']) and $_GET['s']){
+			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		}
+		$page_title  = getLabels("companies");
+		return view('frontend/users/companies', compact('data','role_id','page_title'));
+	}
 	
+	public function company_add(){
+		$page_title = "Company Add";
+		if($this->request->isMethod('post')){
+			$validator = User::register($this->request->all());
+			if($validator->fails()){
+				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+			}else{
+				$input =$this->request->all();
+				$company = array();
+				$company['company_name'] = $input['company_name'];
+				$company['plan_id'] = $input['plan_id'];
+				$createcompany = Company::create($company);
+				$data                = $this->request->except('password');
+				$data['password']    = Hash::make($this->request->get('password'));
+				$data['role_id']     = 2;
+				$data['status']      = 0;
+				$data['company_id'] = $createcompany->id;
+				$data['full_name'] = $input['first_name'].' '.$input['last_name'];
+				$data['user_ip'] = $_SERVER['REMOTE_ADDR'];
+				$data['last_activity'] = date('Y-m-d h:i:s');
+				$data['current_membership_plan'] = $input['plan_id'];
+				$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+				$data['trial_expiry_date'] = date('Y-m-d', strtotime(date('Y-m-d'). ' + '.config('constants.TRIAL_DAYS').' days'));
+				$user = User::create($data);
+				if($user){
+					$last_id = $user->id;
+					$uniq_username = User::createUsername($last_id);
+					$emp_code = "EMP-".$user->id.'-'.$createcompany->id;
+					$updateempcode = User::where('id',$user->id)->update(array('emp_code'=>$emp_code));
+					$varify_hash = base64_encode($last_id.$uniq_username);
+					User::where('id', $user->id)->update(array('varify_hash'=>$varify_hash ));
+					if(config('constants.SITE_MODE') == 'live'){
+						$mail_data  	=     getEmailTemplate('registration');
+						if($mail_data){
+							$usr_name       = $user->first_name." ".$user->last_name;
+							$email          = $user->email; 
+							$link           = config('constants.SITE_URL').'verify-mail?q='.$varify_hash;                       
+							$site_name      = config('constants.SITE_TITLE');
+							$admin_email    = config('constants.SITE_EMAIL'); 
+							$message        = str_replace(array('{NAME}', '{EMAIL}', '{LINK}', '{SITE}'), array($usr_name, $email, $link, $site_name), $mail_data->template_body);
+							$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data->subject);
+							mail($email, $subject, $message);
+							//return view('frontend.my_email')->with('data',$message);
+							// Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
+							// 	$message->from($admin_email, $site_name);
+							// 	$message->to($email, $usr_name)->subject($subject);
+							// }); 	
+						}
+					}
+				}
+				$update_emp_code = User::where('id',$user->id)->update(array('emp_code'=>"EMP-".$user->id."-".$createcompany->id));
+				return response()->json(array("type" => "success", "url" => url(env('ADMIN_PREFIX').'/companies'), "message" => getLabels('company_update_successfully')));
+			}
+		}
+		$plans = Plans::where('period',1)->get();
+		$yearly = Plans::where('period',2)->get();
+		return view('frontend/users/company_add',compact('page_title','id','plans','yearly'));
+
+	}
+	
+	public function company_update($id=null){
+		$page_title = "Company Update";
+		$data = Company::where('al_companies.id',$id)->leftjoin('users','users.company_id','=','al_companies.id')->select('al_companies.id as company_id','al_companies.company_name','users.id as user_id','users.first_name','users.last_name','users.email','users.current_membership_plan as plan_id')->first();
+		if($this->request->isMethod('post')){
+			$inputs = $this->request->all();
+			//pr($inputs);
+			$update_company = Company::where('id',$id)->update(array('company_name'=>$inputs['company_name'],'plan_id'=>$inputs['plan_id']));
+			$update_user = User::where('id',$inputs['user_id'])->update(array('first_name'=>$inputs['first_name'],'last_name'=>$inputs['last_name'],'current_membership_plan'=>$inputs['plan_id']));
+			return response()->json(array("type" => "success", "url" => url(env('ADMIN_PREFIX').'/companies'), "message" => getLabels('company_update_successfully')));
+		}
+		$plans = Plans::where('period',1)->get();
+		$yearly = Plans::where('period',2)->get();
+		return view('frontend/users/company_update',compact('page_title','data','id','plans','yearly'));
+	}
+
+
+
 	public function admin_status($role_id = null, $id = null){
 		if(Auth::check() and Auth::User()->role_id != 1){
 			return back();
@@ -525,6 +658,26 @@ class UserController extends Controller
 			}
 		}
 		return view("/frontend/users/profile",compact('page_title','company_details','plan_details','total_members','total_departments','total_teams','industries'));
+	}
+	public function company_view($id=null){
+		$page_title = "Company Profile";
+		$company_details = getCompanyProfile($id);
+		$plan_details = getPlanDetails(!empty($company_details)?$company_details->plan_id:"");
+		$total_members = User::where('company_id',$id)->count();
+		$total_departments = Department::where('company_id',$id)->count();
+		$total_teams = Teams::where('company_id',$id)->count();
+		$industries = Industries::pluck('name','id');
+		// if($this->request->isMethod('post')){
+		// 	$formData = $this->request->all();
+		// 	$data = Company::find($id);
+		// 	$update = $data->update($formData);
+		// 	if($update){
+		// 		return redirect('profile');
+		// 	}else{
+		// 		return redirect('profile');
+		// 	}
+		// }
+		return view("/frontend/users/company_profile",compact('page_title','company_details','plan_details','total_members','total_departments','total_teams','industries'));
 	}
 	public function getprofiledata(){
 		$company_details = getCompanyProfile(Auth::User()->company_id);

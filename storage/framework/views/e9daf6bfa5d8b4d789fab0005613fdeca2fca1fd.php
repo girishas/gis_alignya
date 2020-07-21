@@ -22,13 +22,14 @@
 						<rect x="0.5" y="15.5" width="25" height="1" />
 					</svg>
 				</a>
-
+				<?php if(Auth::User()->role_id != 1): ?>
 			   <div class="search" data-search-path="<?php echo url($route_prefix.'/search'); ?>?q=" style="width:100%;">
 					<input placeholder="<?php echo getLabels('Search'); ?>..." class="typehead">
 					<span class="search-icon">
 						<i class="simple-icon-magnifier"></i>
 					</span>
 				</div>
+				<?php endif; ?>
 			<?php endif; ?>
         </div>
 
@@ -70,7 +71,7 @@
 				</div> */ ?>
 				
 				<?php if(Auth::check()): ?>
-					
+					<?php if(Auth::User()->role_id != 1): ?>
 					<div class="position-relative d-none d-sm-inline-block">
                     <button class="header-icon btn btn-empty" type="button" id="iconMenuButton" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
@@ -105,6 +106,7 @@
                 </div>
 					
 				<?php endif; ?>
+				<?php endif; ?>
 
 
             </div>
@@ -129,7 +131,9 @@
 					
 					<?php if(Auth::check()): ?>
 						<div class="dropdown-menu dropdown-menu-right mt-3">
+							<?php if(Auth::User()->role_id != 1): ?>
 							<a class="dropdown-item steamerst_link" href="<?php echo url('profile'); ?>"><?php echo getLabels('my_profile'); ?></a>
+							<?php endif; ?>
 							<a class="dropdown-item " href="javascript:void(0);" onclick="showChangePasswordModal()"><?php echo getLabels('Change_Password'); ?></a>
 							<a class="dropdown-item" href="javascript:void(0);" onclick="logout();"><?php echo getLabels('sign_out'); ?></a>
 						</div>

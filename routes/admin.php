@@ -28,12 +28,21 @@ Route::any('/messages/{username?}', array('as'=>'messages.index', 'uses'=>'Conve
 Route::any('/groups/{slug?}', array('as'=>'messages.groups', 'uses'=>'ConversationController@groups'));
 Route::any('/discover-groups/{slug?}', array('as'=>'messages.groups', 'uses'=>'ConversationController@discover_groups'));
 Route::any('/group-request', array('as'=>'messages.all_group_requests', 'uses'=>'ConversationController@all_group_requests'));
+Route::any('subscription-plans', array('as'=>'users.subscription_plans', 'uses'=>'DepartmentController@subscription_plans'));
+Route::any('perspective', array('as'=>'users.perspective', 'uses'=>'DepartmentController@perspective'));
+Route::any('subscription-plan/update/{id?}', array('as'=>'users.subscription_plan_update', 'uses'=>'DepartmentController@subscription_plan_update'));
+Route::any('perspective/update/{id?}', array('as'=>'users.perspective_update', 'uses'=>'DepartmentController@perspective_update'));
+Route::any('/perspective/add', array('as'=>'users.perspective_add', 'uses'=>'DepartmentController@perspective_add'));
+Route::any('/perspective/remove/{id?}', array('as'=>'users.perspective_remove', 'uses'=>'DepartmentController@perspective_remove'));
 
 Route::get('notifications', array('as'=>'posts.notifications', 'uses'=>'PostController@notifications'));
 
 
-Route::any('members', array('as'=>'admin.users', function(){ 
-							return App::make('App\Http\Controllers\UserController')->admin_index(2); }));
+Route::any('companies', array('as'=>'users.companies', 'uses'=>'UserController@companies'));
+Route::any('company/update/{id?}', array('as'=>'users.company_update', 'uses'=>'UserController@company_update'));
+Route::any('company/view/{id?}', array('as'=>'users.company_view', 'uses'=>'UserController@company_view'));
+Route::any('company/add', array('as'=>'users.company_add', 'uses'=>'UserController@company_add'));
+
 Route::any('members/changepassword/{role_id?}/{user_id?}', array('as'=>'users.admin_changepassword', 'uses'=>'UserController@admin_changepassword'))->where('role_id', '[0-9]+')->where('user_id', '[0-9]+');
 
 Route::any('members/new', array('as'=>'users.admin_add', 'uses'=>'UserController@admin_add'));

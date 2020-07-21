@@ -231,6 +231,8 @@ class User extends Authenticatable
 			'email'  		=> 'required|email|unique:users,email',
 			'password'  	=> 'required|min:6',
 			'first_name'  	=> 'required',
+			'company_name' => 'required',
+			'plan_id' => 'required',
 		);
 		
 		$messages = array(
@@ -239,6 +241,8 @@ class User extends Authenticatable
 			'password.required' 		=> getLabels('password_is_required'),
 			'password.required' 		=> getLabels('password_length'),
 			'first_name.required' 		=> getLabels('first_name_required'),
+			'company_name.required' 		=> getLabels('company_name_required'),
+			'plan_id.required' 		=> getLabels('choose_plan_required'),
 		);
         return validator($input, $rules, $messages);
 	}
@@ -246,8 +250,8 @@ class User extends Authenticatable
 	
 	public static function createUsername($user_id){
 		$number  = time().str_pad($user_id, 5, '0', STR_PAD_LEFT);
-		$user   = Self::find($user_id);
-		$user->update(array("uniq_username" => $number));
+		// $user   = Self::find($user_id);
+		// $user->update(array("uniq_username" => $number));
 		return $number;
 	}
 

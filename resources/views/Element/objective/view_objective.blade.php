@@ -107,7 +107,7 @@
                             <div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
                                       <div class="row">
 
-                                    <div class="col-lg-8 col-12 mb-4">
+                                    <div class="col-lg-12 col-12 mb-4">
                                      <div class="card mb-8">
                                             <div class="card-body">
                                 <table class="table table-borderless">
@@ -131,30 +131,7 @@
                                     </div>
                                     </div>
 
-                                    <div class="col-12 col-lg-4">
-                                         <div class="card mb-8">
-                                            <div class="card-body">
-                                       
-                                       <div class="d-flex flex-row mb-2  mb-4">
-                                                    
-                                                    <div class=" d-flex flex-grow-1 min-width-zero">
-                                                        <div
-                                                            class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                                            <div class="min-width-zero">
-                                                                <a href="#">
-                                                                    <p class="mb-0 truncate"><i class="iconsminds-pause heading-icon" style="color:yellow;"></i>Product Sales</p>
-                                                                </a>
-                                                               <p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q3</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dashboard-line-chart">
-                                                    <canvas id="contributionChart3"></canvas>
-                                                </div>
-                                    </div>
-                                    </div>
-                                    </div>
+                                   
                                 </div>
                             </div>
 

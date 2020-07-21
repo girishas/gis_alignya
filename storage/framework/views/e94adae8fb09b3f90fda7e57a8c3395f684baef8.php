@@ -9,6 +9,7 @@
     <?php echo $__env->make('Element/measure/add_milestone', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <?php echo $__env->make('Element/measure/task', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <?php echo $__env->make('Element/measure/update_task', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    <?php echo $__env->make('frontend/measures/filter', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <main>
     <div class="container-fluid">
     <div class="row">
@@ -18,76 +19,6 @@
     <a href="javascript:void(0);" class=" btn btn-primary btn-sm top-right-button mr-1" id="add_objectiveBtn"><?php echo getLabels('add_measure'); ?></a>
     <button type="button" class="btn btn-outline-primary mb-1" id="filterBtn">Filters</button>
     </div>
-
- <div class="modal modal-right" id="filterPop" role="dialog" >
-                                <div class="modal-dialog" >
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Search</h5>
-                                            <button type="button" class="close" id="hideFilter" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            
-                                            <form>
-                                                <div class="container-fluid">
-                                                <div class="row">
-                                                    
-                                                <div class="col-lg-8">
-                                                    <div class="form-group">
-                                                    <label>Name</label>
-                                                    <input type="text" class="form-control" placeholder="">
-                                                </div>
-                                               
-
-                                                <div class="form-group">
-                                                    <label>Cycle</label>
-                                                    <select class="form-control">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">FY2020-Q1</option>
-                                                        <option value="Sass">FY2020-Q2</option>
-                                                        <option value="React">FY2020-Q3</option>
-                                                        <option value="React">FY2020-Q4</option>
-                                                        <option value="React">FY2020-H1</option>
-                                                        <option value="React">FY2020-H2</option>
-                                                    </select>
-                                                </div>
-                                                 <div class="form-group">
-                                                    <label>Status</label>
-                                                    <select class="form-control">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">Hold</option>
-                                                        <option value="Sass">Above Target</option>
-                                                        <option value="React">Below Target</option>
-                                                        <option value="React">At Risk</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group ">
-                                                    <label>Owners</label>
-                                                    <select class="form-control select2-single">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">Jhon</option>
-                                                        <option value="Sass">Emma</option>
-                                                        <option value="React">Jolley</option>
-                                                        <option value="React">Jack</option>
-                                                    </select>
-                                                </div>
-                                                  
-                                                </div>
-                                                
-                                                </div>
-                                                </div>
-                                            </form>
-                                        </div>
-                                        <div class="modal-footer">
-                                           <button type="button" class="btn btn-primary">Search</button>
-                                            <a class="btn btn-dark mb-1 steamerst_link" href="<?php echo url('kpis'); ?>">Show All</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>    
-
     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
     <ol class="breadcrumb pt-0">
     <li class="breadcrumb-item">

@@ -207,25 +207,7 @@
         }
     }
 
-    function onchangeobjectivegetcycle(){
-        var objective_id =  $("#objectiveId").val();
-        var token = "{!!csrf_token()!!}";
-        var company_id = "{!!Auth::User()->company_id!!}";
-        $.ajax({
-            type:"POST",
-            url: "{!!url('getMeasureCycles')!!}",
-            data:'_token='+token+'&company_id='+company_id+'&objective_id='+objective_id,
-            dataType:'JSON',
-            success: function (response) {
-                for (var key in response) {
-                  if (response.hasOwnProperty(key)) {
-                    var val = response[key];
-                    $("#measureCycle").append('<option value = "'+val+'">'+val+'</option>');
-                  }
-                }
-            }  
-        });
-    }
+   
 
     
     </script>

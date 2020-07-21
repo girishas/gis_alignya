@@ -21,7 +21,10 @@
                     <h1>{!! getLabels('Initiatives') !!}</h1>
                     <div class="text-zero top-right-button-container">
                         <a href="javascript:void(0);" class=" btn btn-primary btn-sm top-right-button mr-1" id="add_objectiveBtn">{!! getLabels('add_initiative') !!}</a>
+                        <button type="button" class="btn btn-outline-primary mb-1" onclick="filter()">Filters</button>
+
                     </div>
+                    @include('Element/initiative/filter')
                     @include('Element/initiative/add_initiative')
                     @include('Element/initiative/view_initiative')
                     @include('Element/initiative/add_milestone')
@@ -41,31 +44,7 @@
                 </div>
             </div>
             
-            <div class="row">
-                <div class="col-12">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <h5 class="mb-4">{!! getLabels('Search') !!}</h5>
-                            {!! Form::open(array('url' => array($route_prefix.'/teams'), 'class' =>'steamerstudio_searchform', 'name'=>'Search')) !!}
-                                <div class="form-body">
-                                    <div class="row">
-                                        <div class="col-lg-3">
-                                            <div class="form-group">
-                                                {!! Form::text('team_name', isset($_POST['team_name'])?trim($_POST['team_name']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_name')))!!}
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-lg-3">               
-                                            <button class="btn btn-primary mb-1" type="submit">{!! getLabels('Search') !!}</button>
-                                            <a class="btn btn-dark mb-1 steamerst_link" href="{!! url($route_prefix, 'teams') !!}">{!! getLabels('show_all') !!}</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            {!!Form::close()!!}
-                        </div>
-                    </div>
-                </div>
-            </div>
+           
             
             <div class="row mb-4">
                 <div class="col-12 ">
@@ -96,15 +75,9 @@
                                                     <td> <span class="badge badge-pill badge-success" style="background-color: {!!$value->bg_color!!}">{!!$value->status_name!!}</span></td>
                                                     <td> {!!$value->parent_objective!!}</td>
                                                     <td>
-                                                        <div class="btn-group float-none-xs">
-                                                            <button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                {!! getLabels('action') !!}
-                                                            </button>
-                                                            <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
-                                                                <a class=" dropdown-item" href="javascript:void(0);" onclick="updateinitiative('{!!$value->id!!}')">{!! getLabels('edit') !!}</a>
-                                                            <a class="dropdown-item" onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);">{!! getLabels('remove') !!}</a>
-                                                            </div>
-                                                        </div>
+                                                          <a  href="javascript:void(0);" onclick="updateinitiative('{!!$value->id!!}')"><i class="simple-icon-pencil heading-icon"></i></a>
+                                                          <a href="javascript:void(0);" onclick="view_initiativepop('{!!$value->id!!}')"> <i class="iconsminds-information heading-icon" ></i>
+                                                            <a onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);"><i class="simple-icon-trash heading-icon"></i></a>
                                                     </td>
                                                 </tr>
                                         @endforeach
@@ -135,6 +108,37 @@
 
   
   <script>
+    function updateTask(id){
+        $("#update_task_id").val(id);
+        var token = "{!!csrf_token()!!}";
+        var company_id = "{!!Auth::User()->company_id!!}";
+        $.ajax({
+            type:"POST",
+            url: "{!!url('getTaskDetails')!!}",
+            data:'_token='+token+'&company_id='+company_id+'&task_id='+id,
+            dataType:'JSON',
+            success: function (response) {
+                var taskdetails = response.task_details;
+                $("#task_name_update_id").val(taskdetails.task_name);
+                $("#task_description_update_id").val(taskdetails.description);
+                var owners = response.owners;
+                for (var own in owners) {
+                    if (owners.hasOwnProperty(own)) {
+                        var owner = owners[own];
+                        if(taskdetails.owners.indexOf(own) != -1){
+                            $("#owners_update_id").append('<option value = "'+own+'" selected="selected">'+owner+'</option>');
+                        }else{
+                            $("#owners_update_id").append('<option value = "'+own+'">'+owner+'</option>');
+                        }
+                      }
+                    }
+                }  
+        });
+        $("#myModalUpdateTask").modal("show");
+    }
+    function filter(){
+        $("#filterPop").modal("show");
+    }
     function chartload(milestones){
         am4core.ready(function() {
 
@@ -202,6 +206,7 @@ chart.scrollbarX = new am4core.Scrollbar();
     function updateinitiative(id){
         $("#initiative_update_id").val(id);
         $("#ownershipinitiativeupdate").html("");
+        $("#contriiniupdate").html("");
         var company_id = "{!!Auth::User()->company_id!!}"; 
         var token = "{!!csrf_token()!!}";
         $.ajax({
@@ -278,6 +283,7 @@ chart.scrollbarX = new am4core.Scrollbar();
                         }
                     }  
                 });
+                $("#initiative_status_id").val(response.initiatives.status);
             }
         })
 
@@ -306,6 +312,8 @@ chart.scrollbarX = new am4core.Scrollbar();
         $("#updatemilestoneini").modal("show");
     }
      function view_initiativepop(id){
+        $(".is_popup").val(1);
+        localStorage.setItem('popup_id',id);
         $("#viewpageinitiativeid").val(id);
         $("#initiativemilestonelist").html("");
         var token = "{!!csrf_token()!!}";
@@ -324,7 +332,7 @@ chart.scrollbarX = new am4core.Scrollbar();
 
                 }
                 for(var i = 0; i < response.tasklist.length; i++){
-                    $("#initiativetasklistview").append('<tr><td>'+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background-color:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><i class="iconsminds-right-1 heading-icon" style="cursor: pointer;"></i> <i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>');
+                    $("#initiativetasklistview").append('<tr><td>'+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background-color:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"> <i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a></td></tr>');
 
                 }
             }
@@ -333,6 +341,17 @@ chart.scrollbarX = new am4core.Scrollbar();
         $("#viewinitiativemodal").modal('show');
      }
 $(document).ready(function(){
+    var inimessage = "{!!session('inimessage')?session('inimessage'):''!!}";
+    if(inimessage != ""){
+        showNotificationApp('top', 'right', 'primary', 'success', '{!!session("inimessage")!!}');
+    }
+    $("#hideFilter").click(function(){
+        $("#filterPop").modal('hide');
+    });
+    var popup_content_message = "{!!session('popup_content_message')?session('popup_content_message'):''!!}";
+    if(popup_content_message != ""){
+        view_initiativepop(localStorage.getItem('popup_id'));
+    }
   $("#popupaddhideinitiativeupdate").click(function(){
     $("#myModalUpdateInitiative").modal('hide');
   });

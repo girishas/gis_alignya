@@ -16,5 +16,20 @@ class Perspective extends Model
 	protected $table = "al_perspectives";
     protected $fillable = [
         'name','status'];
+    public $timestamps = false;
+
+
+
+    public static function validate($input){
+		$rules = array(
+			'name'  		=> 'required',
+		);
+		
+		$messages = array(
+			'name.required'			=> getLabels('name_is_required'),
+			
+		);
+        return validator($input, $rules, $messages);
+	}
 
 }

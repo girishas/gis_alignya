@@ -23,7 +23,33 @@
 
                         </a>
                     </li>
-                    <?php
+                    
+                   
+					<?php if(Auth::check() and Auth::User()->role_id == 1): ?><?php
+						$class_nav  = (($controller == "UserController" && in_array($current_action, ['admin_index'])) OR (strpos(URL::current(),'members') !== false))?"active":""; ?>
+						
+						<li class="<?php echo $class_nav; ?>">
+							<a class="steamerst_link" href="<?php echo url($route_prefix, 'companies'); ?>">
+								<i class="iconsminds-male-female"></i>
+								<?php echo getLabels('Company'); ?>
+
+							</a>
+						</li> 
+						<?php
+						$class_nav  = ($controller == "DepartmentController" && in_array($current_action, ['subscription_plans']))?"active":""; ?>
+						
+						<li class="<?php echo $class_nav; ?>">
+							<a href="#masters">
+								<i class="simple-icon-settings"></i>
+								<?php echo getLabels('Masters'); ?>
+
+							</a>
+						</li> 
+						
+						
+					<?php else: ?>
+						<?php /* Show All users - Cmpany/ hod/ team */ ?>
+					 <?php
                     $class_nav  = ($controller == "UserController" && in_array($current_action, ['analytics']))?"active":""; ?>
                     <li class="<?php echo $class_nav; ?>" id="st_analytics">
                       <a class="" href="#analytic_manager" >
@@ -50,135 +76,6 @@
 
                         </a>
                     </li>
-                    <?php /*
-                    //echo $current_action;die;
-						$class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['objectives']))?"active":""; ?>
-						
-						<li class="{!! $class_nav !!}" id="">
-							<a class="" href="javascript:void(0);" onclick="onFunc('objectives')" >
-	                            <i class="iconsminds-statistic"></i>
-	                            {!! getLabels('Objectives') !!}
-	                        </a>
-						</li>
-                    <?php 
-						$class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['admin_index']))?"active":""; ?>
-						
-						<li class="{!! $class_nav !!}" id="st_objective">
-							<a class="steamerst_link" href="{!! url($route_prefix, 'measures') !!}" >
-	                            <i class="simple-icon-hourglass"></i>
-	                            {!! getLabels('Measures') !!}
-	                        </a>
-						</li><?php 
-						$class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['admin_index']))?"active":""; ?>
-						
-						<li class="{!! $class_nav !!}" id="st_objective">
-							<a class="steamerst_link" href="{!! url($route_prefix, 'initiatives') !!}" >
-	                            <i class="simple-icon-book-open"></i>
-	                            {!! getLabels('Initiatives') !!}
-	                        </a>
-						</li>
-						
-					<?php 
-                    $class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['measures']))?"active":""; ?>
-                    <li class="{!! $class_nav !!}" id="">
-                      <a class="" href="javascript:void(0);" onclick="onFunc('kpis')">
-                            <i class="simple-icon-layers"></i>
-                            {!! getLabels('KPIs') !!}
-                        </a>
-                    </li> */ ?>
-                   
-					<?php if(Auth::check() and Auth::User()->role_id == 1): ?><?php
-						$class_nav  = (($controller == "UserController" && in_array($current_action, ['admin_index'])) OR (strpos(URL::current(),'users') !== false))?"active":""; ?>
-						
-						<li class="<?php echo $class_nav; ?>">
-							<a class="steamerst_link" href="<?php echo url($route_prefix, 'users'); ?>">
-								<i class="iconsminds-male-female"></i>
-								<?php echo getLabels('Users'); ?>
-
-							</a>
-						</li><?php
-						$class_nav  = (($controller == "PageController" OR  $controller == "TemplateController" ) && in_array($current_action, ['admin_view', 'admin_index', 'admin_add', 'admin_edit']))?"active":""; ?>
-						
-						<li class="<?php echo $class_nav; ?>" id="st_content">
-							<a href="#content_manager">
-								<i class="iconsminds-library"></i>
-								<span><?php echo getLabels('Content'); ?></span>
-							</a>
-						</li><?php
-						
-						$class_nav  = ($controller == "SettingController" && in_array($current_action, ['admin_languages', 'admin_edit_language', 'admin_add_language']))?"active":""; ?>
-						
-						<li class="<?php echo $class_nav; ?>">
-							<a class="steamerst_link" href="<?php echo url($route_prefix, 'languages'); ?>">
-								<i class="iconsminds-sound"></i>
-								<?php echo getLabels('Languages'); ?>
-
-							</a>
-						</li><?php
-						/* $class_nav  = ($controller == "SettingController" && in_array($current_action, ['admin_badges', 'admin_edit_badges', 'admin_add_badges']))?"active":""; ?>
-
-						<li class="{!! $class_nav !!}">
-							<a class="steamerst_link" href="{!! url($route_prefix, 'badges') !!}">
-								<i class="simple-icon-badge"></i>
-								{!! getLabels('Badges') !!}
-							</a>
-						</li><?php */
-						$class_nav  = ($controller == "SettingController" && in_array($current_action, ['admin_labels', 'admin_edit_labels', 'admin_add_labels']))?"active":""; ?>
-
-						<li class="<?php echo $class_nav; ?>">
-							<a class="steamerst_link" href="<?php echo url($route_prefix, 'labels'); ?>">
-								<i class="simple-icon-docs"></i>
-								<?php echo getLabels('Labels'); ?>
-
-							</a>
-						</li><?php
-						$class_nav  = ($controller == "SettingController" && in_array($current_action, ['admin_add_page_images', 'admin_edit_page_images', 'admin_page_images']))?"active":""; ?>	
-
-						<li class="<?php echo $class_nav; ?>">
-							<a class="steamerst_link" href="<?php echo url($route_prefix, 'page_images'); ?>">
-								<i class="simple-icon-picture"></i>
-								<?php echo getLabels('Page_Images'); ?>
-
-							</a>
-						</li><?php
-						$class_nav  = ($controller == "SettingController" && in_array($current_action, ['admin_add_testimonials', 'admin_testimonials', 'admin_edit_testimonials']))?"active":""; ?>	
-
-						<li class="<?php echo $class_nav; ?>">
-							<a class="steamerst_link" href="<?php echo url($route_prefix, 'testimonials'); ?>">
-								<i class="simple-icon-list"></i>
-								<?php echo getLabels('Testimonials'); ?>
-
-							</a>
-						</li><?php
-						$class_nav  = ($controller == "SettingController" && in_array($current_action, ['admin_add_faqs', 'admin_faqs', 'admin_edit_faqs']))?"active":""; ?>
-						<li class="<?php echo $class_nav; ?>">
-							<a class="steamerst_link" href="<?php echo url($route_prefix, 'faqs'); ?>">
-								<i class="simple-icon-question"></i>
-								<?php echo getLabels('Faqs'); ?>
-
-							</a>
-						</li><?php
-						$class_nav  = ($controller == "SubscriptionController" && in_array($current_action, ['payouts_amount_details', 'payout_history_detail', 'transaction_manager', 'admin_payouts', 'payout_history', 'admin_add_subscriptions', 'admin_subscriptions', 'admin_edit_subscriptions', 'admin_add_subscriptionlevel', 'admin_subscriptionlevel', 'admin_edit_subscriptionlevel']))?"active":""; ?>
-						
-						<?php
-						$class_nav  = ($controller == "SettingController" && in_array($current_action, ['admin_update']))?"active":""; ?>
-						
-						<li class="<?php echo $class_nav; ?>">
-							<a class="steamerst_link" href="<?php echo url($route_prefix, 'settings'); ?>">
-								<i class="simple-icon-settings"></i>
-								<?php echo getLabels('Settings'); ?>
-
-							</a>
-						</li><?php
-						$class_nav  = ($controller == "BadgeController" && in_array($current_action, ['admin_index', 'admin_add', 'admin_edit']))?"active":""; ?>
-						
-						<?php /* <li class="{!! $class_nav !!}">
-							<a class="steamerst_link" href="{!! url($route_prefix, 'badges') !!}">
-								<i class="simple-icon-badge"></i>
-								Badges
-							</a>
-						</li> */ ?>
-					<?php elseif(Auth::check() and Auth::User()->role_id == 2): ?>
 						<?php $class_nav  = ($controller == "UserController" && in_array($current_action, ['members']))?"active":""; ?>
 						
 						<li class="<?php echo $class_nav; ?>" id="st_members">
@@ -187,8 +84,11 @@
 	                            <?php echo getLabels('members'); ?>
 
 	                        </a>
-						</li>
-						<?php $class_nav  = ($controller == "UserController" && in_array($current_action, ['members']))?"active":""; ?>
+						</li> 
+						
+					<?php endif; ?>
+					
+					<?php $class_nav  = ($controller == "UserController" && in_array($current_action, ['members']))?"active":""; ?>
 						
 						<li class="<?php echo $class_nav; ?>" id="st_members">
 							<a class="" href="#" onclick="logout()">
@@ -197,8 +97,6 @@
 
 	                        </a>
 						</li>
-						
-					<?php endif; ?>
 					
                 </ul>
             </div>
@@ -288,7 +186,26 @@
 							</a>
 						</li>
 					</ul>
-				
+				<ul class="list-unstyled" data-link="masters">
+						<?php $class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['subscription_plans', 'subscription_plan_update']))?"active":""; ?>
+							
+						<li class="<?php echo $class_subnav; ?>">
+							<a class="" href="javascript:void(0);" onclick="onFunc('subscription-plans')"  data-main-link="st_analytics">
+								<i class="simple-icon-cursor"></i>
+								<?php echo getLabels('Subscription_plans'); ?>
+
+							</a>
+						</li>
+						<?php $class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['perspective']))?"active":""; ?>
+							
+						<li class="<?php echo $class_subnav; ?>">
+							<a class="" href="javascript:void(0);" onclick="onFunc('perspective')"  data-main-link="st_analytics">
+								<i class="simple-icon-cursor"></i>
+								<?php echo getLabels('perspective'); ?>
+
+							</a>
+						</li>
+					</ul>
 				<ul class="list-unstyled" data-link="explore_manager">
 					<?php
 						$class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['objectives']))?"active":""; ?>

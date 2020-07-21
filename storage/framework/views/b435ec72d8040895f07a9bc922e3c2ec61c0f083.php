@@ -69,7 +69,7 @@
 
                        <div class="form-group col-md-6">
                          <label>Please Select</label>
-                            <select class="form-control ownership" onchange="ownershipdrop()" name="ownership" data-width="100%" id = "ownershipkpi">
+                            <select class="form-control ownership" onchange="ownershipdropkpi()" name="ownership" data-width="100%" id = "ownershipkpi">
                                 <?php if(!empty($departments)): ?>
                                 <?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $vale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <option value="<?php echo $key; ?>"><?php echo $vale; ?></option>
@@ -252,7 +252,7 @@
             }  
         });
     }
-    function ownershipdrop(){
+    function ownershipdropkpi(){
         $("#kpi_department_id").val("");
         $("#kpi_team_id").val("");
         $("#owner_user_id").val(""); 
@@ -309,5 +309,6 @@
             $("#hide_calc_type").hide();
         }
     }
+    
     </script>
 

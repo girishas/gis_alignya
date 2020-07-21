@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                {!! Form::open(array('url' => array($route_prefix.'/objectives'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+                {!! Form::open(array('url' => array($route_prefix.'/measures'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                                        
                     <div class="container-fluid">
                     <div class="row">
@@ -18,19 +18,14 @@
                         <label>Name</label>
                         {!! Form::text('heading', isset($_POST['heading'])?trim($_POST['heading']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_name')))!!}
                     </div>
-                   
-
-                    <div class="form-group">
-                        <label>Cycle</label>
-                        {!! Form::select('cycle_id', $goal_cycles, isset($_POST['cycle_id'])?$_POST['cycle_id']:null, array('class' => 'form-control'))!!}
-                    </div>
+                
                      <div class="form-group">
                         <label>Status</label>
                         {!! Form::select('status', $status, isset($_POST['status'])?$_POST['status']:null, array('class' => 'form-control'))!!}
                     </div>
                      <div class="form-group">
                    <button type="submit" class="btn btn-primary">Search</button>
-                <a class="btn btn-dark mb-1 steamerst_link" href="{!!url('objectives')!!}">Show All</a>
+                <a class="btn btn-dark mb-1 steamerst_link" href="{!!url('measures')!!}">Show All</a>
 </div>
                       
                     </div>

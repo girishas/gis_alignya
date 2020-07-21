@@ -2,8 +2,8 @@
 return array( 
 	"SITE_URL" 					=> "http://192.168.43.33/gis_alignya/",
 	"SITE_TITLE" 				=> "Alignya",
-	"SITE_EMAIL" 				=> "noreply@chameleon.love",
-	'SITE_MODE'					=> "live", //change "local" to "live" on server
+	"SITE_EMAIL" 				=> "support@alignya.com",
+	'SITE_MODE'					=> "local", //change "local" to "live" on server
 	"USER_ROLES" 				=> array(1=>'Admin', 2=>'Users'),
 	"ROLE_URLS" 				=> array(1=>'admins', 2=>'users'),
 	"PAGINATION" 				=> 10,
@@ -15,6 +15,7 @@ return array(
 	"YES_NO" 					=> array(1=>'Yes', 0=>'No'),
 	"GENDER" 					=> array(1=>'Male',  2=>'Female'),
 	"STATUS" 					=> array(1=>'Active', 0=>'Inactive',2=>'Blocked'),
+	"MASTER_STATUS" 			=> array(1=>'Active', 0=>'Inactive'),
 	"USER_THUMB_WIDTH"			=> 60,
 	"USER_MEDIUM_WIDTH"			=> 124,
 	"TAX_PER"					=> 0,
@@ -34,4 +35,7 @@ return array(
 	"MEASURE_TYPE" => array("binary"=>"Binary","value"=>"Value","currency"=>"Currency","percentage"=>"Percentage","revenue"=>"Revenue"),
 	"GOAL_VISIBILITY" => array("public"=>"Public","private"=>"Private","restricted"=>"Restricted"),
 	"CONFIDANCE_LEVEL" => array("At Risk"=>"At Risk","No Issues"=>"No Issues","Ahead of Plan"=>"Ahead of Plan"),
+	"TRIAL_DAYS" => 30,
+	"DEFAULT_CYCLES" => array(12=>'Time Period of 1 Year',36=>'Time Period of 3 Year',60=>'Time Period of 5 Year'),
+	"DATE_FORMAT" => "F m Y",
 );

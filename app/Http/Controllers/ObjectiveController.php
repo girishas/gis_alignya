@@ -241,7 +241,7 @@ class ObjectiveController extends Controller
 		
 		$validator = Objective::validate($this->request->all());
 		if($validator->fails()){
-			return redirect()->back()->with('adderrormessage',getLabels('objective_saved_errors'))->withErrors($validator->errors());
+			return redirect()->back()->with('objective_add_error',getLabels('objective_saved_errors'))->withErrors($validator->errors());
 		}else{
 			$input = $this->request->except('contributers');
 			$input['user_id'] = Auth::User()->id;
@@ -262,11 +262,10 @@ class ObjectiveController extends Controller
 				if($this->request->get('is_popup')){
 					return redirect()->back()->with('popup_content_message',getLabels('objective_saved_successfully'));
 				}else{
-					//return redirect()->back();
-					return redirect()->back()->with('message',getLabels('objective_saved_successfully'));
+					return redirect()->back()->with('objective_add_success',getLabels('objective_saved_successfully'));
 				}
 			}else{
-				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+				return redirect()->back()->with('objective_add_success',getLabels('something_wen_wrong'));
 			}
 		}	 
 	}
@@ -375,9 +374,9 @@ class ObjectiveController extends Controller
 		//pr($input);
 		$objective = $data->update($input);
 		if($objective){
-			return redirect()->back()->with('message',getLabels('objective_update_successfully'));
+			return redirect()->back()->with('objective_add_success',getLabels('objective_update_successfully'));
 		}else{
-			return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+			return redirect()->back()->with('objective_add_error',getLabels('something_wen_wrong'));
 		}
 	} 
 

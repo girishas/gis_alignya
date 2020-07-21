@@ -20,7 +20,6 @@
 <?php echo $__env->make('Element/objective/add_theme', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('Element/objective/add_cycle', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('Element/objective/update_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-
 <?php echo $__env->make('Element/measure/view_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('Element/measure/add_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>       
 <?php echo $__env->make('frontend/objectives/filter', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
@@ -327,17 +326,26 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
     }
 
 $(document).ready(function(){
-     var is_popup_content = "<?php echo session('popup_content_message')?session('popup_content_message'):''; ?>";
-        if(is_popup_content != ""){
-            viewobjective(localStorage.getItem('popup_id'));
-        }
+    var objective_add_error = "<?php echo session('objective_add_error')?session('objective_add_error'):''; ?>";
+    if(objective_add_error != ""){
+      $("#myModalAddObjective").modal('show');
+    }
+    var objective_add_success = "<?php echo session('objective_add_success')?session('objective_add_success'):''; ?>";
+    if(objective_add_success != ""){
+      showNotificationApp('top', 'right', 'primary', 'success', '<?php echo session("objective_add_success"); ?>');
+    }
+    var is_popup = "<?php echo session('is_popup')?session('is_popup'):''; ?>";
+    if(is_popup != ""){
+      showNotificationApp('top', 'right', 'primary', 'success', '<?php echo session("is_popup"); ?>');
+    }
+    var is_popup_content = "<?php echo session('popup_content_message')?session('popup_content_message'):''; ?>";
+    if(is_popup_content != ""){
+      viewobjective(localStorage.getItem('popup_id'));
+    }
+    
     var is_popup = "<?php echo session('is_popup')?session('is_popup'):''; ?>";
     if(is_popup != ''){
-        viewobjective(localStorage.getItem('popup_id'));
-    }
-    var adderrormessage = "<?php echo session('adderrormessage')?session('adderrormessage'):''; ?>";
-    if(adderrormessage != ''){
-        $("#myModalAddObjective").modal('show');
+      viewobjective(localStorage.getItem('popup_id'));
     }
     
   $("#popupaddhideupdateTask").click(function(){

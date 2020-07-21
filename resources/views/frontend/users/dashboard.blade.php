@@ -6,7 +6,8 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <h1>Dashboard</h1>
+                    <h1>@if(Auth::User()->role_id  == 1) Admin @endif Dashboard</h1>
+                    @if(Auth::User()->role_id  != 1)
 					<div class="text-zero top-right-button-container">
                             <button type="button"
                                 class="btn btn-lg  dropdown-toggle-split top-right-button top-right-button-single"
@@ -24,7 +25,8 @@
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="addMember()">Add Member</a>
                             </div>
                         </div>
-						
+					@endif
+                    @if(Auth::User()->role_id  != 1)
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                         <ol class="breadcrumb pt-0">
                             <li class="breadcrumb-item">
@@ -35,12 +37,32 @@
                         </ol>
                     </nav>
                     <div class="separator mb-5"></div>
-					
+					@endif
                 </div>
 				
                 <div class="col-lg-12 col-xl-12">
                     <div class="row icon-cards-row mb-4">
                        
+                        @if(Auth::User()->role_id == 1)
+                         <div class="col-md-3 col-lg-2 col-sm-4 col-6 mb-4">
+                                        <a href="{!!url($route_prefix.'/companies')!!}" class="card">
+                                            <div class="card-body text-center">
+                                                <i class="iconsminds-male-female"></i>
+                                                <p class="card-text mb-0">Members</p>
+                                                <p class="lead text-center">{!!$members_count!!}</p>
+                                            </div>
+                                        </a>
+                                </div>
+                                <div class="col-md-3 col-lg-2 col-sm-4 col-6 mb-4">
+                                        <a href="{!!url('measures')!!}" class="card">
+                                            <div class="card-body text-center">
+                                                <i class="iconsminds-money-bag"></i>
+                                                <p class="card-text mb-0">Transactions</p>
+                                                <p class="lead text-center">{!!$transaction_count!!}</p>
+                                            </div>
+                                        </a>
+                                </div>
+                        @else
                         
                            <div class="col-md-3 col-lg-2 col-sm-4 col-6 mb-4">
                                         <a href="{!!url('objectives')!!}" class="card">
@@ -175,6 +197,8 @@
                     </div>
                               
                </div>
+               
+               @endif
 
              </div>
  

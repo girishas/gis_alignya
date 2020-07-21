@@ -7,11 +7,12 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
+                                       
                                         {!! Form::open(array('url' => array($route_prefix.'/addobjective'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                                         <div class="modal-body">
-                                            @if(session('adderrormessage'))
+                                            @if(session('objective_add_error'))
                                             <div class="alert alert-danger" role="alert">
-                                                {!! session('adderrormessage') !!}
+                                                {!! session('objective_add_error') !!}
                                             </div>    
                                             @endif 
                                         		<div class="container-fluid">

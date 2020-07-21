@@ -66,17 +66,13 @@ class InitiativeController extends Controller
 			if(isset($_POST['heading']) and $_POST['heading'] !=''){
 				$heading = $_POST['heading'];
 				$this->request->session()->put('usearch.heading', $heading);
-				$data = $data->whereRaw('al_objectives.heading like ?', "%{$heading}%");
+				$data = $data->whereRaw('al_measures.heading like ?', "%{$heading}%");
 			}
-			if(isset($_POST['cycle_id']) and $_POST['cycle_id'] !=''){
-				$cycle_id = $_POST['cycle_id'];
-				$this->request->session()->put('usearch.cycle_id', $cycle_id);
-				$data = $data->whereRaw('al_objectives.cycle_id like ?', "%{$cycle_id}%");
-			}
+			
 			if(isset($_POST['status']) and $_POST['status'] !=''){
 				$status = $_POST['status'];
 				$this->request->session()->put('usearch.status', $status);
-				$data = $data->whereRaw('al_objectives.status like ?', "%{$status}%");
+				$data = $data->where('al_measures.status',$status);
 			}
 			
 		}else{
@@ -84,16 +80,17 @@ class InitiativeController extends Controller
 		}
 		
 		
-		$data  = $data->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->paginate(config('constants.PAGINATION'));
+		$data  = $data->orderBy('al_measures.id','desc')->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->paginate(config('constants.PAGINATION'));
 		//pr($data->toArray());
 		if(isset($_GET['s']) and $_GET['s']){
 			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
 		}
+		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->pluck('cycle_name','id');
 		$contributers = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
-		$status = Status::where('is_obj',1)->pluck('name','id');
+		$status = Status::where('is_obj',1)->pluck('name','id')->toArray();
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
-		return view('frontend/initiative/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives'));
+		return view('frontend/initiative/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives','goal_cycles'));
 	}
 
 	public function measures($role_id = null){
@@ -247,9 +244,7 @@ class InitiativeController extends Controller
 				if($this->request->get('is_popup')){
 					return redirect()->back()->with('popup_content_message',getLabels('initiative_saved_successfully'));
 				}else{
-					//return redirect()->back();
-					//return redirect()->back()->with('message',getLabels('objective_saved_successfully'));
-				return redirect()->back()->with('message',getLabels('initiative_saved_successfully'));
+					return redirect()->back()->with('inimessage',getLabels('initiative_saved_successfully'));
 				}
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
@@ -313,7 +308,7 @@ class InitiativeController extends Controller
 				$measure = $data->update($input);
 			}
 			if($measure){
-				return redirect()->back()->with('message',getLabels('initiative_update_successfully'));
+				return redirect()->back()->with('inimessage',getLabels('initiative_update_successfully'));
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
 			}
@@ -382,10 +377,12 @@ class InitiativeController extends Controller
 		$inputs['end_date'] = date('Y-m-d h:i:s', strtotime($this->request->get('end_date')));
 		if($id){
 			$update = $data->update($inputs);
+			$message = 'Milestone update successfully';
 		}else{
 			Milestones::create($inputs);
+			$message = 'Milestone add successfully';
 		}
-		return redirect()->back();
+		return redirect()->back()->with('popup_content_message',$message);
 	}
 
 	public function getmilestonedata(){

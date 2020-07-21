@@ -85,8 +85,12 @@
                             
                         </div>
                         
+                         <div class="form-group">
+                            <label>Status</label>
+                            {!!Form::select('status',$status,null,array('class'=>'form-control','id'=>'initiative_status_id'))!!}
+                            
                         </div>
-
+                        </div>
                         </div>
                         </div>
                         <div class="col-lg-12">

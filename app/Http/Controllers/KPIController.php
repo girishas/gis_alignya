@@ -66,17 +66,13 @@ class KPIController extends Controller
 			if(isset($_POST['heading']) and $_POST['heading'] !=''){
 				$heading = $_POST['heading'];
 				$this->request->session()->put('usearch.heading', $heading);
-				$data = $data->whereRaw('al_objectives.heading like ?', "%{$heading}%");
+				$data = $data->whereRaw('al_measures.heading like ?', "%{$heading}%");
 			}
-			if(isset($_POST['cycle_id']) and $_POST['cycle_id'] !=''){
-				$cycle_id = $_POST['cycle_id'];
-				$this->request->session()->put('usearch.cycle_id', $cycle_id);
-				$data = $data->whereRaw('al_objectives.cycle_id like ?', "%{$cycle_id}%");
-			}
+			
 			if(isset($_POST['status']) and $_POST['status'] !=''){
 				$status = $_POST['status'];
 				$this->request->session()->put('usearch.status', $status);
-				$data = $data->whereRaw('al_objectives.status like ?', "%{$status}%");
+				$data = $data->where('al_measures.status', $status);
 			}
 			
 		}else{
@@ -84,7 +80,7 @@ class KPIController extends Controller
 		}
 		
 		
-		$data  = $data->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->paginate(config('constants.PAGINATION'));
+		$data  = $data->orderBy('al_measures.id','desc')->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->paginate(config('constants.PAGINATION'));
 		
 		if(isset($_GET['s']) and $_GET['s']){
 			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
@@ -806,7 +802,7 @@ class KPIController extends Controller
 		 
 			//pr($input);  
 			if($measure){
-				return redirect()->back()->with('message',getLabels('measure_saved_successfully'));
+				return redirect()->back()->with('kpimessage',getLabels('kpi_saved_successfully'));
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
 			}
@@ -894,7 +890,7 @@ class KPIController extends Controller
 		$data['departments'] = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$data['teams'] = Teams::where('company_id',Auth::User()->company_id)->pluck('team_name','id');
 		$data['members'] = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
-		$milestone = Milestones::where('measure_id',$inputs['measure_id'])->where('milestone_type',0)->get();
+		$milestone = Milestones::where('measure_id',$inputs['measure_id'])->get();
 		if(!empty($milestone)){
 			$milestone = $milestone->toArray();
 		}else{
@@ -956,12 +952,12 @@ class KPIController extends Controller
 		return json_encode($results);
 	}
 
-	public function remove_measure($id = null){		
+	public function kpi_remove($id = null){		
 		$data = Measure::destroy($id);
 		if($data){
-			$results = array("type" => "success", "url" => url('measures'), "message" => getLabels('measure_removed'));
+			$results = array("type" => "success", "url" => url('kpis'), "message" => getLabels('kpi_removed'));
 		}else{
-			$results = array("type" => "error", "url" => url('measures'), "message" => getLabels('measure_not_removed'));
+			$results = array("type" => "error", "url" => url('kpis'), "message" => getLabels('kpi_not_removed'));
 		}
 		return json_encode($results);
 	}

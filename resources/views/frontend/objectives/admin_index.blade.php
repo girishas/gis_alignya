@@ -21,7 +21,6 @@
 @include('Element/objective/add_theme')
 @include('Element/objective/add_cycle')
 @include('Element/objective/update_objective')
-
 @include('Element/measure/view_measure')
 @include('Element/measure/add_measure')       
 @include('frontend/objectives/filter')
@@ -326,17 +325,26 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
     }
 
 $(document).ready(function(){
-     var is_popup_content = "{!!session('popup_content_message')?session('popup_content_message'):''!!}";
-        if(is_popup_content != ""){
-            viewobjective(localStorage.getItem('popup_id'));
-        }
+    var objective_add_error = "{!!session('objective_add_error')?session('objective_add_error'):''!!}";
+    if(objective_add_error != ""){
+      $("#myModalAddObjective").modal('show');
+    }
+    var objective_add_success = "{!!session('objective_add_success')?session('objective_add_success'):''!!}";
+    if(objective_add_success != ""){
+      showNotificationApp('top', 'right', 'primary', 'success', '{!!session("objective_add_success")!!}');
+    }
+    var is_popup = "{!!session('is_popup')?session('is_popup'):''!!}";
+    if(is_popup != ""){
+      showNotificationApp('top', 'right', 'primary', 'success', '{!!session("is_popup")!!}');
+    }
+    var is_popup_content = "{!!session('popup_content_message')?session('popup_content_message'):''!!}";
+    if(is_popup_content != ""){
+      viewobjective(localStorage.getItem('popup_id'));
+    }
+    
     var is_popup = "{!!session('is_popup')?session('is_popup'):''!!}";
     if(is_popup != ''){
-        viewobjective(localStorage.getItem('popup_id'));
-    }
-    var adderrormessage = "{!!session('adderrormessage')?session('adderrormessage'):''!!}";
-    if(adderrormessage != ''){
-        $("#myModalAddObjective").modal('show');
+      viewobjective(localStorage.getItem('popup_id'));
     }
     
   $("#popupaddhideupdateTask").click(function(){

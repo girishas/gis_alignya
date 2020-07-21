@@ -10,6 +10,7 @@ use App\Models\Department;
 use App\Models\TeamsMembers;
 use App\Models\GoalCycles;
 use App\Models\Objective;
+use App\Models\Plans;
 use App\Models\Theme;
 use App\Models\Perspective;
 use App\Models\DepartmentMember;
@@ -863,10 +864,89 @@ class DepartmentController extends Controller
 	}
 
 	
-	public function subscription(){
-		$page_title = "Subscription";
-		return view("/frontend/departments/subscription",compact('page_title'));
+	public function subscription_plans(){
+		$page_title = "Subscription Plans";
+		$data = Plans::sortable();
+
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+
+		$data  = $data->orderBy('id', 'asc')->paginate(config('constants.PAGINATION'));
+		
+		if(isset($_GET['s']) and $_GET['s']){
+			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		}
+
+		return view("/frontend/departments/subscription_plans",compact('page_title','data'));
 	}
+
+	public function subscription_plan_update($id = null){
+		$url_prefix = ($this->request->route()->getPrefix() == env('ADMIN_PREFIX'))?env('ADMIN_PREFIX').'/':'';
+		$page_title = "Subscription Plan Update";
+		$data = Plans::find($id);
+		if($this->request->isMethod('post')){
+			$inputs = $this->request->all();
+			$update = $data->update($inputs);
+			if($update){
+				return response()->json(array("type" => "success", "url" => url($url_prefix.'subscription-plans'), "message" => getLabels('update_subscription-plan_successfully')));
+			}
+		}
+		return view('frontend/departments/subscription_plan_update',compact('page_title','data','id'));
+	}
+
+	public function perspective_update($id = null){
+		$url_prefix = ($this->request->route()->getPrefix() == env('ADMIN_PREFIX'))?env('ADMIN_PREFIX').'/':'';
+		$page_title = "Perspective Update";
+		$data = Perspective::find($id);
+		if($this->request->isMethod('post')){
+			$inputs = $this->request->all();
+			$update = $data->update($inputs);
+			if($update){
+				return response()->json(array("type" => "success", "url" => url($url_prefix.'perspective'), "message" => getLabels('update_perspective_successfully')));
+			}
+		}
+		return view('frontend/departments/perspective_update',compact('page_title','data','id'));
+	}
+	public function perspective_add(){
+		$url_prefix = ($this->request->route()->getPrefix() == env('ADMIN_PREFIX'))?env('ADMIN_PREFIX').'/':'';
+		$page_title = "Add Perspective";
+		if($this->request->isMethod('post')){
+			$validator = Perspective::validate($this->request->all());
+			if($validator->fails()){
+				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+			}else{
+				$inputs = $this->request->all();
+				$add = Perspective::create($inputs);
+				if($add){
+					return response()->json(array("type" => "success", "url" => url($url_prefix.'perspective'), "message" => getLabels('add_perspective_successfully')));
+				}
+			}
+			
+		}
+		return view('frontend/departments/perspective_add',compact('page_title'));
+	}
+
+	public function perspective(){
+		$page_title = "Perspective";
+		$data = Perspective::sortable();
+
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+
+		$data  = $data->orderBy('id', 'desc')->paginate(config('constants.PAGINATION'));
+		
+		if(isset($_GET['s']) and $_GET['s']){
+			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		} 
+		return view('frontend/departments/perspective',compact('page_title','data'));
+	}
+
 	public function roadmap(){
 		$page_title = "Road Map";
 		$objective_data = Objective::with('subObjectives','getMeasures','getInitiatives')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->where('al_objectives.company_id',Auth::User()->company_id)->whereNull('al_objectives.objective_id')->select('al_objectives.*','al_goal_cycles.cycle_name')->get();
@@ -1097,6 +1177,15 @@ class DepartmentController extends Controller
 			$results = array("type" => "success", "url" => url('department'), "message" => getLabels('department_removed'));
 		}else{
 			$results = array("type" => "error", "url" => url('department'), "message" => getLabels('department_not_removed'));
+		}
+		return json_encode($results);
+	}
+	public function perspective_remove($id = null){
+		$data			 = Perspective::destroy($id);
+		if($data){
+			$results = array("type" => "success", "url" => url(env('ADMIN_PREFIX').'/perspective'), "message" => getLabels('perspective_removed'));
+		}else{
+			$results = array("type" => "error", "url" => url(env('ADMIN_PREFIX').'/perspective'), "message" => getLabels('perspective_not_removed'));
 		}
 		return json_encode($results);
 	}

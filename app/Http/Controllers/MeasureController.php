@@ -66,17 +66,13 @@ class MeasureController extends Controller
 			if(isset($_POST['heading']) and $_POST['heading'] !=''){
 				$heading = $_POST['heading'];
 				$this->request->session()->put('usearch.heading', $heading);
-				$data = $data->whereRaw('al_objectives.heading like ?', "%{$heading}%");
+				$data = $data->whereRaw('al_measures.heading like ?', "%{$heading}%");
 			}
-			if(isset($_POST['cycle_id']) and $_POST['cycle_id'] !=''){
-				$cycle_id = $_POST['cycle_id'];
-				$this->request->session()->put('usearch.cycle_id', $cycle_id);
-				$data = $data->whereRaw('al_objectives.cycle_id like ?', "%{$cycle_id}%");
-			}
+			
 			if(isset($_POST['status']) and $_POST['status'] !=''){
 				$status = $_POST['status'];
 				$this->request->session()->put('usearch.status', $status);
-				$data = $data->whereRaw('al_objectives.status like ?', "%{$status}%");
+				$data = $data->where('al_measures.status',$status);
 			}
 			
 		}else{
@@ -807,7 +803,7 @@ class MeasureController extends Controller
 				return redirect()->back()->with('is_popup',getLabels('measure_saved_successfully'));
 				}else{
 
-				return redirect()->back()->with('message',getLabels('measure_saved_successfully'));
+				return redirect()->back()->with('measure_add_success',getLabels('measure_saved_successfully'));
 				}
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
@@ -1013,14 +1009,14 @@ class MeasureController extends Controller
 		$data['max_mile'] = Milestones::select(DB::raw('MAX(GREATEST(COALESCE(mile_actual,0),COALESCE(sys_target,0),COALESCE(projection_target,0))) as max_value'))->where('company_id',Auth::User()->company_id)->where('measure_id',$inputs['measure_id'])->value('max_value');
 		//pr($data['max_mile']);
 		$data['pojected_graph_data'] = Milestones::where('company_id',Auth::User()->company_id)->where('measure_id',$inputs['measure_id'])->orderBy('start_date','asc')->pluck('projection_target')->toArray();
-		$milestone = Milestones::where('measure_id',$inputs['measure_id'])->where('milestone_type',0)->orderBy('start_date','asc')->get();
+		$milestone = Milestones::where('measure_id',$inputs['measure_id'])->orderBy('start_date','asc')->get();
 		if(!empty($milestone)){
 			$milestone = $milestone->toArray();
 		}else{
 			$milestone = array();
 		}
 		$data['milestones'] = $milestone;
-		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',1)->where('al_tasks.measure_id',$inputs['measure_id'])->select('al_master_status.name as status_name','al_master_status.bg_color','al_tasks.*')->get();
+		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.measure_id',$inputs['measure_id'])->select('al_master_status.name as status_name','al_master_status.bg_color','al_tasks.*')->get();
 		if (!empty($tasklist)) {
 			$tasklist = $tasklist->toArray();
 			foreach ($tasklist as $key => $value) {

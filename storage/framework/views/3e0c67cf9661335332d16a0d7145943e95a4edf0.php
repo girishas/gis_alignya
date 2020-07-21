@@ -15,13 +15,14 @@
                     <div class="container-fluid">
                     <div class="row">
                         
-                    <div class="col-lg-8">
+                    <div class="col-lg-12">
                         <div class="form-group">
                         <label>Milestone Name</label>
                         <?php echo Form::text('milestone_name', null, array('class'=>'form-control')); ?>
 
                         <input type="hidden" name="initiative_id" id="ini_idformilestone">
                         <input type="hidden" name="is_popup" class ="is_popup">
+                        <input type="hidden" name="id">
                     </div>
                      <div class="form-group ">
                         <label>Start Date</label>

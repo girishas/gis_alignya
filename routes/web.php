@@ -37,6 +37,7 @@ Route::any('getmilestonedata', array('as'=>'admin.getmilestonedata', 'uses'=>'In
 Route::any('getInitiativeData', array('as'=>'admin.getInitiativeData', 'uses'=>'InitiativeController@getInitiativeData'));
 Route::any('department/remove/{id?}', array('as'=>'admin.department_remove', 'uses'=>'DepartmentController@department_remove'));
 Route::any('team/remove/{id?}', array('as'=>'admin.team_remove', 'uses'=>'TeamController@team_remove'));
+Route::any('kpi/remove/{id?}', array('as'=>'admin.kpi_remove', 'uses'=>'KPIController@kpi_remove'));
 
 Route::any('reports/{id?}', array('as'=>'users.reports', 'uses'=>'TeamController@reports'));
 Route::any('addobjective', array('as'=>'users.addobjective', 'uses'=>'ObjectiveController@addobjective'));
@@ -107,7 +108,7 @@ Route::any('/forgot-password', array('as'=>'users.forgot_password', 'uses'=>'Use
 Route::any('/dashboard', array('as'=>'users.dashboard', 'uses'=>'UserController@dashboard'));
 Route::any('/account', array('as'=>'users.account', 'uses'=>'UserController@account'));
 Route::any('/logout', array('as'=>'users.logout', 'uses'=>'UserController@logout'));
-Route::any('/resetpassword/{slug?}', array('as'=>'users.resetpassword', 'uses'=>'UserController@resetpassword'));
+Route::any('resetpassword/{slug?}', array('as'=>'users.resetpassword', 'uses'=>'UserController@resetpassword'));
 Route::any('verify-mail/{slug?}',array('uses'=>'UserController@verifyMail'));
 Route::any('search', array('as'=>'users.search', 'uses'=>'UserController@search'));
 Route::any('follow-user/{username?}', array('as'=>'users.follow_user', 'uses'=>'UserController@follow_user'));

@@ -282,15 +282,14 @@
 	
 	function getEmailTemplate($key = '', $html=null){
 		$tempArr = array();
-		$data  = DB::table('templates')->where('slug', $key)->first();
-		if(!empty($data->id)){
-			$language  = session('selected_lang')?session('selected_lang'):'en';
-			$field_subject = "subject_".$language;
-			$field_content = "content_".$language;
-			$tempArr['subject'] = !empty($data->{$field_subject})?$data->{$field_subject}:$data->subject_en;
-			$tempArr['content'] = !empty($data->{$field_content})?$data->{$field_content}:$data->content_en;
-		}
-		return $tempArr;
+		$data  = DB::table('al_email_templates')->where('email_group', $key)->first();
+		// if(!empty($data->id)){
+		// 	$field_subject = "subject";
+		// 	$field_content = "content";
+		// 	$tempArr['subject'] = !empty($data->{$field_subject})?$data->{$field_subject}:$data->subject_en;
+		// 	$tempArr['content'] = !empty($data->{$field_content})?$data->{$field_content}:$data->content_en;
+		// }
+		return $data;
 	}
 	
 	
@@ -669,4 +668,8 @@
 		return round($avg);
 	}
 
+	function createdat($created_at=null){
+		$date = date(config('constants.DATE_FORMAT'),strtotime($created_at));
+		return $date;
+	}
 	?>
