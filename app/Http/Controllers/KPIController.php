@@ -231,14 +231,11 @@ class KPIController extends Controller
 
 	public function addkpi(){
 		 
-		$validator = Measure::validate($this->request->all());
+		$validator = Measure::validateKpi($this->request->all());
 		if($validator->fails()){
-			return redirect()->back()->with('adderrormessage',getLabels('measure_saved_errors'))->withErrors($validator->errors());
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
 		}else{
-			
-			//dd($this->request->all());
-			
-			$input = $this->request->except('contributers');
+			$input = $this->request->except('contributers','objective_id');
 			
 			if($input['measure_type'] == "revenue"){
 				$input['measure_target'] = $input['revenue_target'];
@@ -299,7 +296,9 @@ class KPIController extends Controller
 		 //	pr($input);   
 		
 		$input['measure_target_new'] = $input['measure_target'] ; 
-		
+		$input['target_color'] = "#d40e0e";
+		$input['actual_color'] = "#1a0ed4";
+		$input['projection_color'] = "#0ed45d";
 		$measure = Measure::create($input);
 		
 //----------- Start Creating Milestone Dynamic --------------------------- 		
@@ -384,7 +383,7 @@ class KPIController extends Controller
 		        $milestonesArr = array();
 		        $milestonesArr['user_id'] = Auth::User()->id;//user id
 		        $milestonesArr['company_id'] = Auth::User()->company_id;//company id
-		        $milestonesArr['objective_id'] = $input['objective_id'];
+		        //$milestonesArr['objective_id'] = $input['objective_id'];
 		        $milestonesArr['measure_id'] = $measure_id;//measure id
 		        $milestonesArr['is_automatic'] = 1;// is automtic
 		        $milestonesArr['start_date'] = $start_date;//start date
@@ -540,7 +539,7 @@ class KPIController extends Controller
 				$milestonesArr = array();
 		        $milestonesArr['user_id'] = Auth::User()->id;//user id
 		        $milestonesArr['company_id'] = Auth::User()->company_id;//company id
-		        $milestonesArr['objective_id'] = $input['objective_id'];
+		       // $milestonesArr['objective_id'] = $input['objective_id'];
 		        $milestonesArr['measure_id'] = $measure_id;//measure id
 		        $milestonesArr['is_automatic'] = 1;// is automtic
 		        $milestonesArr['start_date'] = $start_date;//start date
@@ -690,7 +689,7 @@ class KPIController extends Controller
 				$milestonesArr = array();
 		        $milestonesArr['user_id'] = Auth::User()->id;//user id
 		        $milestonesArr['company_id'] = Auth::User()->company_id;//company id
-		        $milestonesArr['objective_id'] = $input['objective_id'];
+		        //$milestonesArr['objective_id'] = $input['objective_id'];
 		        $milestonesArr['measure_id'] = $measure_id;//measure id
 		        $milestonesArr['is_automatic'] = 1;// is automtic
 		        $milestonesArr['start_date'] = $start_date;//start date
@@ -802,7 +801,7 @@ class KPIController extends Controller
 		 
 			//pr($input);  
 			if($measure){
-				return redirect()->back()->with('kpimessage',getLabels('kpi_saved_successfully'));
+				return response()->json(array("type" => "success", "url" => url('kpis'), "message" => getLabels('kpi_saved_successfully')));
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
 			}
@@ -960,5 +959,69 @@ class KPIController extends Controller
 			$results = array("type" => "error", "url" => url('kpis'), "message" => getLabels('kpi_not_removed'));
 		}
 		return json_encode($results);
+	}
+
+	public function updatekpi(){
+		$input = $this->request->except('contributers');
+		$input['user_id'] = Auth::User()->id;
+		$input['company_id'] = Auth::User()->company_id;
+		$input['category_type'] = 3;
+		$data = Measure::find($input['id']);
+		if($this->request->get('measure_team_type') == 'team'){
+			$owner_user_id = TeamsMembers::where('team_id',$this->request->get('measure_team_id'))->where('is_head',1)->value('member_id');
+			$input['owner_user_id'] = $owner_user_id;
+		}elseif($this->request->get('measure_team_type') == 'department'){
+			$owner_user_id = DepartmentMember::where('department_id',$this->request->get('measure_department_id'))->where('is_head',1)->value('member_id');
+			$input['owner_user_id'] = $owner_user_id;
+		}
+		if($this->request->get('contributers')){
+			$input['contributers'] = implode(',', $this->request->get('contributers'));
+		}
+		
+		if(isset($input['is_updated_target']) and $input['is_updated_target'] == 'on' and $input['measure_target_new'] > 0){
+			$MilestoneTargetArr = array();
+			$mileArray = Milestones::where('measure_id',$input['id'])->where('company_id', Auth::User()->company_id)->orderBy('start_date','asc')->get();
+			$mileCount = $mileArray->count();
+			$stepno = 0; 
+		    if(isset($input['calculation_type']) and $input['calculation_type'] ==2){   
+				if($mileCount > 0){
+					$i = ($input['measure_target_new'] - $input['measure_actual'])/$mileCount   ;
+					 $stepno = $i + $input['measure_actual'] ;
+				foreach($mileArray->toArray() as $item){
+					// echo "<pre>"; print_r($item);
+					//echo $stepno ;
+					DB::select('update al_project_milestones set projection_target = ROUND('.$stepno.',0) where id = '.$item['id']);
+					  $stepno +=$i ;
+				}
+				} 
+			 }elseif(isset($input['calculation_type']) and $input['calculation_type'] ==0){
+				 $stepno = $input['measure_target_new'] ;
+				 DB::select('update al_project_milestones set projection_target = ROUND('.$stepno.',0) where measure_id = '.$input['id']); 
+				
+			}else{ // Fixed calculate value
+				if($mileCount > 0){
+					$stepno = ($input['measure_target_new'] - $input['measure_target'])/$mileCount   ;
+				} 
+				 DB::select('update al_project_milestones set projection_target = ROUND(sys_target + '.$stepno.',0) where measure_id = '.$input['id']); 
+			}  
+			
+		}
+		
+		// pr($input); die;
+		//
+		
+		$measure = $data->update($input); 
+		if($measure){
+				if($this->request->get('is_popup')){
+
+					return response()->json(array("type" => "success", "url" => url('kpis'), "message" => getLabels('kpi_update_successfully')));
+				}else{
+					return response()->json(array("type" => "success", "url" => url('kpis'), "message" => getLabels('kpi_update_successfully')));
+				}
+			}else{
+				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+			}
+			 
+
 	}
 }

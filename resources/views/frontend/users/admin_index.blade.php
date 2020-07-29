@@ -8,7 +8,11 @@
                 <div class="col-12">
                     <h1>{!! getLabels('Members') !!}</h1>
                      <div class="float-md-right">
+                     		@if($data->total() < getEmpLimit(Auth::User()->current_membership_plan)->emp_limit)
 							<button type="button" class="btn btn-outline-primary mb-1" onclick="addMember()">Add Member</button>
+							<button type="button" class="btn btn-outline-primary mb-1" onclick="importcsv()">Import Members</button>
+							@endif
+							
 							
 							<a href="{!!url('department')!!}"><button type="button" class="btn btn-primary mb-1">Departments</button></a>
 							<a href="{!!url('team')!!}"><button type="button" class="btn btn-primary mb-1">Teams</button></a>
@@ -30,8 +34,16 @@
                 </div>
             </div>
             @if(session('message'))
-			<div class="alert alert-success" role="alert" style="z-index: unset;">
+			<div class="alert alert-success alert-dismissible" role="alert" style="z-index: unset;">
 				{!! session('message') !!}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+			</div>
+			@endif
+
+			@if(Auth::User()->current_membership_plan == 1 || Auth::User()->current_membership_plan == 4)
+			<div class="alert alert-warning alert-dismissible" role="alert" style="z-index: unset;">
+				Upgrade your membership for add more team members. <a href="{!!url('subscription')!!}">Click Here</a>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
 			</div>
 			@endif
 			<div class="row">
@@ -102,8 +114,8 @@
 													</td>
 													<td class="text-center">{!!config('constants.STATUS.'.$val->status)!!}</td>
 													<td>
-														<a href="javascript:void(0);" onclick="updatemember({!!$val->id!!})"><i class="simple-icon-pencil"></i></a>
-																<a href="javascript:void(0);" onclick="viewmember({!!$val->id!!})"><i class="iconsminds-information"></i></a>
+														<a href="javascript:void(0);" onclick="updatemember({!!$val->id!!})"><i class="heading-icon simple-icon-pencil"></i></a>
+																<a href="javascript:void(0);" onclick="viewmember({!!$val->id!!})"><i class="heading-icon iconsminds-information"></i></a>
 																
 													</td>
 												</tr>
@@ -135,6 +147,8 @@
         </div>
     </main>
     @include('Element/users/addmember')
+    @include('Element/users/importmember')
+    @include('Element/js/includejs')
     <div id="viewMemberShow"></div>
     <div id="modalShow"></div>
     <script type="text/javascript">
@@ -147,6 +161,15 @@
     		if(errorupdate != ""){
     			$("#updatemember").modal("show");
     		}
+    		$("#importmemberhide").click(function(){
+    			$("#importmember").modal("hide");
+    		})
+    		var rejected = <?=json_encode(session('rejected_arr'))?>;
+    		var errormessage = "{!!session('errormessage')?session('errormessage'):''!!}";
+    		if(rejected != null || errormessage != ''){
+    			importcsv();
+    		}
+
     	});
     	function addMember(){
     		$("#addmember").modal("show");
@@ -180,6 +203,10 @@
     				$("#viewmember").modal("show");
 	            }  
 	        });
+    	}
+
+    	function importcsv(){
+    		$("#importmember").modal("show");
     	}
     	
     </script>

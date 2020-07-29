@@ -17,7 +17,11 @@ use App\Models\DepartmentMember;
 use App\Models\Follower;
 use App\Models\Post;
 use App\Models\Notification;
+use App\Models\Scorecard;
+use App\Models\Measure;
+use App\Models\Company;
 use App\Models\SubscriptionPlan;
+use App\Models\Subscription;
 
 use App\Classes\Slim;
 
@@ -51,6 +55,7 @@ class DepartmentController extends Controller
 	public function admin_index($id=null){
 		$page_title  = getLabels("Departments");
 		if($this->request->isMethod('post')){
+			//pr($this->request->all());
 			$validator = Department::validate($this->request->all());
 			
 			if ( $validator->fails() ) {
@@ -102,6 +107,8 @@ class DepartmentController extends Controller
 					}
 					$departmentmembers['is_head'] = 1;
 					DepartmentMember::create($departmentmembers);
+					Objective::where('department_id',$id)->update(array('owner_user_id'=>$this->request->get('department_head')));
+					Measure::where('measure_department_id',$id)->update(array('owner_user_id'=>$this->request->get('department_head')));
 				}
 			}
 			return redirect()->back();
@@ -117,12 +124,13 @@ class DepartmentController extends Controller
 			$members_pluck = DepartmentMember::leftjoin('users','users.id','=','al_department_member.member_id')->where('al_department_member.department_id',$parent_department->id)->where('al_department_member.is_head',0)->select('users.first_name','users.last_name','users.designation','users.id')->pluck('users.id','users.first_name');
 			//pr($members_pluck->toArray());
 		}
-		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('role_id',5)->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
-		$department_head = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('role_id',3)->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
+		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->whereIn('role_id',array(5,2))->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
+		
+		$department_head = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->whereIn('role_id',array(3,2))->where('company_id',Auth::User()->company_id)->pluck('full_name','id');
 		$departments = Department::where('status',1)->where('company_id',Auth::User()->company_id)->pluck("department_name","id");
 		$data  = Department::where('company_id',Auth::User()->company_id)->where('parent_department_id',null)->get();
 		if(isset($hod)){
-			$objectives = Objective::where('owner_user_id',$hod->selected_user_id)->get();
+			$objectives = Objective::where('company_id',Auth::User()->company_id)->where('owner_user_id',$hod->selected_user_id)->get();
 		}else{
 			$objectives = array();
 		}
@@ -867,7 +875,6 @@ class DepartmentController extends Controller
 	public function subscription_plans(){
 		$page_title = "Subscription Plans";
 		$data = Plans::sortable();
-
 		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
 			$_POST = $this->request->session()->get('usearch');
 		}else{
@@ -931,7 +938,7 @@ class DepartmentController extends Controller
 
 	public function perspective(){
 		$page_title = "Perspective";
-		$data = Perspective::sortable();
+		$data = Perspective::sortable()->whereNull('company_id');
 
 		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
 			$_POST = $this->request->session()->get('usearch');
@@ -1052,7 +1059,7 @@ class DepartmentController extends Controller
 		}
 		$al_goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id')->toArray();
 		$al_themes = Theme::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('theme_name','id')->toArray();
-		$all_perspective = Perspective::where('status',1)->pluck('name','id')->toArray();
+		$all_perspective = Perspective::where('status',1)->where('company_id',Auth::User()->company_id)->pluck('name','id')->toArray();
 		$all_department = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('department_name','id')->toArray();
 		$all_users = User::select(DB::Raw('CONCAT(COALESCE(`first_name`,"")," ",COALESCE(`last_name`,"")) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('status',1)->get()->pluck('full_name','id')->toArray();
 		
@@ -1194,5 +1201,192 @@ class DepartmentController extends Controller
 		$inputs = $this->request->all();
 		$departments = Department::where('company_id',$inputs['company_id'])->pluck('department_name','id');
 		return json_encode($departments);
+	}
+
+	public function transactions(){
+		$page_title = "Transactions";
+		$data = Subscription::sortable()->leftjoin('al_companies','al_companies.id','=','al_comp_subscriptions.company_id');
+
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+
+		$data  = $data->select('al_comp_subscriptions.*','al_companies.company_name')->orderBy('al_companies.id', 'desc')->paginate(config('constants.PAGINATION'));
+		
+		if(isset($_GET['s']) and $_GET['s']){
+			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		}
+
+		return view("/frontend/departments/transactions",compact('page_title','data'));
+	}
+
+	public function subscription(){
+		$page_title = "Subscription";
+		$PlansYearly = Plans::where('period',2)->orderBy('id','asc')->get();
+		$PlansMonthly = Plans::where('period',1)->orderBy('id','asc')->get();
+		return view('frontend/departments/subscription',compact('page_title','PlansMonthly','PlansYearly'));
+	}
+
+	public function upgrade_membership(){
+		$inputs = $this->request->all();
+		$token = $inputs['stripeToken'];
+		$email = $inputs['stripeEmail'];
+		$plan_id = $inputs['plan_id'];
+		$plan_detail = Plans::where('plan_id',$plan_id)->first();
+		$trial_end = strtotime(Auth::User()->trial_expiry_date);
+		$subscription_details = stripeSubscription($token,$email,$plan_id);
+		$update_user = array();
+		$update_user['enable_subscription'] = 1;
+		$update_user['current_membership_plan'] = $plan_detail->id;
+		$update_user['stripe_customer_id'] = $subscription_details['customer_id'];
+		$update_user['trial_expiry_date'] = date('Y-m-d',$subscription_details['subscription']['current_period_end']);
+		$update = User::where('id',Auth::User()->id)->update($update_user);
+		$cupdate = Company::where('id',Auth::User()->company_id)->update(array('plan_id'=>$plan_detail->id));
+		$subscriptionarray = array();
+		$subscriptionarray['user_id'] = Auth::User()->id;
+		$subscriptionarray['company_id'] = Auth::User()->company_id;
+		$subscriptionarray['emp_limit'] = $plan_detail->emp_limit;
+		$subscriptionarray['heading'] = $plan_detail->heading;
+		$subscriptionarray['plan_fee'] = $subscription_details['subscription']['items']['data'][0]['plan']['amount']/100;
+		$subscriptionarray['total_stripe_payment'] = $subscription_details['subscription']['items']['data'][0]['plan']['amount']/100;
+		$subscriptionarray['period'] = $plan_detail->period;
+		$subscriptionarray['stripe_subscription_id'] = $subscription_details['subscription']->id;
+		$subscriptionarray['stripe_plan_id'] = $plan_id;
+		$subscriptionarray['plan_id'] = $plan_detail->id;
+		$subscriptionarray['start_date'] = $subscription_details['subscription']->current_period_start;
+		$subscriptionarray['end_date'] = $subscription_details['subscription']->current_period_end;
+		$subscriptionarray['stripe_status'] = $subscription_details['subscription']->status;
+		$createSubscription = Subscription::create($subscriptionarray);
+		return redirect()->back()->with('message','Membership Plan Upgrade Successfully');
+	}
+
+	public function scorecardlist(){
+		$page_title = "Scorecards";
+		$data  = Scorecard::sortable()->where('company_id',Auth::User()->company_id);
+		
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		
+		if(! empty($_POST)){
+			if(isset($_POST['name']) and $_POST['name'] !=''){
+				$name = $_POST['name'];
+				$this->request->session()->put('usearch.name', $name);
+				$data = $data->whereRaw('al_comp_scorecard.name like ?', "%{$name}%");
+			}
+			
+			if(isset($_POST['status']) and $_POST['status'] !=''){
+				$status = $_POST['status'];
+				$this->request->session()->put('usearch.status', $status);
+				$data = $data->where('al_comp_scorecard.status', $status);
+			}
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		
+		$data  = $data->orderBy('id', 'desc')->paginate(config('constants.PAGINATION'));
+		
+		if(isset($_GET['s']) and $_GET['s']){
+			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		}
+		return view('frontend/departments/scorecardlist',compact('page_title','data'));
+	}
+
+	public function scorecardadd(){
+		$validator = Scorecard::validateadd($this->request->all());
+		
+		if ( $validator->fails() ) {
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+		} else {
+			$formData              	= $this->request->except('_token');
+			$formData['company_id']	= Auth::User()->company_id;
+			if(isset($formData['id']) && !empty($formData['id'])){
+				$scorecard = Scorecard::where('id',$formData['id'])->update($formData);
+				$message  = getLabels('update_scorecard_successfully');
+			}else{
+				$scorecard  = Scorecard::create($formData);
+				$message  = getLabels('add_scorecard_successfully');
+			}
+			if($scorecard){
+				return response()->json(['type' => 'success', 'url'=> url('scorecards'), 'message' => $message]);
+			}else{
+				return response()->json(['type' => 'error', 'url'=> url('scorecards'), 'message' => getLabels('something_wrong_try_again')]);
+			}
+		}
+	}
+
+	public function singlescorecard($id){
+		$singlescorecard = Scorecard::where('id',$id)->first();
+		return json_encode($singlescorecard);
+	}
+
+	public function themelist(){
+		$page_title = "Themes";
+		$data  = Theme::sortable()->where('company_id',Auth::User()->company_id);
+		
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		
+		if(! empty($_POST)){
+			if(isset($_POST['theme_name']) and $_POST['theme_name'] !=''){
+				$theme_name = $_POST['theme_name'];
+				$this->request->session()->put('usearch.theme_name', $theme_name);
+				$data = $data->whereRaw('al_theme.theme_name like ?', "%{$theme_name}%");
+			}
+			
+			if(isset($_POST['status']) and $_POST['status'] !=''){
+				$status = $_POST['status'];
+				$this->request->session()->put('usearch.status', $status);
+				$data = $data->where('al_comp_scorecard.status', $status);
+			}
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		
+		$data  = $data->orderBy('id', 'desc')->paginate(config('constants.PAGINATION'));
+		
+		if(isset($_GET['s']) and $_GET['s']){
+			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		}
+		return view('frontend/departments/themelist',compact('page_title','data'));
+	}
+
+	public function themeadd(){
+		$validator = Theme::validateadd($this->request->all());
+		
+		if ( $validator->fails() ) {
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+		} else {
+			$formData              	= $this->request->except('_token');
+			$formData['company_id']	= Auth::User()->company_id;
+			if(isset($formData['id']) && !empty($formData['id'])){
+				$theme = Theme::where('id',$formData['id'])->update($formData);
+				$message  = getLabels('update_theme_successfully');
+			}else{
+				$theme  = Theme::create($formData);
+				$message  = getLabels('add_theme_successfully');
+			}
+			if($theme){
+				return response()->json(['type' => 'success', 'url'=> url('themes'), 'message' => $message]);
+			}else{
+				return response()->json(['type' => 'error', 'url'=> url('themes'), 'message' => getLabels('something_wrong_try_again')]);
+			}
+		}
+	}
+
+	public function singletheme($id){
+		$singletheme = Theme::where('id',$id)->first();
+		return json_encode($singletheme);
 	}
 }

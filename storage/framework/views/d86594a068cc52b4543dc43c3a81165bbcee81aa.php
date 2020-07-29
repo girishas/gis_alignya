@@ -7,15 +7,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <?php if(session('adderrormessage')): ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo session('adderrormessage'); ?>
-
-                    </div>    
-                    <?php endif; ?> 
+                
                 <div class="modal-body">
                      
-                    <?php echo Form::open(array('url' => array($route_prefix.'/updateinitiative'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                    <?php echo Form::open(array('url' => array($route_prefix.'/updateinitiative'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                                         
                         <div class="container-fluid">
@@ -26,12 +21,13 @@
                             <label>Title</label>
                             <?php echo Form::text('heading',null,array('class'=>'form-control','id'=>'iniheading_update')); ?>
 
-                            <?php if($errors->first('heading')): ?><div class="error"><?php echo $errors->first('heading'); ?></div><?php endif; ?>
+                           
                             <input type="hidden" name="measure_team_type" id="initiative_team_type_update">
                             <input type="hidden" name="owner_user_id" id="initiative_owner_user_id_update">
                             <input type="hidden" name="measure_department_id" id="initiative_department_id_update">
                             <input type="hidden" name="measure_team_id" id="initiative_team_id_update">
                             <input type="hidden" name="id" id="initiative_update_id">
+                            <input type="hidden" name="is_popup" class="is_popup">
                         </div>
                        
                         <div class="form-group">
@@ -46,7 +42,7 @@
                             <select class="form-control" name="measure_cycle" id = "initiativeCycleUpdate">
                                 
                             </select>
-                            <?php if($errors->first('measure_cycle')): ?><div class="error"><?php echo $errors->first('measure_cycle'); ?></div><?php endif; ?>
+                           
 
                         </div>
                         <div class="form-group col-md-6">

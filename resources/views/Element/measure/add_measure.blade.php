@@ -1,4 +1,4 @@
-<div class="modal modal-right" id="myModalAddMeasure" role="dialog" style="overflow: scroll;">
+<div class="modal fade modal-right" id="myModalAddMeasure" role="dialog" style="overflow: scroll;" tabindex="-1" role="dialog"  aria-hidden="true">
         <div class="modal-dialog" style="max-width: 99.99%">
             <div class="modal-content">
                 <div class="modal-header">
@@ -7,23 +7,19 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                @if(session('adderrormessage'))
-                    <div class="alert alert-danger" role="alert">
-                        {!! session('adderrormessage') !!}
-                    </div>    
-                    @endif 
+                
                 <div class="modal-body">
                 	 
-                    {!! Form::open(array('url' => array($route_prefix.'/addmeasure'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+                    {!! Form::open(array('url' => array($route_prefix.'/addmeasure'), 'class' =>'alignya_form needs-validation updateobjectiveform tooltip-label-right', 'name'=>'', 'files'=>true)) !!}
                                         
                     	<div class="container-fluid">
                     	<div class="row">
                     		
                     	<div class="col-lg-6">
-                    		<div class="form-group">
+                    		<div class="form-group has-float-label position-relative error-l-100 mb-4">
                             <label>Measure Title</label>
                             {!!Form::text('heading',null,array('class'=>'form-control'))!!}
-                            @if($errors->first('heading'))<div class="error">{!!$errors->first('heading')!!}</div>@endif
+                           <div class="invalid-tooltip"></div>
                             <input type="hidden" name="measure_team_type" id="measure_team_type" value="department">
                             <input type="hidden" name="owner_user_id" id="owner_user_id">
                             <input type="hidden" name="measure_department_id" id="measure_department_id">
@@ -32,10 +28,10 @@
                             <input type="hidden" name="is_popup" class="is_popup_id">
                         </div>
                        
-                        <div class="form-group" id = "hideforobj">
+                        <div class="form-group position-relative error-l-50 mb-4" id = "hideforobj">
                             <label>Objective</label>
-                            {!!Form::select('objective_id',array(""=>"plae") + $objectives->toArray(),null,array('class'=>'form-control select2-single','id'=>'objectiveId', 'onchange'=>'onchangeobjectivegetcycle()'))!!}
-                            @if($errors->first('objective_id'))<div class="error">{!!$errors->first('objective_id')!!}</div>@endif
+                            {!!Form::select('objective_id',array(""=>"") + $objectives->toArray(),null,array('class'=>'form-control','id'=>'objectiveId', 'onchange'=>'onchangeobjectivegetcycle()'))!!}
+                            <div class="invalid-tooltip"></div>
                         </div>
                         <div class="row">
                         <div class="form-group col-md-6">
@@ -43,8 +39,7 @@
                             <select class="form-control" name="measure_cycle" id = "measureCycle">
                                 
                             </select>
-                            @if($errors->first('measure_cycle'))<div class="error">{!!$errors->first('measure_cycle')!!}</div>@endif
-
+                            
                         </div>
                         <div class="form-group col-md-6">
                             <label>Check in Frequency</label>
@@ -70,7 +65,7 @@
 
                        <div class="form-group col-md-6">
                          <label>Please Select</label>
-                            <select class="form-control ownership select2-single" onchange="ownershipdropmea()" name="ownership" data-width="100%" id = "ownershipmeasure">
+                            <select class="form-control ownership" onchange="ownershipdropmea()" name="ownership" data-width="100%" id = "ownershipmeasure">
                                 @if(!empty($departments))
                                 <option value="">Please Select</option>
                                 @foreach($departments as $key => $vale)
@@ -101,13 +96,15 @@
 
                         <div class="col-lg-6">
                             <div class="row revenuehide">
-                            <div class="form-group col-md-6">
+                            <div class="form-group position-relative error-l-50 mb-4 col-md-6">
                                 <label>Measure Target</label>
                                 {!!Form::text('measure_target',null,array('class'=>'form-control'))!!}
+                                 <div class="invalid-tooltip"></div>
                             </div>
-                              <div class="form-group col-md-6">
+                              <div class="form-group position-relative error-l-50 mb-4 col-md-6">
                                 <label>Measure Actual</label>
                                 {!!Form::text('measure_actual',null,array('class'=>'form-control'))!!}
+                                 <div class="invalid-tooltip"></div>
                             </div>
                         </div>
                         <div class="row revenueshow" style="display: none;">
@@ -171,7 +168,7 @@
                              <div class="col-md-6" id="hide_calc_type">
                                 <label>Calculation Type</label>
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="calculation_type1" name="calculation_type" value = "0" class="custom-control-input">
+                                    <input type="radio" id="calculation_type1" name="calculation_type" value = "0" class="custom-control-input" checked="checked">
                                     <label class="custom-control-label" for="calculation_type1">Target value set for each milestone</label>
                                 </div>
                                 <div class="custom-control custom-radio">
@@ -261,26 +258,7 @@
         }
     }
 
-    function onchangeobjectivegetcycle(){
-        var objective_id =  $("#objectiveId").val();
-        var token = "{!!csrf_token()!!}";
-        var company_id = "{!!Auth::User()->company_id!!}";
-        $("#measureCycle").html("");
-        $.ajax({
-            type:"POST",
-            url: "{!!url('getMeasureCycles')!!}",
-            data:'_token='+token+'&company_id='+company_id+'&objective_id='+objective_id,
-            dataType:'JSON',
-            success: function (response) {
-                for (var key in response) {
-                  if (response.hasOwnProperty(key)) {
-                    var val = response[key];
-                    $("#measureCycle").append('<option value = "'+val+'">'+val+'</option>');
-                  }
-                }
-            }  
-        });
-    }
+    
      function calc_type_hide(){
         if($("input[name=is_auto]").is(":checked")){           
             $("#hide_calc_type").show();
@@ -289,4 +267,7 @@
             $("#hide_calc_type").hide();
         }
     }
+
+  
+
     </script>

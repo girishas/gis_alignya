@@ -8,7 +8,7 @@
                 <div class="col-12">
                     <h1>@if(Auth::User()->role_id  == 1) Admin @endif Dashboard</h1>
                     @if(Auth::User()->role_id  != 1)
-					<div class="text-zero top-right-button-container">
+					<!-- <div class="text-zero top-right-button-container">
                             <button type="button"
                                 class="btn btn-lg  dropdown-toggle-split top-right-button top-right-button-single"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -24,7 +24,7 @@
                                 <a class="dropdown-item" href="javascript:void(0);" id= "add_team_btn">Add Team</a>
                                 <a class="dropdown-item" href="javascript:void(0);" onclick="addMember()">Add Member</a>
                             </div>
-                        </div>
+                        </div> -->
 					@endif
                     @if(Auth::User()->role_id  != 1)
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
@@ -48,8 +48,8 @@
                                         <a href="{!!url($route_prefix.'/companies')!!}" class="card">
                                             <div class="card-body text-center">
                                                 <i class="iconsminds-male-female"></i>
-                                                <p class="card-text mb-0">Members</p>
-                                                <p class="lead text-center">{!!$members_count!!}</p>
+                                                <p class="card-text mb-0">Company</p>
+                                                <p class="lead text-center">{!!$companycount!!}</p>
                                             </div>
                                         </a>
                                 </div>
@@ -63,7 +63,8 @@
                                         </a>
                                 </div>
                         @else
-                        
+                         
+					
                            <div class="col-md-3 col-lg-2 col-sm-4 col-6 mb-4">
                                         <a href="{!!url('objectives')!!}" class="card">
                                             <div class="card-body text-center">
@@ -113,7 +114,8 @@
                                 
                             </div>
                         </div>
-                    
+                
+			
      <div class="col-xl-6 col-lg-6 mb-4">
      <div class="card h-100">
                         <div class="card-body">
@@ -161,6 +163,21 @@
                     </div>
                               
                </div>
+	
+				<div class="col-md-6 col-lg-6 col-sm-6 col-6 mb-4" style="display:none;"> 
+					
+					<div class="alert alert-info alert-dismissible fade show " style="z-index:0;" role="alert">Step 1: Add Team Members <a href="">Click Here</a> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+					 
+					<div class="alert alert-info alert-dismissible fade show "  style="z-index:0;" role="alert">Step 2: Departments <a href="">Click Here</a>  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+					 
+					<div class="alert alert-info alert-dismissible fade show " style="z-index:0;" role="alert">Step 3: Teams <a href="">Click Here</a>  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+					 
+					<div class="alert alert-info alert-dismissible fade show " style="z-index:0;" role="alert">Step 4: Add Objective <a href="">Click Here</a>  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button></div>
+					</div>
+
+
+
+
 			   <div class="col-xl-6 col-lg-6 mb-4">
                     <div class="card h-100">
                         <div class="card-body">

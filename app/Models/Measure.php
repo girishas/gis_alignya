@@ -55,19 +55,63 @@ public static function validate($input){
 			'objective_id'         	=> 'required',
 			'measure_cycle'    	=> 'required',
 			'ownership'    	=> 'required',
-			
+			'measure_target' => 'required',
+			'measure_actual' => 'required'
 		);
 		
 		
 		$messages = array(
-			'heading.required'			    => getLabels('objective_name_required'),
+			'heading.required'			    => getLabels('Measure_name_required'),
+			'objective_id.required'			    => getLabels('please_select_objective'),
+			'measure_cycle.required'				=> getLabels('please_select_cycle'),
+			'ownership.required'				=> getLabels('please_select_owner'),
+			'measure_actual.required'				=> getLabels('measure_actual_required'),
+			'measure_target.required'				=> getLabels('measure_target_required'),
+			
+		);
+		return validator($input, $rules, $messages);
+	}
+
+public static function validateInitiative($input){
+		$rules = array(
+		
+			'heading'         	=> 'required',
+			'objective_id'         	=> 'required',
+			'measure_cycle'    	=> 'required',
+			'ownership'    	=> 'required',
+		);
+		
+		
+		$messages = array(
+			'heading.required'			    => getLabels('Measure_name_required'),
 			'objective_id.required'			    => getLabels('please_select_objective'),
 			'measure_cycle.required'				=> getLabels('please_select_cycle'),
 			'ownership.required'				=> getLabels('please_select_owner'),
 			
 		);
 		return validator($input, $rules, $messages);
-	}
+	}	
+	public static function validateKpi($input){
+		$rules = array(
+		
+			'heading'         	=> 'required',
+			'measure_cycle'    	=> 'required',
+			'ownership'    	=> 'required',
+			'measure_target' => 'required',
+			'measure_actual' => 'required'
+		);
+		
+		
+		$messages = array(
+			'heading.required'			    => getLabels('Measure_name_required'),
+			'measure_cycle.required'				=> getLabels('please_select_cycle'),
+			'ownership.required'				=> getLabels('please_select_owner'),
+			'measure_actual.required'				=> getLabels('measure_actual_required'),
+			'measure_target.required'				=> getLabels('measure_target_required'),
+			
+		);
+		return validator($input, $rules, $messages);
+	}	
 
 }
 

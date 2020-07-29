@@ -7,7 +7,7 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
-                                         <?php echo Form::model($team_detail,array('url' => array($route_prefix.'/team/'.$id), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                                         <?php echo Form::model($team_detail,array('url' => array($route_prefix.'/team/'.(isset($team_detail->id) && !empty($team_detail)?$team_detail->id:$id)), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                                         <div class="modal-body">
                                             

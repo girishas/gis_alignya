@@ -14,7 +14,7 @@
                 <div class="col-12">
                     <h1>{!! getLabels('Add Company') !!}</h1>
 					<div class="text-zero top-right-button-container">
-						<a href="{!! url($route_prefix, 'users') !!}" class="steamerst_link btn btn-primary btn-sm top-right-button mr-1">{!! getLabels('Company') !!}</a>
+						<a href="{!! url($route_prefix, 'companies') !!}" class="steamerst_link btn btn-primary btn-sm top-right-button mr-1">{!! getLabels('Company') !!}</a>
                     </div>
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                         <ol class="breadcrumb pt-0">
@@ -104,7 +104,7 @@
 											@foreach($yearly as $key => $yp)
 											<div class="custom-control custom-radio">
 												
-												<input type="radio" id="yearly{!!$key!!}" name="plan_id" class="custom-control-input" value="{!!$plan->id!!}">
+												<input type="radio" id="yearly{!!$key!!}" name="plan_id" class="custom-control-input" value="{!!$yp->id!!}">
 												<label class="custom-control-label" for="yearly{!!$key!!}">
 													{!!$yp->heading!!} ( ${!!$yp->plan_fee!!} per month | Upto {!!$yp->emp_limit!!} Member )
 												</label>

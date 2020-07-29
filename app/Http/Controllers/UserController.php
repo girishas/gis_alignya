@@ -17,6 +17,7 @@ use App\Models\Teams;
 use App\Models\Industries;
 use App\Models\Subscription;
 use App\Models\Company;
+use PHPMailer\PHPMailer\PHPMailer;
 
 use App\Classes\Slim;
 
@@ -130,6 +131,26 @@ class UserController extends Controller
 				$company['company_name'] = $input['company_name'];
 				$company['plan_id'] = $input['plan_id'];
 				$createcompany = Company::create($company);
+				
+				foreach (config('constants.DEFAULT_CYCLES') as $key => $value) {
+					$goalcycles = array();
+					$goalcycles['company_id'] = $createcompany->id; 
+					$goalcycles['cycle_name'] = $value; 
+					$goalcycles['no_months'] = $key; 
+					$goalcycles['status'] = 1; 
+					$creategoalcycles = GoalCycles::create($goalcycles);
+				}
+				$defaultperspective = Perspective::whereNull('company_id')->pluck('name','id');
+				if(!empty($defaultperspective)){
+					foreach ($defaultperspective as $key => $value) {
+						$perspectivearray = array();
+						$perspectivearray['company_id'] = $createcompany->id;
+						$perspectivearray['name'] = $value;
+						$perspectivearray['status'] = 1;
+						$createperspective = Perspective::create($perspectivearray);
+					}
+					 
+				}
 				$data                = $this->request->except('password');
 				$data['password']    = Hash::make($this->request->get('password'));
 				$data['role_id']     = 2;
@@ -149,7 +170,7 @@ class UserController extends Controller
 					$updateempcode = User::where('id',$user->id)->update(array('emp_code'=>$emp_code));
 					$varify_hash = base64_encode($last_id.$uniq_username);
 					User::where('id', $user->id)->update(array('varify_hash'=>$varify_hash ));
-					if(config('constants.SITE_MODE') == 'live'){
+					// if(config('constants.SITE_MODE') == 'live'){
 						$mail_data  	=     getEmailTemplate('registration');
 						if($mail_data){
 							$usr_name       = $user->first_name." ".$user->last_name;
@@ -159,14 +180,30 @@ class UserController extends Controller
 							$admin_email    = config('constants.SITE_EMAIL'); 
 							$message        = str_replace(array('{NAME}', '{EMAIL}', '{LINK}', '{SITE}'), array($usr_name, $email, $link, $site_name), $mail_data->template_body);
 							$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data->subject);
-							mail($email, $subject, $message);
-							//return view('frontend.my_email')->with('data',$message);
-							// Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
-							// 	$message->from($admin_email, $site_name);
-							// 	$message->to($email, $usr_name)->subject($subject);
-							// }); 	
+							require (base_path()."/Phpmailer/Phpmailer/vendor/autoload.php");
+							$mail = new PHPMailer();                    // Enable verbose debug output
+						    $mail->isSMTP();                                            // Send using SMTP
+						    $mail->Host       = 'smtp-mail.outlook.com';                    // Set the SMTP server to send through
+						    $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+						    $mail->Username   = 'alignya@outlook.com';                     // SMTP username
+						    $mail->Password   = 'Gisllp@123';                               // SMTP password
+						    $mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+						    //Recipients
+						    $mail->setFrom('alignya@outlook.com', 'Alignya');
+						    $mail->addAddress($email, $usr_name);     // Add a recipient
+						     // Add a recipient
+						    $mail->addReplyTo('dev.girishas@gmail.com', 'Gisllp');
+						   
+						    // Content
+						    $mail->isHTML(true);                                  // Set email format to HTML
+						    $mail->Subject = $subject;
+						    $mail->Body    = $message;
+						    $mail->AltBody = 'Someone want to contact you via Alignya platform. Here are the information:- Email:';
+						    $mail->send();
+							
 						}
-					}
+					// }
 				}
 				$update_emp_code = User::where('id',$user->id)->update(array('emp_code'=>"EMP-".$user->id."-".$createcompany->id));
 				return response()->json(array("type" => "success", "url" => url('login'), "message" => getLabels('verification_link_sent_on_registered_email')));
@@ -328,12 +365,13 @@ class UserController extends Controller
 		$departments = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck("department_name","id");
 		$teamleads = User::where('role_id',4)->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
 		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->pluck('cycle_name','id');
-		$perspectives = Perspective::pluck('name','id');
+		$perspectives = Perspective::where('company_id',Auth::User()->company_id)->pluck('name','id');
 		$contributers = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
 		$objlist = Objective::leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color','o.heading as parent_objective','al_goal_cycles.cycle_name','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
 		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('company_id',Auth::User()->company_id)->orderBy('id','desc')->select('al_tasks.*','al_master_status.name as status_name','al_master_status.icons as status_icon','al_master_status.bg_color')->get();
 		$members_count = User::count();
+		$companycount = User::where('role_id',2)->count();
 		$transaction_count = Subscription::count();
 		if(!empty($tasklist)){
 			$tasklist = $tasklist->toArray();
@@ -342,7 +380,7 @@ class UserController extends Controller
 				$tasklist[$key]['owners'] = implode(',', $owners->toArray());
 			}
 		}
-		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist','tasks_count','tasklist','members_count','transaction_count'));
+		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist','tasks_count','tasklist','members_count','transaction_count','companycount'));
 	}
 	
 	
@@ -351,7 +389,8 @@ class UserController extends Controller
 	}
 	
 	
-	public function admin_index($role_id = null){
+	public function admin_index(){
+		$this->request->session('rejected_arr',array());
 		$page_title  = getLabels("Members");		
 		 $data  = User::sortable()->where('users.company_id', Auth::User()->company_id)->leftjoin('countries', 'countries.id', '=', 'users.country_id');
 		 
@@ -410,7 +449,7 @@ class UserController extends Controller
 			if(isset($_POST['first_name']) and $_POST['first_name'] !=''){
 				$first_name = $_POST['first_name'];
 				$this->request->session()->put('usearch.first_name', $first_name);
-				$data = $data->whereRaw('CONCAT_WS("",users.first_name,users.last_name) like ?', "%{$first_name}%");
+				$data = $data->whereRaw('CONCAT_WS("",al_companies.company_name,users.last_name) like ?', "%{$first_name}%");
 			}
 			if(isset($_POST['email']) and $_POST['email'] !=''){
 				$email = $_POST['email'];
@@ -447,6 +486,7 @@ class UserController extends Controller
 				$company = array();
 				$company['company_name'] = $input['company_name'];
 				$company['plan_id'] = $input['plan_id'];
+
 				$createcompany = Company::create($company);
 				$data                = $this->request->except('password');
 				$data['password']    = Hash::make($this->request->get('password'));
@@ -458,6 +498,7 @@ class UserController extends Controller
 				$data['last_activity'] = date('Y-m-d h:i:s');
 				$data['current_membership_plan'] = $input['plan_id'];
 				$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+				$data['status'] = 1;
 				$data['trial_expiry_date'] = date('Y-m-d', strtotime(date('Y-m-d'). ' + '.config('constants.TRIAL_DAYS').' days'));
 				$user = User::create($data);
 				if($user){
@@ -498,17 +539,16 @@ class UserController extends Controller
 	
 	public function company_update($id=null){
 		$page_title = "Company Update";
-		$data = Company::where('al_companies.id',$id)->leftjoin('users','users.company_id','=','al_companies.id')->select('al_companies.id as company_id','al_companies.company_name','users.id as user_id','users.first_name','users.last_name','users.email','users.current_membership_plan as plan_id')->first();
+		$data = Company::where('al_companies.id',$id)->leftjoin('users','users.company_id','=','al_companies.id')->select('al_companies.id as company_id','al_companies.company_name','users.id as user_id','users.first_name','users.last_name','users.email','users.current_membership_plan as plan_id','users.status')->first();
 		if($this->request->isMethod('post')){
 			$inputs = $this->request->all();
-			//pr($inputs);
-			$update_company = Company::where('id',$id)->update(array('company_name'=>$inputs['company_name'],'plan_id'=>$inputs['plan_id']));
-			$update_user = User::where('id',$inputs['user_id'])->update(array('first_name'=>$inputs['first_name'],'last_name'=>$inputs['last_name'],'current_membership_plan'=>$inputs['plan_id']));
-			return response()->json(array("type" => "success", "url" => url(env('ADMIN_PREFIX').'/companies'), "message" => getLabels('company_update_successfully')));
+			
+			$update_company = Company::where('id',$id)->update(array('company_name'=>$inputs['company_name']));
+			$update_user = User::where('id',$inputs['user_id'])->update(array('first_name'=>$inputs['first_name'],'last_name'=>$inputs['last_name'],'email'=>$inputs['email'],'status'=>$inputs['status']));
+			return response()->json(array("type" => "success", "url" => url(env('ADMIN_PREFIX').'/companies'), "message" => getLabels('company_update_successfully')));	
 		}
-		$plans = Plans::where('period',1)->get();
-		$yearly = Plans::where('period',2)->get();
-		return view('frontend/users/company_update',compact('page_title','data','id','plans','yearly'));
+		
+		return view('frontend/users/company_update',compact('page_title','data','id'));
 	}
 
 
@@ -539,10 +579,10 @@ class UserController extends Controller
 		$page_title = getLabels("Add New Member");
 		$countries  = Country::where('status', 1)->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
 		if($this->request->isMethod('post')){
-			$validator = User::validate($this->request->all());
+			$validator = User::validateaddmember($this->request->all());
 			
 			if ( $validator->fails() ) {
-				return redirect()->back()->with('errormessageadd',getLabels('member_not_saved_errors'))->withErrors($validator->errors());
+				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
 			} else {
 				$formData              	= $this->request->except('password','photo');
 				$formData['password'] 	= Hash::make($this->request->get('password'));
@@ -577,7 +617,7 @@ class UserController extends Controller
 				$formData['user_ip'] = $_SERVER['REMOTE_ADDR'];
 				$user  = User::create($formData);
 				if($user){
-					return redirect()->back()->with('message', getLabels('Member Saved Successfully'));
+					return response()->json(['type' => 'success', 'url'=> url('members'), 'message' => getLabels('add_member successfully')]);
 				}else{
 					return response()->json(['type' => 'error', 'url'=> url('members'), 'message' => getLabels('something_wrong_try_again')]);
 				}
@@ -667,17 +707,9 @@ class UserController extends Controller
 		$total_departments = Department::where('company_id',$id)->count();
 		$total_teams = Teams::where('company_id',$id)->count();
 		$industries = Industries::pluck('name','id');
-		// if($this->request->isMethod('post')){
-		// 	$formData = $this->request->all();
-		// 	$data = Company::find($id);
-		// 	$update = $data->update($formData);
-		// 	if($update){
-		// 		return redirect('profile');
-		// 	}else{
-		// 		return redirect('profile');
-		// 	}
-		// }
-		return view("/frontend/users/company_profile",compact('page_title','company_details','plan_details','total_members','total_departments','total_teams','industries'));
+		$total_transactions = Subscription::where('company_id',$id)->count();
+		
+		return view("/frontend/users/company_profile",compact('page_title','company_details','plan_details','total_members','total_departments','total_teams','industries','total_transactions'));
 	}
 	public function getprofiledata(){
 		$company_details = getCompanyProfile(Auth::User()->company_id);
@@ -1270,6 +1302,59 @@ class UserController extends Controller
 		$input = $this->request->all();
 		$members = User::where('company_id',$input['company_id'])->pluck('first_name','id');
 		return json_encode($members);
+	}
+
+	public function importmembers(){
+		$file = $this->request->file('csv');
+		$validate = User::importvalidate($this->request->all());
+		if($validate->fails()){
+			return redirect()->back()->with('errormessage','Please correct errors')->withErrors($validate->errors());;
+		}
+		$company_id = Auth::User()->company_id;
+		$handle = fopen($file, "r");
+		$all_members = array();
+		while(($filesop = fgetcsv($handle, 1000, ",")) !== false){
+			$all_members[] = $filesop; 
+		}
+		unset($all_members[0]);
+		$error = array();
+		if(!empty($all_members)){
+			
+			foreach ($all_members as $key => $value) {
+				$varr              	= array();
+				$varr['first_name'] = $value['0'];
+				$varr['password'] 	= $value['3'];
+				$varr['email'] 	= $value['2'];
+				
+				
+				$validator = User::importcsv($varr);
+				if ( $validator->fails() ) {
+					$error[] = $value;
+					continue;
+				} else {
+					$formData              	= array();
+					$formData['first_name'] 	= $value['0'];
+					$formData['last_name'] 	= $value['1'];
+					$formData['email'] 	= $value['2'];
+					$formData['password'] 	= Hash::make($value['3']);
+					$formData['role_id'] 	= $value['4'];
+					$formData['designation'] 	= $value['5'];
+					$formData['mobile'] 	= $value['6'];
+					$formData['company_id'] 	= $company_id;
+					$formData['status'] 	= 1;
+					$user  = User::create($formData);
+					$empcodeupdate = User::where('id',$user->id)->update(array('emp_code'=>"EMP-".$user->id."-".$company_id));
+				}
+			}
+			if(!empty($error)){
+				return redirect()->back()->with('rejected_arr',$error);
+			}else{
+
+				return redirect()->back()->with('message','import csv successfully');
+			}
+		}
+		
+		
 	}
 	
 }

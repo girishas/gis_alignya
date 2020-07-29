@@ -7,15 +7,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <?php if(session('adderrormessage')): ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo session('adderrormessage'); ?>
-
-                    </div>    
-                    <?php endif; ?> 
+                 
                 <div class="modal-body">
                 	 
-                    <?php echo Form::open(array('url' => array($route_prefix.'/addtask'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                    <?php echo Form::open(array('url' => array($route_prefix.'/addtask'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                                         
                     	<div class="container-fluid">
@@ -24,7 +19,7 @@
                     	<div class="col-lg-12">
                     		<div class="form-group">
                             <label>Title</label>
-                            <?php echo Form::text('task_name',null,array('class'=>'form-control')); ?>
+                            <?php echo Form::text('task_name',null,array('class'=>'form-control','required'=>'required')); ?>
 
                             <?php if($errors->first('task_name')): ?><div class="error"><?php echo $errors->first('task_name'); ?></div><?php endif; ?>
                             <input type="hidden" name="objective_id" id="objectivetaskid" >

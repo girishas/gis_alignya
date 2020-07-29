@@ -59,57 +59,12 @@
 								{!!Form::hidden('user_id',null,array('class'=>'form-control'))!!}
 								<div class="invalid-tooltip"></div>
 							</div>
+							<div class="form-group  position-relative error-l-100 col-md-6">
+								<label for="inputFirstname">{!! getLabels('Status') !!}</label>
+								{!! Form::select('status', config('constants.STATUS'),null, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
+								<div class="invalid-tooltip"></div>
+							</div>
 						</div>
-						<label class="form-group has-float-label position-relative error-l-100 mb-4">Choose Pricing Plan</label>
-								
-										<div style="display: inline-flex;">
-											<div class="custom-control custom-radio">
-												
-												<input type="radio" id="monthlyplan" name="plan_type" class="custom-control-input plan_type" value="1" checked="checked">
-												<label class="custom-control-label" for="monthlyplan">
-													Monthly &nbsp;&nbsp;&nbsp;
-												</label>
-											</div>
-											<div class="custom-control custom-radio">
-												<input type="radio" id="yearlyplan" name="plan_type" class="custom-control-input plan_type" value="2">
-												<label class="custom-control-label" for="yearlyplan">Yerly</label>
-											</div>
-										</div>
-						<div class="form-group">
-
-						<div class="monthlyshow">
-											@if(!empty($plans))
-											@foreach($plans as $key => $plan)
-											<div class="custom-control custom-radio">
-												@if($plan->id == $data->plan_id)
-												<input type="radio" id="jQueryCustomRadio{!!$key!!}" name="plan_id" class="custom-control-input" value="{!!$plan->id!!}" checked="checked">
-												@else
-												<input type="radio" id="jQueryCustomRadio{!!$key!!}" name="plan_id" class="custom-control-input" value="{!!$plan->id!!}">
-												@endif
-												<label class="custom-control-label" for="jQueryCustomRadio{!!$key!!}">
-													{!!$plan->heading!!} ( ${!!$plan->plan_fee!!} per month | Upto {!!$plan->emp_limit!!} Member )
-												</label>
-											</div>
-											@endforeach
-										</div>
-										<div class= "yearlyshow" style="display: none;">
-											@endif
-											@if(!empty($yearly))
-											@foreach($yearly as $key => $yp)
-											<div class="custom-control custom-radio">
-												
-												<input type="radio" id="yearly{!!$key!!}" name="plan_id" class="custom-control-input" value="{!!$plan->id!!}">
-												<label class="custom-control-label" for="yearly{!!$key!!}">
-													{!!$yp->heading!!} ( ${!!$yp->plan_fee!!} per month | Upto {!!$yp->emp_limit!!} Member )
-												</label>
-											</div>
-											@endforeach
-											@endif
-										</div>
-										<div class="invalid-tooltip"></div>	
-							
-						</div>
-						
 						
 						<div class="form-group ">
 						<button type="submit" class="btn btn-primary">{!! getLabels('update') !!}</button>&nbsp;&nbsp;
@@ -119,17 +74,7 @@
 				</div>
 			</div>
         </div>
-	<script>
-	$('.plan_type').click(function(){
-			if($(this).val() == 2){
-				$(".monthlyshow").hide();
-				$(".yearlyshow").show();
-			}else{
-				$(".monthlyshow").show();
-				$(".yearlyshow").hide();
-			}
-		});
-</script>	
+		
 	@if(empty($_POST))
     </main>
 @stop

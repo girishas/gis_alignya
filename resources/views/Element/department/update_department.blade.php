@@ -2,12 +2,12 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">@if($id) Update @else Add @endif Department</h5>
+                <h5 class="modal-title">@if(isset($parent_department->id) && !empty($parent_department->id)) Update @else Add @endif Department</h5>
                 <button type="button" class="close" id="popupaddhideupdatedepartment" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-             {!! Form::model($parent_department,array('url' => array($route_prefix.'/department/'.$id), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+             {!! Form::model($parent_department,array('url' => array($route_prefix.'/department/'.(isset($parent_department->id) && !empty($parent_department->id) ? $parent_department->id:$id)), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                 
             <div class="modal-body">
                    

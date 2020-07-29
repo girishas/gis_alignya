@@ -4,9 +4,9 @@
                           <div class="modal-content view_objective_background_popup">
                               <div class="modal-header">
                                   <h5 class="modal-title" id="objective_name_view"></h5>
-                                  <button type="button" class="close" id="popup1hide" aria-label="Close">
+                                  <a class= "steamerst_link" href="<?php echo url('objectives'); ?>"><button type="button" class="close" id="popup1hide" aria-label="Close">
                                       <span aria-hidden="true">&times;</span>
-                                  </button>
+                                  </button></a>
                               </div>
                               <div class="modal-body">
                                   
@@ -235,7 +235,7 @@
 <script>
  
     function addInitiative(){
-      $("#hideforobjini").hide();
+      $("#hideforobjini").html("");
       $(".hideindivi").val($("#objective_idview").val());
       onchangeobjectivegetcycleinitiative();
       localStorage.setItem('popup_id',$("#objective_idview").val());

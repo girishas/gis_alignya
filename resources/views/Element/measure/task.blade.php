@@ -7,14 +7,10 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                @if(session('adderrormessage'))
-                    <div class="alert alert-danger" role="alert">
-                        {!! session('adderrormessage') !!}
-                    </div>    
-                    @endif 
+                 
                 <div class="modal-body">
                 	 
-                    {!! Form::open(array('url' => array($route_prefix.'/addtask'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+                    {!! Form::open(array('url' => array($route_prefix.'/addtask'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                                         
                     	<div class="container-fluid">
                     	<div class="row">
@@ -22,7 +18,7 @@
                     	<div class="col-lg-12">
                     		<div class="form-group">
                             <label>Title</label>
-                            {!!Form::text('task_name',null,array('class'=>'form-control'))!!}
+                            {!!Form::text('task_name',null,array('class'=>'form-control','required'=>'required'))!!}
                             @if($errors->first('task_name'))<div class="error">{!!$errors->first('task_name')!!}</div>@endif
                             <input type="hidden" name="objective_id" id="objectivetaskid" >
                             <input type="hidden" name="measure_id" id="measuretaskid">

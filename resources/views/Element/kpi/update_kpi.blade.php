@@ -14,7 +14,7 @@
                     @endif 
                 <div class="modal-body">
                 	 
-                    {!! Form::open(array('url' => array($route_prefix.'/updatekpi'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+                    {!! Form::open(array('url' => array($route_prefix.'/updatekpi'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                                         
                     	<div class="container-fluid">
                     	<div class="row">

@@ -14,7 +14,7 @@
                 <div class="col-12">
                     <h1><?php echo getLabels('Add Company'); ?></h1>
 					<div class="text-zero top-right-button-container">
-						<a href="<?php echo url($route_prefix, 'users'); ?>" class="steamerst_link btn btn-primary btn-sm top-right-button mr-1"><?php echo getLabels('Company'); ?></a>
+						<a href="<?php echo url($route_prefix, 'companies'); ?>" class="steamerst_link btn btn-primary btn-sm top-right-button mr-1"><?php echo getLabels('Company'); ?></a>
                     </div>
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                         <ol class="breadcrumb pt-0">
@@ -111,7 +111,7 @@
 											<?php $__currentLoopData = $yearly; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $yp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 											<div class="custom-control custom-radio">
 												
-												<input type="radio" id="yearly<?php echo $key; ?>" name="plan_id" class="custom-control-input" value="<?php echo $plan->id; ?>">
+												<input type="radio" id="yearly<?php echo $key; ?>" name="plan_id" class="custom-control-input" value="<?php echo $yp->id; ?>">
 												<label class="custom-control-label" for="yearly<?php echo $key; ?>">
 													<?php echo $yp->heading; ?> ( $<?php echo $yp->plan_fee; ?> per month | Upto <?php echo $yp->emp_limit; ?> Member )
 												</label>

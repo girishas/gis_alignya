@@ -48,7 +48,7 @@
                                 </tbody>
                                 <tbody>
                                     <tr>
-                                        <th scope="row"><a href="javascript:void(0);"><h6 id="myBtn2"><strong><i class="simple-icon-plus btn-group-icon"></i> Add Milestone</strong></h6></a></th>
+                                        <th scope="row"><a href="javascript:void(0);" onclick="addinimilestone()"><h6 ><strong><i class="simple-icon-plus btn-group-icon"></i> Add Milestone</strong></h6></a></th>
                                        
                                     </tr>
                                 </tbody>
@@ -81,7 +81,7 @@
                                 </tbody>
                                 <tbody>
                                     <tr>
-                                        <th scope="row"><a href="javascript:void(0);" onclick="addTask()"><strong><i class="simple-icon-plus btn-group-icon"></i> Add Task</strong></a></th>
+                                        <th scope="row"><a href="javascript:void(0);" onclick="addTask('initiative')"><strong><i class="simple-icon-plus btn-group-icon"></i> Add Task</strong></a></th>
                                        
                                     </tr>
                                 </tbody>

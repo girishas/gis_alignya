@@ -82,11 +82,8 @@
                         <div class=" d-flex flex-grow-1 min-width-zero">
                             <div
                                 class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                <div class="min-width-zero">
-                                    <a href="#">
-                                        <p class="mb-0 truncate">Measure 1</p>
-                                    </a>
-                                    <p class="text-muted mb-0 text-small">315 Target</p>
+                                <div class="min-width-zero" id="kpi_name_graph_side">
+                                    
                                 </div>
                             </div>
                         </div>

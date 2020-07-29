@@ -7,31 +7,26 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <?php if(session('adderrormessage')): ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo session('adderrormessage'); ?>
-
-                    </div>    
-                    <?php endif; ?> 
+               
                 <div class="modal-body">
                      
-                    <?php echo Form::open(array('url' => array($route_prefix.'/addkpi'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                    <?php echo Form::open(array('url' => array($route_prefix.'/addkpi'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                                         
                         <div class="container-fluid">
                         <div class="row">
                             
                         <div class="col-lg-6">
-                            <div class="form-group">
+                            <div class="form-group has-float-label position-relative error-l-100">
                             <label>KPI Title</label>
                             <?php echo Form::text('heading',null,array('class'=>'form-control')); ?>
 
-                            <?php if($errors->first('heading')): ?><div class="error"><?php echo $errors->first('heading'); ?></div><?php endif; ?>
+                            <div class="invalid-tooltip"></div>
                             <input type="hidden" name="measure_team_type" id="kpi_team_type" value="department">
                             <input type="hidden" name="owner_user_id" id="owner_user_id">
                             <input type="hidden" name="measure_department_id" id="kpi_department_id">
                             <input type="hidden" name="measure_team_id" id="kpi_team_id">
-                            <input type="hidden" name="objective_id" id="objectiveId" class="removeattr" value="5">
+                            <input type="hidden" name="objective_id" id="objectiveId" class="removeattr" value="NO">
                         </div>
                        
                         
@@ -41,7 +36,7 @@
                             <select class="form-control" name="measure_cycle" id = "KPICycle">
                                 
                             </select>
-                            <?php if($errors->first('measure_cycle')): ?><div class="error"><?php echo $errors->first('measure_cycle'); ?></div><?php endif; ?>
+                            <div class="invalid-tooltip"></div>
 
                         </div>
                         <div class="form-group col-md-6">
@@ -67,10 +62,11 @@
                             </div>
                         </div>
 
-                       <div class="form-group col-md-6">
+                       <div class="form-group position-relative error-l-50 col-md-6">
                          <label>Please Select</label>
                             <select class="form-control ownership" onchange="ownershipdropkpi()" name="ownership" data-width="100%" id = "ownershipkpi">
                                 <?php if(!empty($departments)): ?>
+                                <option value="">Please Select Department</option>
                                 <?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $vale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <option value="<?php echo $key; ?>"><?php echo $vale; ?></option>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -102,15 +98,17 @@
 
                         <div class="col-lg-6">
                             <div class="row revenuehide">
-                            <div class="form-group col-md-6">
+                            <div class="form-group col-md-6 has-float-label position-relative error-l-100">
                                 <label>KPI Target</label>
                                 <?php echo Form::text('measure_target',null,array('class'=>'form-control')); ?>
 
+                                <div class="invalid-tooltip"></div>
                             </div>
-                              <div class="form-group col-md-6">
+                              <div class="form-group col-md-6 has-float-label position-relative error-l-100">
                                 <label>KPI Actual</label>
                                 <?php echo Form::text('measure_actual',null,array('class'=>'form-control')); ?>
 
+                                <div class="invalid-tooltip"></div>
                             </div>
                         </div>
                         <div class="row revenueshow" style="display: none;">
@@ -188,7 +186,7 @@
                              <div class="col-md-6" id="hide_calc_type">
                                 <label>Calculation Type</label>
                                 <div class="custom-control custom-radio">
-                                    <input type="radio" id="calculation_type1" name="calculation_type" value = "0" class="custom-control-input">
+                                    <input type="radio" id="calculation_type1" name="calculation_type" value = "0" class="custom-control-input" checked="checked">
                                     <label class="custom-control-label" for="calculation_type1">Target value set for each milestone</label>
                                 </div>
                                 <div class="custom-control custom-radio">
@@ -281,6 +279,7 @@
     }
 
     function onchangeobjectivegetcycle(){
+
         var objective_id =  $("#objectiveId").val();
         var token = "<?php echo csrf_token(); ?>";
         var company_id = "<?php echo Auth::User()->company_id; ?>";
@@ -291,6 +290,7 @@
             data:'_token='+token+'&company_id='+company_id+'&objective_id='+objective_id,
             dataType:'JSON',
             success: function (response) {
+                console.log(response)
                 for (var key in response) {
                   if (response.hasOwnProperty(key)) {
                     var val = response[key];

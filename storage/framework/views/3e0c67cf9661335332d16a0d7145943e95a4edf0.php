@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
                 
-                <?php echo Form::open(array('url' => array($route_prefix.'/addmilestoneinitiative'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                <?php echo Form::open(array('url' => array($route_prefix.'/addmilestoneinitiative'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                     
                     <div class="container-fluid">
@@ -18,7 +18,7 @@
                     <div class="col-lg-12">
                         <div class="form-group">
                         <label>Milestone Name</label>
-                        <?php echo Form::text('milestone_name', null, array('class'=>'form-control')); ?>
+                        <?php echo Form::text('milestone_name', null, array('class'=>'form-control','required'=>'required')); ?>
 
                         <input type="hidden" name="initiative_id" id="ini_idformilestone">
                         <input type="hidden" name="is_popup" class ="is_popup">

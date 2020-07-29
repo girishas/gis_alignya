@@ -7,26 +7,21 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <?php if(session('adderrormessage')): ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo session('adderrormessage'); ?>
-
-                    </div>    
-                    <?php endif; ?> 
+            
                 <div class="modal-body">
                      
-                    <?php echo Form::open(array('url' => array($route_prefix.'/addinitiative'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                    <?php echo Form::open(array('url' => array($route_prefix.'/addinitiative'), 'class' =>' alignya_form needs-validation updateobjectiveform tooltip-label-right', 'name'=>'', 'files'=>true)); ?>
 
                                         
                         <div class="container-fluid">
                         <div class="row">
                             
                         <div class="col-lg-6">
-                            <div class="form-group">
+                            <div class="form-group has-float-label position-relative error-l-100 mb-4">
                             <label>Title</label>
                             <?php echo Form::text('heading',null,array('class'=>'form-control')); ?>
 
-                            <?php if($errors->first('heading')): ?><div class="error"><?php echo $errors->first('heading'); ?></div><?php endif; ?>
+                            <div class="invalid-tooltip"></div>
                             <input type="hidden" name="measure_team_type" id="initiative_team_type" value="department">
                             <input type="hidden" name="owner_user_id" id="initiative_owner_user_id">
                             <input type="hidden" name="measure_department_id" id="initiative_department_id">
@@ -35,20 +30,19 @@
                            <input type="hidden" name="is_popup" class="is_popup">
                         </div>
                        
-                        <div class="form-group" id = "hideforobjini">
+                        <div class="form-group  position-relative error-l-50 mb-4" id = "hideforobjini">
                             <label>Objective</label>
-                            <?php echo Form::select('objective_id',$objectives,null,array('class'=>'form-control select2-single','id'=>'initiative_objectiveId', 'onchange'=>'onchangeobjectivegetcycleinitiative()')); ?>
+                            <?php echo Form::select('objective_id',array(""=> "Please Select Objective") + $objectives->toArray(),null,array('class'=>'form-control','id'=>'initiative_objectiveId', 'onchange'=>'onchangeobjectivegetcycleinitiative()')); ?>
 
-                            <?php if($errors->first('objective_id')): ?><div class="error"><?php echo $errors->first('objective_id'); ?></div><?php endif; ?>
+                            <div class="invalid-tooltip"></div>
                         </div>
                         <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group  position-relative error-l-50 mb-4 col-md-6">
                             <label>Cycle</label>
                             <select class="form-control" name="measure_cycle" id = "initiativeCycle">
                                 
                             </select>
-                            <?php if($errors->first('measure_cycle')): ?><div class="error"><?php echo $errors->first('measure_cycle'); ?></div><?php endif; ?>
-
+                            <div class="invalid-tooltip"></div>
                         </div>
                         <div class="form-group col-md-6">
                             <label>Check in Frequency</label>
@@ -73,10 +67,11 @@
                             </div>
                         </div>
 
-                       <div class="form-group col-md-6">
+                       <div class="form-group  position-relative error-l-50 mb-4 col-md-6">
                          <label>Please Select</label>
                             <select class="form-control ownership" onchange="ownershipdropinitiative()" name="ownership" data-width="100%" id = "ownershipinitiative">
                                 <?php if(!empty($departments)): ?>
+                                <option value="">Please Select Ownership</option>
                                 <?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $vale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <option value="<?php echo $key; ?>"><?php echo $vale; ?></option>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -101,21 +96,21 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Milestone Name</label>
-                                        <?php echo Form::text('milestone_name[]',null,array('class'=>'form-control')); ?>
+                                        <?php echo Form::text('milestone_name[]',null,array('class'=>'form-control','required'=>'required')); ?>
 
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Start Date</label>
-                                        <?php echo Form::date('start_date[]',null,array('class'=>'form-control')); ?>
+                                        <?php echo Form::date('start_date[]',null,array('class'=>'form-control','required'=>'required')); ?>
 
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>End Date</label>
-                                        <?php echo Form::date('end_date[]',null,array('class'=>'form-control')); ?>
+                                        <?php echo Form::date('end_date[]',null,array('class'=>'form-control','required'=>'required')); ?>
 
                                     </div>
                                 </div>

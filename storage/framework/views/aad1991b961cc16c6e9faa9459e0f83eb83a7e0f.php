@@ -23,10 +23,16 @@
 <?php echo $__env->make('Element/measure/view_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('Element/measure/add_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>       
 <?php echo $__env->make('frontend/objectives/filter', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-<?php echo $__env->make('Element/measure/task', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('Element/initiative/add_initiative', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('Element/initiative/view_initiative', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?> 
 <?php echo $__env->make('Element/measure/update_task', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/measure/update_milestone', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/measure/update_measure', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/initiative/update_initiative', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/measure/add_milestone', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/initiative/add_milestone', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/initiative/update_milestone', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+<?php echo $__env->make('Element/measure/task', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
   <main>
         <div class="container-fluid">
             <div class="row">
@@ -95,9 +101,10 @@
                                                     </div></td>
 													<td>
 														<a  href="javascript:void(0);" onclick="updateObjective('<?php echo $value->id; ?>')" title="Edit"><i class="simple-icon-pencil heading-icon"></i></a>
-                                                                <a  onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
-                                                                 <a href="javascript:void(0);" onclick="viewobjective('<?php echo $value->id; ?>')" title="View"><i class="iconsminds-information heading-icon"></i>
+                             <a href="javascript:void(0);" onclick="viewobjective('<?php echo $value->id; ?>')" title="View"><i class="iconsminds-information heading-icon"></i>
                                                         </a>
+                                                                <a  onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+                                                                
 													</td>
 												</tr>
                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -125,110 +132,10 @@
         </div>
     </main>
 
-
+<?php echo $__env->make('Element/js/includejs', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <script>
-function measureGraph(target_data,labels,actual_data,max_value,projection_data){
+    
 
-    document.getElementById("linechartformeasureobj").innerHTML = " ";
-    var contributionChartOptions = {
-    type: "LineWithShadow",
-    options: {
-      plugins: {
-        datalabels: {
-          display: false
-        }
-      },
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        yAxes: [
-          {
-            gridLines: {
-              display: true,
-              lineWidth: 1,
-              color: "rgba(0,0,0,0.1)",
-              drawBorder: false
-            },
-            ticks: {
-              beginAtZero: true,
-              stepSize: 50,
-              min: 0,
-              max: parseInt(max_value),
-              padding: 20
-            }
-          }
-        ],
-        xAxes: [
-          {
-            gridLines: {
-              display: false
-            }
-          }
-        ]
-      },
-      legend: {
-        display: false
-      },
-      
-    },
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          borderWidth: 2,
-          label: "",
-          data: target_data,
-          borderColor: "red",
-       
-          pointBorderColor: "orange",
-          pointHoverBackgroundColor: "#2b6ca1",
-         
-          pointRadius: 4,
-          pointBorderWidth: 2,
-          pointHoverRadius: 5,
-          fill: false
-        },
-        {
-          borderWidth: 2,
-          label: "",
-          data: actual_data,
-          borderColor: "primary",
-       
-          pointBorderColor: "blue",
-          pointHoverBackgroundColor: "#2b6ca1",
-         
-          pointRadius: 4,
-          pointBorderWidth: 2,
-          pointHoverRadius: 5,
-          fill: false
-        },
-        {
-          borderWidth: 2,
-          label: "",
-          data: projection_data,
-          borderColor: "yellow",
-       
-          pointBorderColor: "blue",
-          pointHoverBackgroundColor: "#2b6ca1",
-         
-          pointRadius: 4,
-          pointBorderWidth: 2,
-          pointHoverRadius: 5,
-          fill: false
-        },
-        
-      ]
-    }
-  };
-
-  if (document.getElementById("linechartformeasureobj")) {
-    var contributionChart1 = new Chart(
-      document.getElementById("linechartformeasureobj").getContext("2d"),
-      contributionChartOptions
-    );
-  }
-
-}
     function removetask(id){
         var token = "<?php echo csrf_token(); ?>";
         $.ajax({
@@ -278,18 +185,7 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
         $(".is_popup_id").val(1);
         $("#myModalAddMeasure").modal("show");
     }
-    function addObjectivepop(slug){
-        if(slug == "sub"){
-            var heading = "Add Sub Objective";
-            $("#addobjectiven").html(heading);
-            var parobjeid = $("#objective_idview").val();
-            $("#parent_objective_id").val(parobjeid);
-        }else{
-            var heading = "Add Objective";
-            $("#addobjectiven").html(heading);
-        }
-        $("#myModalAddObjective").modal('show');
-    }
+    
      function onclickownershipadd(id){
         
         $("#ownership").html("");
@@ -314,13 +210,16 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
             data:'_token='+token+'&company_id='+company_id,
             dataType:'JSON',
             success: function (response) {
-                $("#ownership").append('<option value = "">'+selectlabel+'</option>')
+                if(response != ""){
+                   $("#ownership").append('<option value = "">'+selectlabel+'</option>')
                 for (var key in response) {
                   if (response.hasOwnProperty(key)) {
                     var val = response[key];
                     $("#ownership").append('<option value = "'+key+'">'+val+'</option>');
                   }
                 }
+                }
+               
             }  
         });
     }
@@ -370,6 +269,7 @@ $(document).ready(function(){
    
   $("#popup1hide").click(function(){
     $("#myModal").modal('hide');
+    window.location.reload(true);
   });
   
   $("#popup3hide").click(function(){
@@ -407,112 +307,15 @@ $(document).ready(function(){
 </script>
 <script type="text/javascript">
 
-    function chartload(milestones){
-
-        am4core.ready(function() {
-
-// Themes begin
-am4core.useTheme(am4themes_animated);
-// Themes end
-
-var chart = am4core.create("chartdiv", am4charts.XYChart);
-chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-
-chart.paddingRight = 30;
-chart.dateFormatter.inputDateFormat = "yyyy-MM-dd HH:mm:ss";
-
-var colorSet = new am4core.ColorSet();
-colorSet.saturation = 0.4;
-
-chart.data = milestones;
-
-var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-categoryAxis.dataFields.category = "name";
-categoryAxis.renderer.grid.template.location = 0;
-categoryAxis.renderer.inversed = true;
-
-var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-dateAxis.dateFormatter.dateFormat = "yyyy-MM-dd HH:mm";
-dateAxis.renderer.minGridDistance = 70;
-dateAxis.baseInterval = { count: 30, timeUnit: "minute" };
-dateAxis.max = new Date(2021, 0, 1, 24, 0, 0, 0).getTime();
-dateAxis.strictMinMax = true;
-dateAxis.renderer.tooltipLocation = 0;
-
-var series1 = chart.series.push(new am4charts.ColumnSeries());
-series1.columns.template.width = am4core.percent(80);
-series1.columns.template.tooltipText = "{name}: {openDateX} - {dateX}";
-
-series1.dataFields.openDateX = "fromDate";
-series1.dataFields.dateX = "toDate";
-series1.dataFields.categoryY = "name";
-series1.columns.template.propertyFields.fill = "color"; // get color from data
-series1.columns.template.propertyFields.stroke = "color";
-series1.columns.template.strokeOpacity = 1;
-
-chart.scrollbarX = new am4core.Scrollbar();
-
-}); // end am4core.ready()
     
-    }
-    function viewInitiative(id){
-        
-        $("#viewpageinitiativeid").val(id);
-        $("#initiativemilestonelist").html("");
-        var token = "<?php echo csrf_token(); ?>";
-        var company_id = "<?php echo Auth::User()->company_id; ?>"; 
-         $.ajax({
-            type:"POST",
-            url: "<?php echo url('getInitiativeData'); ?>",
-            data:'_token='+token+'&company_id='+company_id+'&id='+id,
-            dataType:'JSON',
-            success: function (response) {
-                var initiative =response.initiatives; 
-                $("#initiativeheading").html('<i class="'+initiative.status_icon+' heading-icon" style="color:'+initiative.bg_color+';"></i>'+initiative.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+initiative.measure_cycle_year+'-'+getQuarter(initiative.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+initiative.owner_name )
-                chartload(response.milestones);
-                for(var i = 0; i < response.milestones.length; i++){
-                    $("#initiativemilestonelist").append('<tr><td>'+response.milestones[i].name+'</td><td>'+response.milestones[i].fromDate+'</td><td>'+response.milestones[i].toDate+'</td><td><a href="javascript:void(0);" onclick="updatemilestoneini('+response.milestones[i].id+')"><i class="simple-icon-pencil"></i></a></td></tr>');
-
-                }
-                for(var i = 0; i < response.tasklist.length; i++){
-                    $("#initiativetasklistview").append('<tr><td>'+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background-color:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>');
-
-                }
-            }
-        })
-        
-        $("#viewinitiativemodal").modal('show');
-     
-    }
-    function viewMeasure(id){
-        $("#measure_id_view").val(id);
-        $("#view_measure_heading").html("");
-        $("#milestonelistmeasureview").html("");
-        $("#addtaskmeasureview").html("");
-        var token = "<?php echo csrf_token(); ?>";
-        var company_id = "<?php echo Auth::User()->company_id; ?>"; 
-        $.ajax({
-            type:"POST",
-            url: "<?php echo url('getMeasureonUpdatePage'); ?>",
-            data:'_token='+token+'&company_id='+company_id+'&measure_id='+id,
-            dataType:'JSON',
-            success: function (response) {
-                var all_response = response.measures;
-                $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
-                var milstonesli = response.milestones;
-                for (var i = 0; i < milstonesli.length; i++) {
-                    $("#milestonelistmeasureview").append('<tr><td>'+milstonesli[i].milestone_name+'</td><td>'+(milstonesli[i].mile_actual == null?"":milstonesli[i].mile_actual)+'</td><td>'+milstonesli[i].sys_target+'</td><td>'+milstonesli[i].start_date+'</td><td>'+milstonesli[i].end_date+'</td><td><a href="javascript:void(0);" onclick="updatemilestone('+milstonesli[i].id+')"><i class="simple-icon-pencil"></i></a></td></tr>');
-                }
-                var taskli = response.tasklist;
-                for (var i = 0; i < taskli.length; i++) {
-                    $("#addtaskmeasureview").html('<tr><td>'+taskli[i].task_name+'</td><td>'+taskli[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+taskli[i].bg_color+'">'+taskli[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updatetask('+taskli[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>');
-                }
-            }
-        })  
-        $("#viewmeasuremodal").modal('show');
-    }
-    function updateObjective(id){
+   
+    function updateObjective(id,slug=null){
+        if(slug != null){
+            $(".is_popup").val(1);
+        }
         $("#ownership_update").html("");
+        $("#contributersupdate").html("");
+        $("#themelistupdate").html("");
         var token = "<?php echo csrf_token(); ?>";
         var company_id = "<?php echo Auth::User()->company_id; ?>"; 
         $.ajax({
@@ -641,6 +444,7 @@ chart.scrollbarX = new am4core.Scrollbar();
         });
     }
     $("#popupaddhideObjectiveupdate").click(function(){
+      $(".updateobjectiveform").attr("name","updateobjectiveform");
         $("#updateobjectivemodal").modal("hide");
     });
 
@@ -663,20 +467,21 @@ chart.scrollbarX = new am4core.Scrollbar();
         return value;
     }
     function viewmeasureGraph(id){
-        var token = "<?php echo csrf_token(); ?>";
-        var company_id = "<?php echo Auth::User()->company_id; ?>"; 
-        $.ajax({
-            type:"POST",
-            url: "<?php echo url('getMeasureonUpdatePage'); ?>",
-            data:'_token='+token+'&company_id='+company_id+'&measure_id='+id,
-            dataType:'JSON',
-            success: function (response) {
-                measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
-              }
-        });
-      
+      var token = "<?php echo csrf_token(); ?>";
+      var company_id = "<?php echo Auth::User()->company_id; ?>"; 
+      $.ajax({
+          type:"POST",
+          url: "<?php echo url('getMeasureonUpdatePage'); ?>",
+          data:'_token='+token+'&company_id='+company_id+'&measure_id='+id,
+          dataType:'JSON',
+          success: function (response) {
+              measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
+            }
+      });    
     }
     function viewobjective(id){
+        
+        $(".updateobjectiveform").attr("name","update_objective");
         $(".is_popup").val(1);
         localStorage.setItem('popup_id',id);
         var token = "<?php echo csrf_token(); ?>";
@@ -686,7 +491,9 @@ chart.scrollbarX = new am4core.Scrollbar();
         $("#objective_name_view").html("");
         $("#initiativelistobj").html("");
         $("#alignedobjectivelist").html("");
-        var removetasurl = 
+        $("#graphtitleobjmeasure").html("");
+        $("#objective_idview").val("");
+     
         $.ajax({
             type:"POST",
             url: "<?php echo url('/viewobjective'); ?>",
@@ -703,17 +510,17 @@ chart.scrollbarX = new am4core.Scrollbar();
                     $("#thisdivshoworhide").hide();
 
                 }
-
-                $("#objective_name_view").html('<i class="'+response.objectiveinfo.status_icon+' heading-icon" style="color:'+response.objectiveinfo.bg_color+';"></i>'+response.objectiveinfo.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> '+response.objectiveinfo.cycle_name+'  <i class="simple-icon-people"></i> '+response.objectiveinfo.owner_name );
+                var secondpara = 1;
+                $("#objective_name_view").html('<i class="'+response.objectiveinfo.status_icon+' heading-icon" style="color:'+response.objectiveinfo.bg_color+';"></i>'+response.objectiveinfo.heading+' <a href="javascript:void(0);" onclick = "updateObjective('+response.objectiveinfo.id+','+secondpara+')"><i class="simple-icon-pencil heading-icon"></i></a> <p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> '+response.objectiveinfo.cycle_name+'  <i class="simple-icon-people"></i> '+response.objectiveinfo.owner_name );
                 $("#objective_idview").val(id);
                 for (var i = 0; i < response.measuresList.length; i++) {
-                    $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick = "viewmeasureGraph('+response.measuresList[i].id+')"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.measuresList[i].percentage)>100?100:Math.round(response.measuresList[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.measuresList[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewMeasure('+response.measuresList[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
+                    $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick = "viewmeasureGraph('+response.measuresList[i].id+')"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.measuresList[i].percentage)>100?100:Math.round(response.measuresList[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.measuresList[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewMeasure('+response.measuresList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = updateMeasure('+response.measuresList[i].id+')><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
                 for (var i = 0; i < response.subobjective.length; i++) {
-                    $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p60 small" style="font-size:50px"><span>60%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewobjective('+response.subobjective[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
+                    $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.subobjective[i].percentage)>100?100:Math.round(response.subobjective[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.subobjective[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewobjective('+response.subobjective[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateObjective('+response.subobjective[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
                 for (var i = 0; i < response.initiativeList.length; i++) {
-                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewInitiative('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></td></tr>');
+                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="view_initiativepop('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateinitiative('+response.initiativeList[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
                 for (var i = 0; i < response.tasklist.length; i++) {
                    $("#tasklistid").append('<tr><td><i class="'+response.tasklist[i].status_icon+' heading-icon" style="color:'+response.tasklist[i].bg_color+';"></i> '+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; </td></tr>'); 
@@ -723,6 +530,7 @@ chart.scrollbarX = new am4core.Scrollbar();
 
         $("#myModal").modal('show');
     }
+    
 </script>
 
 <?php $__env->stopSection(); ?>

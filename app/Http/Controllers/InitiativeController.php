@@ -171,9 +171,9 @@ class InitiativeController extends Controller
 	}
 
 	public function addinitiative(){
-		$validator = Measure::validate($this->request->all());
+		$validator = Measure::validateInitiative($this->request->all());
 		if($validator->fails()){
-			return redirect()->back()->with('adderrormessage',getLabels('initiative_saved_errors'))->withErrors($validator->errors());
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
 		}else{
 			$input = $this->request->except('contributers','milestone_name','start_date');
 			
@@ -242,9 +242,9 @@ class InitiativeController extends Controller
 			}
 			if($measure){
 				if($this->request->get('is_popup')){
-					return redirect()->back()->with('popup_content_message',getLabels('initiative_saved_successfully'));
+					return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'objective'));
 				}else{
-					return redirect()->back()->with('inimessage',getLabels('initiative_saved_successfully'));
+					return response()->json(array("type" => "success", "url" => url('initiatives'), "message" => getLabels('initiative_saved_successfully')));
 				}
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
@@ -308,7 +308,12 @@ class InitiativeController extends Controller
 				$measure = $data->update($input);
 			}
 			if($measure){
-				return redirect()->back()->with('inimessage',getLabels('initiative_update_successfully'));
+				if($this->request->get('is_popup')){
+					return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'objective'));
+				}else{
+
+					return response()->json(array("type" => "success", "url" => url('initiatives'), "message" => getLabels('initiative_update_successfully')));
+				}
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
 			}
@@ -382,7 +387,13 @@ class InitiativeController extends Controller
 			Milestones::create($inputs);
 			$message = 'Milestone add successfully';
 		}
-		return redirect()->back()->with('popup_content_message',$message);
+		if($this->request->get('is_popup')){
+
+			return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'initiative'));
+		}else{
+
+			return response()->json(array("type" => "success", "url" => url('measures'), "message" => getLabels('measure_update_successfully')));
+		}
 	}
 
 	public function getmilestonedata(){

@@ -7,13 +7,9 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            {!! Form::open(array('url' => array($route_prefix.'/updateobjectivesubmit'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+            {!! Form::open(array('url' => array($route_prefix.'/updateobjectivesubmit'), 'class' =>'alignya_form updateobjectiveform needs-validation tooltip-label-right', 'name'=>'', 'files'=>true)) !!}
             <div class="modal-body">
-                @if(session('adderrormessage'))
-                <div class="alert alert-danger" role="alert">
-                    {!! session('adderrormessage') !!}
-                </div>    
-                @endif 
+                
             		<div class="container-fluid">
                 	<div class="row">
                 		
@@ -21,12 +17,13 @@
                 		<div class="form-group">
                         <label>Objective Title</label>
                         {!!Form::text('heading',null,array('class'=>'form-control','id'=>'objective_heading_value'))!!}
-                        @if($errors->first('heading'))<div class="error">{!!$errors->first('heading')!!}</div>@endif
+                       
                         <input type="hidden" name="team_type" value="department" id = "obj_teamtype_update">
                         <input type="hidden" name="team_id" value="" id = "obj_teamid_update">
                         <input type="hidden" name="department_id" value="" id = "obj_department_id_update">
                         <input type="hidden" name="owner_user_id" value="" id="obj_ind_owner_user_id_update">
-                        <input type="hidden" name="id" value="" id="editId">
+                        <input type="hidden" name="id" value="" id="editId" class="editidobjective">
+                        <input type="hidden" name="is_popup"  class="is_popup">
                     </div>
                    
 
@@ -37,7 +34,7 @@
                             <option value="{!!$key!!}">{!!$balue!!}</option>
                         @endforeach
                         </select>
-                        @if($errors->first('cycle_id'))<div class="error">{!!$errors->first('cycle_id')!!}</div>@endif
+                        
                         
                     </div>
                     <div class="form-group">
@@ -122,11 +119,7 @@
                         <div class="invalid-tooltip"></div>
                     </div>
                    </div>
-                   <!--  <div class="col-lg-2" style="text-align: right;">
-                       <button type="button" class="btn btn-primary" style="margin-bottom: 10px;" onclick="scorecardpopup()">Scorecard</button> <br>
-                       <button type="button" class="btn btn-primary" style="margin-bottom: 10px;" onclick="themepopup()">Theme</button> <br>
-                       <button type="button" class="btn btn-primary" onclick="addcyclepopup()">Add Cycle</button>     
-                    </div> -->
+                   
                     
                     </div>
                     </div>

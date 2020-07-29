@@ -14,6 +14,18 @@ class Theme extends Model
 {
 	use SortableTrait;
 	protected $table = "al_theme";
-    protected $fillable = ['company_id','theme_name','theme_summary','fiscal_year'];
+    protected $fillable = ['company_id','theme_name','theme_summary','fiscal_year','status'];
+
+     public static function validateadd($input){
+		$rules = array(
+			'theme_name'         	=> 'required',
+		);
+		
+		$messages = array(			
+			'theme_name.required' 			=> getLabels('theme_name_is_required'),
+			
+		);
+		return validator($input, $rules, $messages);
+	}
 
 }

@@ -15,7 +15,7 @@
                     <?php endif; ?> 
                 <div class="modal-body">
                 	 
-                    <?php echo Form::open(array('url' => array($route_prefix.'/updatemeasure'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                    <?php echo Form::open(array('url' => array($route_prefix.'/updatemeasure'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                                         
                     	<div class="container-fluid">
@@ -41,7 +41,7 @@
                             <label>Objective</label>
                             <?php echo Form::select('objective_id',$objectives,null,array('class'=>'form-control','id'=>'objectiveIdupdatemeasure')); ?>
 
-                            <?php if($errors->first('objective_id')): ?><div class="error"><?php echo $errors->first('objective_id'); ?></div><?php endif; ?>
+                            
                         </div>
                        
                          <div class="row">

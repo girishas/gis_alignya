@@ -36,6 +36,7 @@ Route::any('/perspective/add', array('as'=>'users.perspective_add', 'uses'=>'Dep
 Route::any('/perspective/remove/{id?}', array('as'=>'users.perspective_remove', 'uses'=>'DepartmentController@perspective_remove'));
 
 Route::get('notifications', array('as'=>'posts.notifications', 'uses'=>'PostController@notifications'));
+Route::get('transactions', array('as'=>'users.transactions', 'uses'=>'DepartmentController@transactions'));
 
 
 Route::any('companies', array('as'=>'users.companies', 'uses'=>'UserController@companies'));

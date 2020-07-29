@@ -159,6 +159,35 @@ class User extends Authenticatable
 		);
 		return validator($input, $rules, $messages);
 	}
+	public static function validateaddmember($input, $id = null){
+		$rules = array(
+		
+			'email'         	=> 'required|email|unique:users,email,'.$id,
+			'first_name'    	=> 'required',
+			//'dob'	            => 'required',
+			//'gender' 	        =>'required',
+			//'mobile'             => 'required|min:6|numeric',
+			'password' 	        =>'required'.$id,
+			'role_id'       =>'required',
+		);
+		
+		
+		$messages = array(
+			
+			'email.email'  		 	 	=> getLabels('invalid_email'),	
+			'email.unique' 		 	 	=> getLabels('email_is_already_exist'),
+			'email.required' 			=> getLabels('email_is_required'),
+			'first_name.required' 		=> getLabels('first_name_required'),
+			'dob.required' 				=> getLabels('dob_is_required'),
+			'gender.required'			=> getLabels('please_select_gender'),
+			'password.required'			=> getLabels('password_is_required'),
+			'mobile.required'			=> getLabels('phone_number_required'),
+			'mobile.numeric'		    => getLabels('invalid_phone_format'),
+			'mobile.min'			    => getLabels('invalid_phone'),
+			'role_id.required'				=> getLabels('select_user_type'),
+		);
+		return validator($input, $rules, $messages);
+	}
 	
 	
 	public static function validateMy($input, $id = null){
@@ -247,6 +276,26 @@ class User extends Authenticatable
         return validator($input, $rules, $messages);
 	}
 
+
+	public static function importcsv($input){
+		$rules = array(
+			'email'  		=> 'required|email|unique:users,email',
+			'password'  	=> 'required|min:6',
+			'first_name'  	=> 'required',
+			
+		);
+		
+		$messages = array(
+			'email.required'			=> getLabels('email_is_required'),
+			'email.email' 				=> getLabels('invalid_email'),
+			'password.required' 		=> getLabels('password_is_required'),
+			'password.required' 		=> getLabels('password_length'),
+			'first_name.required' 		=> getLabels('first_name_required'),
+			
+		);
+        return validator($input, $rules, $messages);
+	}
+
 	
 	public static function createUsername($user_id){
 		$number  = time().str_pad($user_id, 5, '0', STR_PAD_LEFT);
@@ -255,6 +304,20 @@ class User extends Authenticatable
 		return $number;
 	}
 
+
+	public static function importvalidate($input){
+		$rules = array(
+			'csv'  		=> 'required',
+			
+		);
+		
+		$messages = array(
+			'csv.required'			=> getLabels('csv_is_required'),
+			
+			
+		);
+        return validator($input, $rules, $messages);
+	}
 }
 
 

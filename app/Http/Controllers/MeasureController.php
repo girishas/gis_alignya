@@ -233,7 +233,7 @@ class MeasureController extends Controller
 		//pr($this->request->all()); 
 		$validator = Measure::validate($this->request->all());
 		if($validator->fails()){
-			return redirect()->back()->with('adderrormessage',getLabels('measure_saved_errors'))->withErrors($validator->errors());
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
 		}else{
 			
 			
@@ -297,6 +297,9 @@ class MeasureController extends Controller
 			}
 				
 				$input['measure_target_new'] = $input['measure_target'] ;  
+				$input['target_color'] = "#d40e0e";
+				$input['actual_color'] = "#1a0ed4";
+				$input['projection_color'] = "#0ed45d";
 				$measure = Measure::create($input);
 		
 //----------- Start Creating Milestone Dynamic --------------------------- 		
@@ -800,10 +803,10 @@ class MeasureController extends Controller
 		if($measure){
 				if($this->request->get('is_popup')){
 
-				return redirect()->back()->with('is_popup',getLabels('measure_saved_successfully'));
+					return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'objective'));
 				}else{
 
-				return redirect()->back()->with('measure_add_success',getLabels('measure_saved_successfully'));
+					return response()->json(array("type" => "success", "url" => url('measures'), "message" => getLabels('measure_saved_successfully')));
 				}
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
@@ -826,11 +829,18 @@ class MeasureController extends Controller
 
 	public function getMeasureCycles(){
 		$input = $this->request->all();
-		$cycle_id = Objective::where('id',$input['objective_id'])->value('cycle_id');
-		$years = GoalCycles::where('id',$cycle_id)->value('no_months');
+
+		if($input['objective_id'] == "NO"){
+			$years = 5;
+		}else{
+			$cycle_id = Objective::where('id',$input['objective_id'])->value('cycle_id');
+			$years = GoalCycles::where('id',$cycle_id)->value('no_months');
+			//pr($years);
+			
+		}
 		$current_year = date('Y');
 		$select_values = array();
-        for($i=0;$i < $years;$i++){  
+        for($i=0;$i < $years/12;$i++){  
             $select_values[] = 'FY'.($current_year+$i).'-Q1';  
             $select_values[] = 'FY'.($current_year+$i).'-Q2';  
             $select_values[] = 'FY'.($current_year+$i).'-Q3';  
@@ -862,10 +872,13 @@ class MeasureController extends Controller
 			$tasks = Tasks::create($inputs);
 		}
 		if($this->request->get('is_popup')){
-			return redirect()->back()->with('popup_content_message','Task update successfully');
+
+			return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'measures'));
 		}else{
-			return redirect()->back();
+
+			return response()->json(array("type" => "success", "url" => url('measures'), "message" => getLabels('measure_update_successfully')));
 		}
+		
 	}
 
 	public function updatemeasure(){
@@ -921,10 +934,10 @@ class MeasureController extends Controller
 		if($measure){
 				if($this->request->get('is_popup')){
 
-				return redirect()->back()->with('popup_content_message',getLabels('measure_saved_successfully'));
+				return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'objective'));
 				}else{
 
-				return redirect()->back()->with('message',getLabels('measure_saved_successfully'));
+				return response()->json(array("type" => "success", "url" => url('measures'), "message" => getLabels('measure_update_successfully')));
 				}
 			}else{
 				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
@@ -932,70 +945,7 @@ class MeasureController extends Controller
 			 
 
 	}
-	public function updatekpi(){
-		$input = $this->request->except('contributers');
-		$input['user_id'] = Auth::User()->id;
-		$input['company_id'] = Auth::User()->company_id;
-		$input['category_type'] = 3;
-		$data = Measure::find($input['id']);
-		if($this->request->get('measure_team_type') == 'team'){
-			$owner_user_id = TeamsMembers::where('team_id',$this->request->get('measure_team_id'))->where('is_head',1)->value('member_id');
-			$input['owner_user_id'] = $owner_user_id;
-		}elseif($this->request->get('measure_team_type') == 'department'){
-			$owner_user_id = DepartmentMember::where('department_id',$this->request->get('measure_department_id'))->where('is_head',1)->value('member_id');
-			$input['owner_user_id'] = $owner_user_id;
-		}
-		if($this->request->get('contributers')){
-			$input['contributers'] = implode(',', $this->request->get('contributers'));
-		}
-		
-		if(isset($input['is_updated_target']) and $input['is_updated_target'] == 'on' and $input['measure_target_new'] > 0){
-			$MilestoneTargetArr = array();
-			$mileArray = Milestones::where('measure_id',$input['id'])->where('company_id', Auth::User()->company_id)->orderBy('start_date','asc')->get();
-			$mileCount = $mileArray->count();
-			$stepno = 0; 
-		    if(isset($input['calculation_type']) and $input['calculation_type'] ==2){   
-				if($mileCount > 0){
-					$i = ($input['measure_target_new'] - $input['measure_actual'])/$mileCount   ;
-					 $stepno = $i + $input['measure_actual'] ;
-				foreach($mileArray->toArray() as $item){
-					// echo "<pre>"; print_r($item);
-					//echo $stepno ;
-					DB::select('update al_project_milestones set projection_target = ROUND('.$stepno.',0) where id = '.$item['id']);
-					  $stepno +=$i ;
-				}
-				} 
-			 }elseif(isset($input['calculation_type']) and $input['calculation_type'] ==0){
-				 $stepno = $input['measure_target_new'] ;
-				 DB::select('update al_project_milestones set projection_target = ROUND('.$stepno.',0) where measure_id = '.$input['id']); 
-				
-			}else{ // Fixed calculate value
-				if($mileCount > 0){
-					$stepno = ($input['measure_target_new'] - $input['measure_target'])/$mileCount   ;
-				} 
-				 DB::select('update al_project_milestones set projection_target = ROUND(sys_target + '.$stepno.',0) where measure_id = '.$input['id']); 
-			}  
-			
-		}
-		
-		// pr($input); die;
-		//
-		
-		$measure = $data->update($input); 
-		if($measure){
-				if($this->request->get('is_popup')){
-
-				return redirect()->back()->with('popup_content_message',getLabels('measure_saved_successfully'));
-				}else{
-
-				return redirect()->back()->with('message',getLabels('measure_saved_successfully'));
-				}
-			}else{
-				return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
-			}
-			 
-
-	}
+	
 
 	public function getMeasureonUpdatePage(){
 		$inputs = $this->request->all();
@@ -1098,7 +1048,13 @@ class MeasureController extends Controller
 			Milestones::create($inputs);
 		}
 		if($this->request->get('is_popup')){
-			return redirect()->back()->with('popup_content_message','Milestone update successfully');
+			if($this->request->get('is_popup')){
+
+				return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'measures'));
+			}else{
+
+				return response()->json(array("type" => "success", "url" => url('measures'), "message" => getLabels('measure_update_successfully')));
+			}
 		}else{
 			return redirect()->back();
 		}

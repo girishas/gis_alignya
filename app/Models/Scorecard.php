@@ -16,4 +16,17 @@ class Scorecard extends Model
 	protected $table = "al_comp_scorecard";
     protected $fillable = ['company_id','name','status'];
 
+
+    public static function validateadd($input){
+		$rules = array(
+			'name'         	=> 'required',
+		);
+		
+		$messages = array(			
+			'name.required' 			=> getLabels('scorecard_name_is_required'),
+			
+		);
+		return validator($input, $rules, $messages);
+	}
+
 }

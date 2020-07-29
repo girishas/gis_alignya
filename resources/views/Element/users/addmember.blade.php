@@ -11,23 +11,19 @@
                 </button>
             </div>
             <div class="modal-body"> 
-                    @if(session('errormessageadd'))
-                    <div class="alert alert-danger" role="alert">
-                        {!! session('errormessageadd') !!}
-                    </div>    
-                    @endif      	
-                   {!! Form::open(array('url' => array($route_prefix.'/members/new'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+                        	
+                   {!! Form::open(array('url' => array($route_prefix.'/members/new'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                         
                         <div class="form-row">
                             <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputFirstname">{!! getLabels('First Name') !!}</label>
                                 {!! Form::text('first_name', null, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
-                                @if($errors->first('first_name'))<div class="error">{!!$errors->first('first_name')!!}</div>@endif
+                                 <div class="invalid-tooltip"></div>
                             </div>
                             <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputLastname">{!! getLabels('last_name') !!}</label>
                                 {!! Form::text('last_name', null, array('class' => 'form-control', 'id' => 'inputLastname',  'placeholder'=> ''))!!}
-                                <div></div>
+                                
                             </div>
                         </div>
                         
@@ -35,12 +31,12 @@
                             <div class="form-group  position-relative error-l-40 col-md-6">
                                 <label for="inputEmail4">{!! getLabels('email') !!}</label>
                                 {!! Form::text('email', null, array('class' => 'form-control', "id"=>"inputEmail4", 'placeholder'=> ''))!!}
-                                @if($errors->first('email'))<div class="error">{!!$errors->first('email')!!}</div>@endif
+                                 <div class="invalid-tooltip"></div>
                             </div>
                             <div class="form-group  position-relative error-l-40 col-md-6 position-relative error-l-100">
                                 <label for="inputPassword4">{!! getLabels('password') !!}</label>
                                 {!! Form::password('password', array('class' => 'form-control', "id"=>"inputPassword4", 'placeholder'=> ''))!!}
-                                @if($errors->first('password'))<div class="error">{!!$errors->first('password')!!}</div>@endif
+                                 <div class="invalid-tooltip"></div>
                             </div>
                         </div>
                         
@@ -48,12 +44,12 @@
                             <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputMobile">{!! getLabels('contact_number') !!}</label>
                                 {!! Form::text('mobile', null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
-                                <div class="invalid-tooltip"></div>
+                                
                             </div>
                             <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputMobile">{!! getLabels('Designation') !!}</label>
                                 {!! Form::text('designation', null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
-                                <div class="invalid-tooltip"></div>
+                                
                             </div>
                             
                             
@@ -63,13 +59,14 @@
                                 <label for="inputMobile">{!! getLabels('user_type') !!}</label>
                                 {!! Form::select('role_id', config('constants.USER_TYPES'),null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
+                                
                             </div>
-                            <div class="form-group col-md-3">
+                            <!-- <div class="form-group col-md-3">
                                 <label for="">{!! getLabels('profile_picture') !!}</label>
                                 <div class="slim" data-ratio="1:1" data-instant-edit="true">
                                     <input type="file" name="photo"/>
                                 </div>
-                            </div>                          
+                            </div> -->                          
                         </div>
                         
                         <div class="form-group  position-relative error-l-100">

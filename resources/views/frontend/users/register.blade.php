@@ -86,7 +86,7 @@
 											@foreach($plans as $key => $plan)
 											<div class="custom-control custom-radio">
 												
-												<input type="radio" id="jQueryCustomRadio{!!$key!!}" name="plan_id" class="custom-control-input" value="1">
+												<input type="radio" id="jQueryCustomRadio{!!$key!!}" name="plan_id" class="custom-control-input" value="{!!$plan->id!!}">
 												<label class="custom-control-label" for="jQueryCustomRadio{!!$key!!}">
 													{!!$plan->heading!!} ( ${!!$plan->plan_fee!!} per month | Upto {!!$plan->emp_limit!!} Member )
 												</label>
@@ -99,7 +99,7 @@
 											@foreach($yearly as $key => $yp)
 											<div class="custom-control custom-radio">
 												
-												<input type="radio" id="yearly{!!$key!!}" name="plan_id" class="custom-control-input" value="1">
+												<input type="radio" id="yearly{!!$key!!}" name="plan_id" class="custom-control-input" value="{!!$yp->id!!}">
 												<label class="custom-control-label" for="yearly{!!$key!!}">
 													{!!$yp->heading!!} ( ${!!$yp->plan_fee!!} per month | Upto {!!$yp->emp_limit!!} Member )
 												</label>

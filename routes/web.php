@@ -12,24 +12,21 @@
 */
 Route::any('members/new', array('as'=>'users.admin_add', 'uses'=>'UserController@admin_add'));
 Route::any('members/update/{user_id?}', array('as'=>'users.admin_edit', 'uses'=>'UserController@admin_edit'))->where('user_id', '[0-9]+');
-Route::any('members', array('as'=>'admin.users', function(){ 
-							return App::make('App\Http\Controllers\UserController')->admin_index(2); }));
+Route::any('members', array('as'=>'users.admin_index', 'uses'=>'UserController@admin_index'));
 Route::any('teams/new', array('as'=>'users.admin_add', 'uses'=>'TeamController@admin_add'));
 Route::any('teams/update/{id?}', array('as'=>'users.admin_edit', 'uses'=>'TeamController@admin_edit'))->where('id', '[0-9]+');
 Route::any('teams', array('as'=>'admin.users', function(){ 
 							return App::make('App\Http\Controllers\TeamController')->admin_index(2); }));
 Route::any('department/new/{id?}', array('as'=>'department.admin_add', 'uses'=>'DepartmentController@admin_add'));
 Route::any('department/update/{id?}', array('as'=>'department.admin_edit', 'uses'=>'DepartmentController@admin_edit'))->where('id', '[0-9]+');
-Route::any('departments', array('as'=>'admin.department', function(){ 
-							return App::make('App\Http\Controllers\DepartmentController')->admin_index(2); }));
+Route::any('departments/{id?}', array('as'=>'admin.admin_index', 'uses'=>'DepartmentController@admin_index'));
 
-Route::any('objectives', array('as'=>'admin.objectives', function(){ 
-							return App::make('App\Http\Controllers\ObjectiveController')->admin_index(2); }));
+Route::any('objectives', array('as'=>'users.admin_index', 'uses' => 'ObjectiveController@admin_index'));
 Route::any('setuserdatasession', array('as'=>'users.setuserdatasession', 'uses'=>'UserController@setuserdatasession'));
 Route::any('add_teampopup', array('as'=>'users.add_teampopup', 'uses'=>'TeamController@add_teampopup'));
-Route::any('kpis', array('as'=>'admin.admin_index', 'uses'=>'KPIController@admin_index' ));
-Route::any('measures', array('as'=>'admin.admin_index', 'uses'=>'MeasureController@admin_index' ));
-Route::any('initiatives', array('as'=>'admin.initiatives', 'uses'=>'InitiativeController@admin_index'));
+Route::any('kpis', array('as'=>'users.admin_index', 'uses'=>'KPIController@admin_index' ));
+Route::any('measures', array('as'=>'users.admin_index', 'uses'=>'MeasureController@admin_index' ));
+Route::any('initiatives', array('as'=>'users.initiatives', 'uses'=>'InitiativeController@admin_index'));
 Route::any('addinitiative', array('as'=>'admin.addinitiative', 'uses'=>'InitiativeController@addinitiative'));
 Route::any('updateinitiative', array('as'=>'admin.updateinitiative', 'uses'=>'InitiativeController@updateinitiative'));
 Route::any('addmilestoneinitiative', array('as'=>'admin.addmilestoneinitiative', 'uses'=>'InitiativeController@addmilestoneinitiative'));
@@ -45,11 +42,12 @@ Route::any('updateobjective', array('as'=>'users.updateobjective', 'uses'=>'Obje
 Route::any('viewobjective', array('as'=>'users.viewobjective', 'uses'=>'ObjectiveController@viewobjective'));
 Route::any('getprojectinsightsobjective', array('as'=>'users.getprojectinsightsobjective', 'uses'=>'TeamController@getprojectinsightsobjective'));
 Route::any('addmeasure', array('as'=>'users.addmeasure', 'uses'=>'MeasureController@addmeasure'));
+Route::any('import-members', array('as'=>'users.importmembers', 'uses'=>'UserController@importmembers'));
 Route::any('addkpi', array('as'=>'users.addkpi', 'uses'=>'KPIController@addkpi'));
 Route::any('addtask', array('as'=>'users.addtask', 'uses'=>'MeasureController@addtask'));
 Route::any('removetasks/{id?}', array('as'=>'users.removetasks', 'uses'=>'MeasureController@removetasks'));
 Route::any('updatemeasure', array('as'=>'users.updatemeasure', 'uses'=>'MeasureController@updatemeasure'));
-Route::any('updatekpi', array('as'=>'users.updatekpi', 'uses'=>'MeasureController@updatekpi'));
+Route::any('updatekpi', array('as'=>'users.updatekpi', 'uses'=>'KPIController@updatekpi'));
 Route::any('getMeasureonUpdatePage', array('as'=>'users.getMeasureonUpdatePage', 'uses'=>'MeasureController@getMeasureonUpdatePage'));
 
 
@@ -63,6 +61,7 @@ Route::any('addDepartmentForm', array('as'=>'users.addDepartmentForm', 'uses'=>'
 Route::any('getprofiledata', array('as'=>'users.getprofiledata', 'uses'=>'UserController@getprofiledata'));
 Route::any('update-profile', array('as'=>'users.update_profile', 'uses'=>'UserController@update_profile'));
 Route::any('subscription', array('as'=>'users.subscription', 'uses'=>'DepartmentController@subscription'));
+Route::any('upgrade-membership', array('as'=>'users.upgrade_membership', 'uses'=>'DepartmentController@upgrade_membership'));
 Route::any('checkemailexist', array('as'=>'users.checkemailexist', 'uses'=>'UserController@checkemailexist'));
 Route::any('invoice', array('as'=>'users.invoice', 'uses'=>'DepartmentController@invoice'));
 Route::any('tree', array('as'=>'users.tree', 'uses'=>'DepartmentController@tree'));
@@ -76,6 +75,14 @@ Route::any('scorecard', array('as'=>'users.scorecard', 'uses'=>'TeamController@s
 Route::any('strategic-map', array('as'=>'users.startegic_map', 'uses'=>'TeamController@startegic_map'));
 Route::any('viewmember', array('as'=>'users.viewmember', 'uses'=>'UserController@viewmember'));
 Route::any('getscorecards', array('as'=>'users.getscorecards', 'uses'=>'ObjectiveController@getscorecards'));
+Route::any('getcontributersforobjective', array('as'=>'users.getcontributersforobjective', 'uses'=>'ObjectiveController@getcontributersforobjective'));
+Route::any('scorecards', array('as'=>'users.scorecardlist', 'uses'=>'DepartmentController@scorecardlist'));
+Route::any('scorecards/new', array('as'=>'users.scorecardadd', 'uses'=>'DepartmentController@scorecardadd'));
+Route::any('single-scorecards-details/{id?}', array('as'=>'users.singlescorecard', 'uses'=>'DepartmentController@singlescorecard'));
+Route::any('themes', array('as'=>'users.themelist', 'uses'=>'DepartmentController@themelist'));
+Route::any('themes/new', array('as'=>'users.themeadd', 'uses'=>'DepartmentController@themeadd'));
+Route::any('single-theme-details/{id?}', array('as'=>'users.singletheme', 'uses'=>'DepartmentController@singletheme'));
+
 Route::any('submitscorecard', array('as'=>'users.submitscorecard', 'uses'=>'ObjectiveController@submitscorecard'));
 Route::any('getthemes', array('as'=>'users.getthemes', 'uses'=>'ObjectiveController@getthemes'));
 Route::any('getcontributers', array('as'=>'users.getcontributers', 'uses'=>'ObjectiveController@getcontributers'));

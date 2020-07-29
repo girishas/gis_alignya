@@ -51,7 +51,7 @@ class ObjectiveController extends Controller
     }
 	
 	
-	public function admin_index($role_id = null){
+	public function admin_index(){
 		$page_title  = getLabels("Objectives");
 		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
 			$_POST = $this->request->session()->get('usearch');
@@ -59,7 +59,11 @@ class ObjectiveController extends Controller
 			$this->request->session()->forget('usearch');
 		}
 		
-		$data  = Objective::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id);
+		$data  = Objective::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id)->where(function($queryW){
+					$queryW->where("al_objectives.owner_user_id", Auth::User()->id)
+					->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_objectives.contributers) = 0'));
+				});
+			
 		
 		if(! empty($_POST)){
 			if(isset($_POST['heading']) and $_POST['heading'] !=''){
@@ -89,8 +93,9 @@ class ObjectiveController extends Controller
 			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
 		}
 		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->pluck('cycle_name','id');
-		$perspectives = Perspective::pluck('name','id');
-		$contributers = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$perspectives = Perspective::where('company_id',Auth::User()->company_id)->pluck('name','id');
+
+		$contributers = User::select(DB::raw('CONCAT(first_name," ",last_name," (",role_id,")")'))->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$page_title  = getLabels("Objectives");
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
@@ -241,7 +246,7 @@ class ObjectiveController extends Controller
 		
 		$validator = Objective::validate($this->request->all());
 		if($validator->fails()){
-			return redirect()->back()->with('objective_add_error',getLabels('objective_saved_errors'))->withErrors($validator->errors());
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
 		}else{
 			$input = $this->request->except('contributers');
 			$input['user_id'] = Auth::User()->id;
@@ -260,9 +265,9 @@ class ObjectiveController extends Controller
 			
 			if($objective){
 				if($this->request->get('is_popup')){
-					return redirect()->back()->with('popup_content_message',getLabels('objective_saved_successfully'));
+					return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'objective'));
 				}else{
-					return redirect()->back()->with('objective_add_success',getLabels('objective_saved_successfully'));
+					return response()->json(array("type" => "success", "url" => url('objectives'), "message" => getLabels('objective_saved_successfully')));
 				}
 			}else{
 				return redirect()->back()->with('objective_add_success',getLabels('something_wen_wrong'));
@@ -297,20 +302,25 @@ class ObjectiveController extends Controller
 			$measuresList = array();
 		}
 
-		$initiativeList = Measure::leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.objective_id',$input['id'])->where('al_measures.category_type',2)->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
+		$initiativeList = Measure::leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.objective_id',$input['id'])->where('al_measures.category_type',2)->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_objectives.heading as parent_objective','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->orderBy('al_measures.id','desc')->get();
 
 		if(!empty($initiativeList)){
 			$initiativeList = $initiativeList->toArray();
 		}else{
 			$initiativeList = array();
 		}
-		$subobjective = Objective::leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->where('al_objectives.objective_id',$input['id'])->select('al_objectives.*','al_goal_cycles.cycle_name','al_master_status.name as status_name','al_master_status.bg_color','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->get();
+		$subobjective = Objective::leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->where('al_objectives.objective_id',$input['id'])->select('al_objectives.*','al_goal_cycles.cycle_name','al_master_status.name as status_name','al_master_status.bg_color','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->orderBy('al_objectives.id','desc')->get();
 		if(!empty($subobjective)){
 			$subobjective = $subobjective->toArray();
+			foreach ($subobjective as $key => $value) {
+				$avg = Milestones::where('objective_id',$value['id'])->avg('sys_progress');
+				$subobjective[$key]['percentage'] = (!empty($avg))?$avg:0;
+			}
+			
 		}else{
 			$subobjective = array();
 		}
-		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',0)->where('al_tasks.objective_id',$input['id'])->select('al_master_status.name as status_name','al_master_status.icons as status_icon','al_master_status.bg_color','al_tasks.*')->get();
+		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',0)->where('al_tasks.objective_id',$input['id'])->select('al_master_status.name as status_name','al_master_status.icons as status_icon','al_master_status.bg_color','al_tasks.*')->orderBy('al_tasks.id','desc')->get();
 		if (!empty($tasklist)) {
 			$tasklist = $tasklist->toArray();
 			foreach ($tasklist as $key => $value) {
@@ -374,7 +384,13 @@ class ObjectiveController extends Controller
 		//pr($input);
 		$objective = $data->update($input);
 		if($objective){
-			return redirect()->back()->with('objective_add_success',getLabels('objective_update_successfully'));
+			if($this->request->get('is_popup')){
+
+				return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'objective'));
+			}else{
+
+				return response()->json(array("type" => "success", "url" => url('Objectives'), "message" => getLabels('measure_update_successfully')));
+			}
 		}else{
 			return redirect()->back()->with('objective_add_error',getLabels('something_wen_wrong'));
 		}
@@ -396,5 +412,10 @@ class ObjectiveController extends Controller
 			$results = array("type" => "error", "url" => url('objectives'), "message" => getLabels('objective_not_removed'));
 		}
 		return json_encode($results);
+	}
+
+	public function getcontributersforobjective(){
+		$data = User::select(DB::raw('CONCAT(IFNULL(first_name,"")," ",IFNULL(last_name,"")," (",role_id,")") as first_name'), 'id')->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		return json_encode($data);
 	}
 }

@@ -630,7 +630,7 @@
 		$subscription = \Stripe\Subscription::create(array(
 			'customer' => $customer_id,
 			'items' => array(array('price' => $plan_id)),
-			'trial_end' => strtotime('+30 days', time()),
+			
 			
 		));
 		$data['customer_id'] = $customer_id;
@@ -671,5 +671,10 @@
 	function createdat($created_at=null){
 		$date = date(config('constants.DATE_FORMAT'),strtotime($created_at));
 		return $date;
+	}
+
+	function getEmpLimit($plan_id=null){
+		$plandetail  = Plans::where('id',$plan_id)->first();
+		return $plandetail;
 	}
 	?>

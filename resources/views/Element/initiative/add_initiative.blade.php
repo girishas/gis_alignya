@@ -7,23 +7,19 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                @if(session('adderrormessage'))
-                    <div class="alert alert-danger" role="alert">
-                        {!! session('adderrormessage') !!}
-                    </div>    
-                    @endif 
+            
                 <div class="modal-body">
                      
-                    {!! Form::open(array('url' => array($route_prefix.'/addinitiative'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+                    {!! Form::open(array('url' => array($route_prefix.'/addinitiative'), 'class' =>' alignya_form needs-validation updateobjectiveform tooltip-label-right', 'name'=>'', 'files'=>true)) !!}
                                         
                         <div class="container-fluid">
                         <div class="row">
                             
                         <div class="col-lg-6">
-                            <div class="form-group">
+                            <div class="form-group has-float-label position-relative error-l-100 mb-4">
                             <label>Title</label>
                             {!!Form::text('heading',null,array('class'=>'form-control'))!!}
-                            @if($errors->first('heading'))<div class="error">{!!$errors->first('heading')!!}</div>@endif
+                            <div class="invalid-tooltip"></div>
                             <input type="hidden" name="measure_team_type" id="initiative_team_type" value="department">
                             <input type="hidden" name="owner_user_id" id="initiative_owner_user_id">
                             <input type="hidden" name="measure_department_id" id="initiative_department_id">
@@ -32,19 +28,18 @@
                            <input type="hidden" name="is_popup" class="is_popup">
                         </div>
                        
-                        <div class="form-group" id = "hideforobjini">
+                        <div class="form-group  position-relative error-l-50 mb-4" id = "hideforobjini">
                             <label>Objective</label>
-                            {!!Form::select('objective_id',$objectives,null,array('class'=>'form-control select2-single','id'=>'initiative_objectiveId', 'onchange'=>'onchangeobjectivegetcycleinitiative()'))!!}
-                            @if($errors->first('objective_id'))<div class="error">{!!$errors->first('objective_id')!!}</div>@endif
+                            {!!Form::select('objective_id',array(""=> "Please Select Objective") + $objectives->toArray(),null,array('class'=>'form-control','id'=>'initiative_objectiveId', 'onchange'=>'onchangeobjectivegetcycleinitiative()'))!!}
+                            <div class="invalid-tooltip"></div>
                         </div>
                         <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group  position-relative error-l-50 mb-4 col-md-6">
                             <label>Cycle</label>
                             <select class="form-control" name="measure_cycle" id = "initiativeCycle">
                                 
                             </select>
-                            @if($errors->first('measure_cycle'))<div class="error">{!!$errors->first('measure_cycle')!!}</div>@endif
-
+                            <div class="invalid-tooltip"></div>
                         </div>
                         <div class="form-group col-md-6">
                             <label>Check in Frequency</label>
@@ -68,10 +63,11 @@
                             </div>
                         </div>
 
-                       <div class="form-group col-md-6">
+                       <div class="form-group  position-relative error-l-50 mb-4 col-md-6">
                          <label>Please Select</label>
                             <select class="form-control ownership" onchange="ownershipdropinitiative()" name="ownership" data-width="100%" id = "ownershipinitiative">
                                 @if(!empty($departments))
+                                <option value="">Please Select Ownership</option>
                                 @foreach($departments as $key => $vale)
                                 <option value="{!!$key!!}">{!!$vale!!}</option>
                                 @endforeach
@@ -95,19 +91,19 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Milestone Name</label>
-                                        {!!Form::text('milestone_name[]',null,array('class'=>'form-control'))!!}
+                                        {!!Form::text('milestone_name[]',null,array('class'=>'form-control','required'=>'required'))!!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Start Date</label>
-                                        {!!Form::date('start_date[]',null,array('class'=>'form-control'))!!}
+                                        {!!Form::date('start_date[]',null,array('class'=>'form-control','required'=>'required'))!!}
                                     </div>
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>End Date</label>
-                                        {!!Form::date('end_date[]',null,array('class'=>'form-control'))!!}
+                                        {!!Form::date('end_date[]',null,array('class'=>'form-control','required'=>'required'))!!}
                                     </div>
                                 </div>
                             </div>

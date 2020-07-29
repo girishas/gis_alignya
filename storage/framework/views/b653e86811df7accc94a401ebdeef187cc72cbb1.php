@@ -9,7 +9,7 @@
             </div>
             <div class="modal-body">
                 
-                <?php echo Form::open(array('url' => array($route_prefix.'/updatemilestonemeasure'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                <?php echo Form::open(array('url' => array($route_prefix.'/updatemilestonemeasure'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                     
                     <div class="container-fluid">

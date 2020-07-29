@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <?php echo Form::open(array('url' => array($route_prefix.'/initiatives'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                <?php echo Form::open(array('url' => array($route_prefix.'/measures'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                                        
                     <div class="container-fluid">
@@ -27,7 +27,7 @@
                     </div>
                      <div class="form-group">
                    <button type="submit" class="btn btn-primary">Search</button>
-                <a class="btn btn-dark mb-1" href="<?php echo url('initiatives'); ?>">Show All</a>
+                <a class="btn btn-dark mb-1" href="<?php echo url('measures'); ?>">Show All</a>
 </div>
                       
                     </div>

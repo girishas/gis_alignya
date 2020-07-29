@@ -31,6 +31,7 @@
                     @include('Element/initiative/update_milestone')
                     @include('Element/initiative/update_initiative')
                     @include('Element/measure/task')
+                    @include('Element/measure/update_task')
                     
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                         <ol class="breadcrumb pt-0">
@@ -106,8 +107,9 @@
 
 
 
-  
+@include('Element/js/includejs')
   <script>
+    
     function updateTask(id){
         $("#update_task_id").val(id);
         var token = "{!!csrf_token()!!}";
@@ -139,52 +141,7 @@
     function filter(){
         $("#filterPop").modal("show");
     }
-    function chartload(milestones){
-        am4core.ready(function() {
 
-// Themes begin
-am4core.useTheme(am4themes_animated);
-// Themes end
-
-var chart = am4core.create("chartdiv", am4charts.XYChart);
-chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-
-chart.paddingRight = 30;
-chart.dateFormatter.inputDateFormat = "yyyy-MM-dd HH:mm:ss";
-
-var colorSet = new am4core.ColorSet();
-colorSet.saturation = 0.4;
-
-chart.data = milestones;
-
-var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
-categoryAxis.dataFields.category = "name";
-categoryAxis.renderer.grid.template.location = 0;
-categoryAxis.renderer.inversed = true;
-
-var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
-dateAxis.dateFormatter.dateFormat = "yyyy-MM-dd HH:mm";
-dateAxis.renderer.minGridDistance = 70;
-dateAxis.baseInterval = { count: 30, timeUnit: "minute" };
-dateAxis.max = new Date(2021, 0, 1, 24, 0, 0, 0).getTime();
-dateAxis.strictMinMax = true;
-dateAxis.renderer.tooltipLocation = 0;
-
-var series1 = chart.series.push(new am4charts.ColumnSeries());
-series1.columns.template.width = am4core.percent(80);
-series1.columns.template.tooltipText = "{name}: {openDateX} - {dateX}";
-
-series1.dataFields.openDateX = "fromDate";
-series1.dataFields.dateX = "toDate";
-series1.dataFields.categoryY = "name";
-series1.columns.template.propertyFields.fill = "color"; // get color from data
-series1.columns.template.propertyFields.stroke = "color";
-series1.columns.template.strokeOpacity = 1;
-
-chart.scrollbarX = new am4core.Scrollbar();
-
-}); // end am4core.ready()
-    }
     function getQuarter(quater){
         if(quater == 0){
             var value = "FULL";
@@ -203,143 +160,10 @@ chart.scrollbarX = new am4core.Scrollbar();
         }
         return value;
     }
-    function updateinitiative(id){
-        $("#initiative_update_id").val(id);
-        $("#ownershipinitiativeupdate").html("");
-        $("#contriiniupdate").html("");
-        var company_id = "{!!Auth::User()->company_id!!}"; 
-        var token = "{!!csrf_token()!!}";
-        $.ajax({
-            type:"POST",
-            url: "{!!url('getInitiativeData')!!}",
-            data:'_token='+token+'&company_id='+company_id+'&id='+id,
-            dataType:'JSON',
-            success: function (response) {
-                $("#iniheading_update").val(response.initiatives.heading);
-                $("#initiative_team_type_update").val(response.initiatives.measure_team_type);
-                $("#initiative_objectiveId_update").val(response.initiatives.objective_id);
-                onchangeobjectivegetcycleinitiativeupdate("FY"+response.initiatives.measure_cycle_year+"-"+getQuarter(response.initiatives.measure_cycle_quarter));
-                $("#initiativeCycleUpdate").val("FY"+response.initiatives.measure_cycle_year+"-"+getQuarter(response.initiatives.measure_cycle_quarter));
-                var teamsmeasli = response.teams;
-                var departmentmeasli = response.departments;
-                var membermeasli = response.members;
-                if(response.initiatives.measure_team_type == "department"){
-                    $("#deptiniuactive").addClass('active');
-                    $("#teaminiuactive").removeClass('active');
-                    $("#indiviniuactive").removeClass('active');
-                    $("#initiative_department_id_update").val(response.initiatives.measure_department_id);
-                    for (var depart in departmentmeasli) {
-                      if (departmentmeasli.hasOwnProperty(depart)) {
-                        var dep = departmentmeasli[depart];
-                        $("#ownershipinitiativeupdate").append('<option value = "'+depart+'">'+dep+'</option>');                       
-                     }
-                    }
-                    $("#ownershipinitiativeupdate").val(response.initiatives.measure_department_id);
-                }else if(response.initiatives.measure_team_type == "team"){
-                    $("#deptiniuactive").removeClass('active');
-                    $("#teaminiuactive").addClass('active');
-                    $("#indiviniuactive").removeClass('active');
-                    $("#initiative_team_id_update").val(response.initiatives.measure_team_id);
-                    for (var team in teamsmeasli) {
-                      if (teamsmeasli.hasOwnProperty(team)) {
-                        var tea = teamsmeasli[team];
-                        if(response.initiatives.measure_team_id == team){
-                            $("#ownershipinitiativeupdate").append('<option value = "'+team+'" selected="selected">'+tea+'</option>');
-                        }else{
-                            $("#ownershipinitiativeupdate").append('<option value = "'+team+'">'+tea+'</option>');
-                        }
-                      }
-                    }
-                    $("#ownershipinitiativeupdate").val(response.initiatives.measure_team_id);
-                }else{
-                    $("#deptiniuactive").removeClass('active');
-                    $("#teaminiuactive").removeClass('active');
-                    $("#indiviniuactive").addClass('active');
-                    $("#initiative_owner_user_id_update").val(response.initiatives.owner_user_id);
-                    for (var member in membermeasli) {
-                      if (membermeasli.hasOwnProperty(member)) {
-                        var mem = membermeasli[member];
-                        $("#ownershipinitiativeupdate").append('<option value = "'+member+'">'+mem+'</option>');
-                      }
-                    }
-                    $("#ownershipinitiativeupdate").val(response.initiatives.owner_user_id);
-                }
-                var selectedcontributers = response.initiatives.contributers;
-                $.ajax({
-                    type:"POST",
-                    url: "{!!url('/getcontributers')!!}",
-                    data:'_token='+token+'&company_id='+company_id,
-                    dataType:'JSON',
-                    success: function (contributers) {
-                        for (var contri in contributers) {
-                          if (contributers.hasOwnProperty(contri)) {
-                            var con = contributers[contri];
-                            if(selectedcontributers.indexOf(contri) != -1){
-                                $("#contriiniupdate").append('<option value = "'+contri+'" selected="selected">'+con+'</option>');
-                            }else{
-                                $("#contriiniupdate").append('<option value = "'+contri+'">'+con+'</option>');
-                            }
-                          }
-                        }
-                    }  
-                });
-                $("#initiative_status_id").val(response.initiatives.status);
-            }
-        })
+    
 
-        $("#myModalUpdateInitiative").modal('show');
-    }
-
-    function updatemilestoneini(id){
-        $("#ini_idformilestoneup").val($("#viewpageinitiativeid").val());
-        $("#milestone_id_ini").val(id);
-        var token = "{!!csrf_token()!!}";
-        var company_id = "{!!Auth::User()->company_id!!}"; 
-        $.ajax({
-            type:"POST",
-            url: "{!!url('getmilestonedata')!!}",
-            data:'_token='+token+'&company_id='+company_id+'&id='+id,
-            dataType:'JSON',
-            success: function (response) {
-                $("#milestonenameini").val(response.milestone_name);
-                var sdate = new Date(response.start_date);
-                var edate = new Date(response.end_date);
-                $('#start_date_ini').val((sdate.getMonth()+1)+'/'+sdate.getDate()+'/'+sdate.getFullYear());
-                $('#end_date_ini').val((edate.getMonth()+1)+'/'+edate.getDate()+'/'+edate.getFullYear());
-                console.log(response)
-            }
-        })
-        $("#updatemilestoneini").modal("show");
-    }
-     function view_initiativepop(id){
-        $(".is_popup").val(1);
-        localStorage.setItem('popup_id',id);
-        $("#viewpageinitiativeid").val(id);
-        $("#initiativemilestonelist").html("");
-        var token = "{!!csrf_token()!!}";
-        var company_id = "{!!Auth::User()->company_id!!}"; 
-         $.ajax({
-            type:"POST",
-            url: "{!!url('getInitiativeData')!!}",
-            data:'_token='+token+'&company_id='+company_id+'&id='+id,
-            dataType:'JSON',
-            success: function (response) {
-                var initiative =response.initiatives; 
-                $("#initiativeheading").html('<i class="'+initiative.status_icon+' heading-icon" style="color:'+initiative.bg_color+';"></i>'+initiative.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+initiative.measure_cycle_year+'-'+getQuarter(initiative.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+initiative.owner_name )
-                chartload(response.milestones);
-                for(var i = 0; i < response.milestones.length; i++){
-                    $("#initiativemilestonelist").append('<tr><td>'+response.milestones[i].name+'</td><td>'+response.milestones[i].fromDate+'</td><td>'+response.milestones[i].toDate+'</td><td><a href="javascript:void(0);" onclick="updatemilestoneini('+response.milestones[i].id+')"><i class="simple-icon-pencil"></i></a></td></tr>');
-
-                }
-                for(var i = 0; i < response.tasklist.length; i++){
-                    $("#initiativetasklistview").append('<tr><td>'+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background-color:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"> <i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a></td></tr>');
-
-                }
-            }
-        })
-        
-        $("#viewinitiativemodal").modal('show');
-     }
+   
+     
 $(document).ready(function(){
     var inimessage = "{!!session('inimessage')?session('inimessage'):''!!}";
     if(inimessage != ""){
@@ -352,9 +176,7 @@ $(document).ready(function(){
     if(popup_content_message != ""){
         view_initiativepop(localStorage.getItem('popup_id'));
     }
-  $("#popupaddhideinitiativeupdate").click(function(){
-    $("#myModalUpdateInitiative").modal('hide');
-  });
+  
    $("#add_objectiveBtn").click(function(){
     $(".hideindivi").attr('id','');
     $("#myModalAddInitiative").modal('show');
@@ -379,9 +201,7 @@ $(document).ready(function(){
    $("#popup3hideupdate").click(function(){
     $("#updatemilestoneini").modal('hide');
   });
-  $("#popupaddhideinitiative").click(function(){
-    $("#myModalAddInitiative").modal('hide');
-  });
+
   $("#popupaddhideTask").click(function(){
     $("#myModalAddTask").modal("hide");
   });

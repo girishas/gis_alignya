@@ -45,12 +45,21 @@
 
 							</a>
 						</li> 
+						<?php
+						$class_nav  = (($controller == "UserController" && in_array($current_action, ['admin_index'])) OR (strpos(URL::current(),'members') !== false))?"active":""; ?>
 						
+						<li class="<?php echo $class_nav; ?>">
+							<a class="steamerst_link" href="<?php echo url($route_prefix, 'transactions'); ?>">
+								<i class="iconsminds-money-bag"></i>
+								<?php echo getLabels('transactions'); ?>
+
+							</a>
+						</li> 
 						
 					<?php else: ?>
 						<?php /* Show All users - Cmpany/ hod/ team */ ?>
 					 <?php
-                    $class_nav  = ($controller == "UserController" && in_array($current_action, ['analytics']))?"active":""; ?>
+                    $class_nav  = (in_array($controller,['TeamController','DepartmentController']) && in_array($current_action, ['startegic_map','scorecard','roadmap','timemap','reports','departmental','subscription']))?"active":""; ?>
                     <li class="<?php echo $class_nav; ?>" id="st_analytics">
                       <a class="" href="#analytic_manager" >
                             <i class="simple-icon-pie-chart"></i>
@@ -59,7 +68,7 @@
                         </a>
                     </li>
                     <?php
-                    $class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['objectives']))?"active":""; ?>
+                    $class_nav  = (in_array($controller, ['MeasureController','ObjectiveController','InitiativeController','KPIController']) && in_array($current_action, ['admin_index']))?"active":""; ?>
                     <li class="<?php echo $class_nav; ?>" id="st_explore">
                       <a class="" href="#explore_manager" >
                             <i class="simple-icon-organization"></i>
@@ -68,7 +77,7 @@
                         </a>
                     </li>
                     <?php
-                    $class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['objectives']))?"active":""; ?>
+                    $class_nav  = ($controller == "TeamController" && in_array($current_action, ['ideas']))?"active":""; ?>
                     <li class="<?php echo $class_nav; ?>" >
                       <a class="" href="javascript:void(0);" onclick="onFunc('ideas')"  >
                             <i class="iconsminds-air-balloon-1"></i>
@@ -76,7 +85,7 @@
 
                         </a>
                     </li>
-						<?php $class_nav  = ($controller == "UserController" && in_array($current_action, ['members']))?"active":""; ?>
+						<?php $class_nav  = (in_array($controller,["UserController","DepartmentController","TeamController"]) && in_array($current_action, ['admin_index']))?"active":""; ?>
 						
 						<li class="<?php echo $class_nav; ?>" id="st_members">
 							<a class="" href="#subscription_manager" >
@@ -85,6 +94,17 @@
 
 	                        </a>
 						</li> 
+					 </li>
+						<?php $class_nav  = (in_array($controller,["DepartmentController"]) && in_array($current_action, ['scorecard_list']))?"active":""; ?>
+						
+						<li class="<?php echo $class_nav; ?>" id="st_settings">
+							<a class="" href="#settings_manager" >
+	                            <i class="iconsminds-gear"></i>
+	                            <?php echo getLabels('Settings'); ?>
+
+	                        </a>
+						</li> 
+
 						
 					<?php endif; ?>
 					
@@ -92,7 +112,7 @@
 						
 						<li class="<?php echo $class_nav; ?>" id="st_members">
 							<a class="" href="#" onclick="logout()">
-	                            <i class="iconsminds-gear"></i>
+	                            <i class="simple-icon-logout"></i>
 	                            <?php echo getLabels('logout'); ?>
 
 	                        </a>
@@ -104,7 +124,24 @@
 
         <div class="sub-menu">
             <div class="scroll">
-				<ul class="list-unstyled" data-link="roadmap_manager"><?php
+				<ul class="list-unstyled" data-link="settings_manager"><?php
+					$class_subnav  = ($controller == "DepartmentController
+					" && in_array($current_action, ['scorecard_list']))?"active":""; ?>
+						
+                    <li class="<?php echo $class_subnav; ?>">
+                        <a href="<?php echo url($route_prefix, 'scorecards'); ?>" class="steamerst_link" data-main-link="st_settings">
+                            <i class="simple-icon-cursor"></i> <span class="d-inline-block"><?php echo getLabels('scorecards'); ?></span>
+                        </a>
+                    </li><?php
+					$class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['themes']))?"active":""; ?>
+						
+                    <li class="<?php echo $class_subnav; ?>">
+                         <a href="<?php echo url($route_prefix, 'themes'); ?>" class="steamerst_link" data-main-link="st_settings">
+                            <i class="simple-icon-cursor"></i> <span class="d-inline-block"><?php echo getLabels('themes'); ?></span>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="list-unstyled" data-link="roadmap_manager"><?php
 					$class_subnav  = ($controller == "DepartmentController
 					" && in_array($current_action, ['tree']))?"active":""; ?>
 						
@@ -123,7 +160,7 @@
                 </ul>
 				<ul class="list-unstyled" data-link="analytic_manager">
 					<?php
-						$class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['transaction_manager']))?"active":""; ?>
+						$class_subnav  = ($controller == "TeamController" && in_array($current_action, ['startegic_map']))?"active":""; ?>
 						<li class="<?php echo $class_subnav; ?>">
 							<a class="" href="javascript:void(0);" onclick="onFunc('strategic-map')" data-main-link="st_analytics">
 								<i class="simple-icon-cursor"></i>
@@ -132,7 +169,7 @@
 							</a>
 						</li><?php
 						
-						$class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['admin_payouts', 'payouts_amount_details']))?"active":""; ?>
+						$class_subnav  = ($controller == "TeamController" && in_array($current_action, ['scorecard']))?"active":""; ?>
 						<li class="<?php echo $class_subnav; ?>">
 							<a class="" href="javascript:void(0);" onclick="onFunc('scorecard')" data-main-link="st_analytics">
 								<i class="simple-icon-cursor"></i>
@@ -141,7 +178,7 @@
 							</a>
 						</li><?php
 					
-						$class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['payout_history','payout_history_detail']))?"active":""; ?>
+						$class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['roadmap']))?"active":""; ?>
 						<li class="<?php echo $class_subnav; ?>">
 							<a class="" href="javascript:void(0);" onclick="onFunc('roadmap')" data-main-link="st_analytics">
 								<i class="simple-icon-cursor"></i>
@@ -150,7 +187,7 @@
 							</a>
 						</li><?php
 					
-						$class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['payout_history','payout_history_detail']))?"active":""; ?>
+						$class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['timemap']))?"active":""; ?>
 						<li class="<?php echo $class_subnav; ?>">
 							<a class="" href="javascript:void(0);" onclick="onFunc('timemap')" data-main-link="st_analytics">
 								<i class="iconsminds-clock"></i>
@@ -158,7 +195,7 @@
 
 							</a>
 						</li><?php
-						$class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['admin_add_subscriptionlevel', 'admin_subscriptionlevel', 'admin_edit_subscriptionlevel']))?"active":""; ?>
+						$class_subnav  = ($controller == "TeamController" && in_array($current_action, ['reports']))?"active":""; ?>
 							
 						<li class="<?php echo $class_subnav; ?>">
 							<a class="" href="javascript:void(0);" onclick="onFunc('reports')" data-main-link="st_analytics">
@@ -167,7 +204,7 @@
 
 							</a>
 						</li>
-						<?php $class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['admin_add_subscriptionlevel', 'admin_subscriptionlevel', 'admin_edit_subscriptionlevel']))?"active":""; ?>
+						<?php $class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['departmental']))?"active":""; ?>
 							
 						<li class="<?php echo $class_subnav; ?>">
 							<a class=""  href="javascript:void(0);" onclick="onFunc('departmental')"  data-main-link="st_analytics">
@@ -176,7 +213,7 @@
 
 							</a>
 						</li>
-						<?php $class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['admin_add_subscriptionlevel', 'admin_subscriptionlevel', 'admin_edit_subscriptionlevel']))?"active":""; ?>
+						<?php $class_subnav  = ($controller == "DepartmentController" && in_array($current_action, [ 'subscription']))?"active":""; ?>
 							
 						<li class="<?php echo $class_subnav; ?>">
 							<a class="" href="javascript:void(0);" onclick="onFunc('subscription')"  data-main-link="st_analytics">
@@ -208,7 +245,7 @@
 					</ul>
 				<ul class="list-unstyled" data-link="explore_manager">
 					<?php
-						$class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['objectives']))?"active":""; ?>
+						$class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['admin_index']))?"active":""; ?>
 						<li class="<?php echo $class_subnav; ?>">
 							<a class="" href="javascript:void(0);" onclick="onFunc('objectives')" data-main-link="st_explore">
 								<i class="iconsminds-statistic"></i>
@@ -217,7 +254,7 @@
 							</a>
 						</li><?php
 						
-						$class_nav  = ($controller == "ObjectiveController" && in_array($current_action, ['admin_index']))?"active":""; ?>
+						$class_nav  = ($controller == "MeasureController" && in_array($current_action, ['admin_index']))?"active":""; ?>
 						<li class="<?php echo $class_subnav; ?>">
 							<a class="" href="javascript:void(0);" onclick="onFunc('measures')" data-main-link="st_explore">
 								<i class="simple-icon-hourglass"></i>

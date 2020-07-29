@@ -38,4 +38,5 @@ return array(
 	"TRIAL_DAYS" => 30,
 	"DEFAULT_CYCLES" => array(12=>'Time Period of 1 Year',36=>'Time Period of 3 Year',60=>'Time Period of 5 Year'),
 	"DATE_FORMAT" => "F m Y",
+	"STRIPE_PK" => "pk_test_XBiHnVt8ZN2PFMvDa0wG6sUP",
 );

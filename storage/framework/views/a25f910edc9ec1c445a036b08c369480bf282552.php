@@ -1,111 +1,106 @@
-<div class="modal modal-right" id="myModalAddObjective" role="dialog" >
-                                <div class="modal-dialog" style="max-width: 50%">
-                                    <div class="modal-content" >
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id = "addobjectiven">Add Objective</h5>
-                                            <button type="button" class="close" id="popupaddhideObjective" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                       
-                                        <?php echo Form::open(array('url' => array($route_prefix.'/addobjective'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+<div class="modal fade modal-right" id="myModalAddObjective" role="dialog" >
+        <div class="modal-dialog" style="max-width: 50%">
+        <div class="modal-content" >
+        <div class="modal-header">
+            <h5 class="modal-title" id = "addobjectiven">Add Objective</h5>
+            <button type="button" class="close" id="popupaddhideObjective" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
 
-                                        <div class="modal-body">
-                                            <?php if(session('objective_add_error')): ?>
-                                            <div class="alert alert-danger" role="alert">
-                                                <?php echo session('objective_add_error'); ?>
+        <?php echo Form::open(array('url' => array($route_prefix.'/addobjective'), 'class' =>'alignya_form needs-validation tooltip-label-right updateobjectiveform', 'name'=>'', 'files'=>true)); ?>
 
-                                            </div>    
-                                            <?php endif; ?> 
-                                        		<div class="container-fluid">
-                                            	<div class="row">
-                                            		
-                                            	<div class="col-lg-8">
-                                            		<div class="form-group">
-                                                    <label>Title</label>
-                                                    <?php echo Form::text('heading',null,array('class'=>'form-control')); ?>
+        <div class="modal-body">
+        		<div class="container-fluid">
+            	<div class="row">
+            		
+            	<div class="col-lg-12">
+            		<div class="form-group position-relative error-l-100">
+                    <label>Title</label>
+                    <?php echo Form::text('heading',null,array('class'=>'form-control')); ?>
 
-                                                    <?php if($errors->first('heading')): ?><div class="error"><?php echo $errors->first('heading'); ?></div><?php endif; ?>
-                                                    <input type="hidden" name="scorecard_id" value="" id="objective_scorecard">
-                                                    <input type="hidden" name="theme_id" value="" id="objective_theme">
-                                                    <input type="hidden" name="team_type" value="department" id = "obj_teamtype">
-                                                    <input type="hidden" name="team_id" value="" id = "obj_teamid">
-                                                    <input type="hidden" name="department_id" value="" id = obj_department_id>
-                                                    <input type="hidden" name="owner_user_id" value="" id="obj_ind_owner_user_id">
-                                                    <input type="hidden" name="objective_id" value="" id = "parent_objective_id">
-                                                    <input type="hidden" name="is_popup" class="is_popup">
-                                                </div>
-                                               
+                    <div class="invalid-tooltip"></div>
+                    <input type="hidden" name="scorecard_id" value="" id="objective_scorecard">
+                    <input type="hidden" name="theme_id" value="" id="objective_theme">
+                    <input type="hidden" name="team_type" value="department" id = "obj_teamtype">
+                    <input type="hidden" name="team_id" value="" id = "obj_teamid">
+                    <input type="hidden" name="department_id" value="" id = obj_department_id>
+                    <input type="hidden" name="owner_user_id" value="" id="obj_ind_owner_user_id">
+                    <input type="hidden" name="objective_id" value="" id = "parent_objective_id">
+                    <input type="hidden" name="is_popup" class="is_popup">
+                </div>
+               
 
-                                                <div class="form-group">
-                                                    <label>Time Period</label>
-                                                    <select class="form-control select2-single" name="cycle_id" data-width="100%" id="timeperiods">
-                                                    <?php $__currentLoopData = $goal_cycles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $balue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo $key; ?>"><?php echo $balue; ?></option>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                    </select>
-                                                    <?php if($errors->first('cycle_id')): ?><div class="error"><?php echo $errors->first('cycle_id'); ?></div><?php endif; ?>
-                                                    
-                                                </div>
-                                                <div class="form-group">
-                                                    <label>Perspective</label>
-                                                    <?php echo Form::select('perspective_id',$perspectives,null,array('class'=>'form-control select2-single')); ?>
+                <div class="form-group  position-relative error-l-100 mb-4">
+                    <label>Time Period</label>
+                    <select class="form-control" name="cycle_id" data-width="100%" id="timeperiods">
+                        <option value="">Please Select Time Period</option>
+                    <?php $__currentLoopData = $goal_cycles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $balue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo $key; ?>"><?php echo $balue; ?></option>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </select>
+                    <div class="invalid-tooltip"></div>
+                </div>
+                <div class="form-group position-relative error-l-50">
+                    <label>Perspective</label>
+                    <?php echo Form::select('perspective_id',array(""=>"Please Select Perspective") + $perspectives->toArray(),null,array('class'=>'form-control')); ?>
 
-                                                    
-                                                </div>
-                                                <div class="form-group">	
-                                                    <label>Ownership</label>
-                                               		<br>
-                                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                                        <label class="btn btn-primary active" onclick ="onclickownershipadd(1)">
-                                                            <input type="radio" name="options" id="option1" value="1" checked> Department
-                                                        </label>
-                                                        <label class="btn btn-primary" onclick ="onclickownershipadd(2)">
-                                                            <input type="radio" name="options" value="2" id="option2"> Team
-                                                        </label>
-                                                        <label class="btn btn-primary" onclick ="onclickownershipadd(3)">
-                                                            <input type="radio" name="options" value="3" id="option3"> Individual
-                                                        </label>
-                                                    </div>
-                                                </div>
+                    <div class="invalid-tooltip"></div>
+                </div>
+                <div class="form-group ">	
+                    <label>Ownership</label>
+               		<br>
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-primary active" onclick ="onclickownershipadd(1)">
+                            <input type="radio" name="options" id="option1" value="1" checked> Department
+                        </label>
+                        <label class="btn btn-primary" onclick ="onclickownershipadd(2)">
+                            <input type="radio" name="options" value="2" id="option2"> Team
+                        </label>
+                        <label class="btn btn-primary" onclick ="onclickownershipadd(3)">
+                            <input type="radio" name="options" value="3" id="option3"> Individual
+                        </label>
+                    </div>
+                </div>
 
-                                               <div class="form-group">
-                    								<select class="form-control select2-single" onchange="ownershipdropobj()" name="ownership" data-width="100%" id = "ownership">
-                                                        <?php if(!empty($departments)): ?>
-                                                        <option value="">Please Select</option>
-                                                    	<?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $vale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo $key; ?>"><?php echo $vale; ?></option>
-                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                        <?php endif; ?>
-                                                    </select>						
-                    								<div class="invalid-tooltip"></div>
-                    							</div>
+               <div class="form-group position-relative error-l-50">
+        			<select class="form-control" onchange="ownershipdropobj()" name="ownership" data-width="100%" id = "ownership">
+                        <?php if(!empty($departments)): ?>
+                        <option value="">Please Select Department</option>
+                    	<?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $vale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo $key; ?>"><?php echo $vale; ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endif; ?>
+                    </select>						
+        			<div class="invalid-tooltip"></div>
+        		</div>
 
-                           						<div class="form-group">
-                                                    <label>Contributers (optional)</label>
-                                                    <?php echo Form::select('contributers[]',$contributers,null,array('class'=>'form-control select2-multiple','multiple'=>'multiple')); ?>
+        		 <div class="form-group ">
+                        <label>Contributers</label>
+                       <select class="form-control select2-multiple" multiple="multiple" name="contributers[]" data-width="100%" id="contributersadd">
+                           
+                       </select>                    
+                      
+                    </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            
+                </div>
+                <!-- <div class="col-lg-4" style="text-align: right;">
+                   <button type="button" class="btn btn-primary" style="margin-bottom: 10px;" onclick="scorecardpopup()">Scorecard</button> <br>
+                   <button type="button" class="btn btn-primary" style="margin-bottom: 10px;" onclick="themepopup()">Theme</button> <br>
+                   <button type="button" class="btn btn-primary" onclick="addcyclepopup()">Add Cycle</button>     
+                </div> -->
+                
+                </div>
+                </div>
+            
+        </div>
 
-                                                    
-                                                </div>
-                                                <button type="submit" class="btn btn-primary">Submit</button>
-                                            
-                                                </div>
-                                                <div class="col-lg-4" style="text-align: right;">
-                                                   <button type="button" class="btn btn-primary" style="margin-bottom: 10px;" onclick="scorecardpopup()">Scorecard</button> <br>
-                                                   <button type="button" class="btn btn-primary" style="margin-bottom: 10px;" onclick="themepopup()">Theme</button> <br>
-                                                   <button type="button" class="btn btn-primary" onclick="addcyclepopup()">Add Cycle</button>     
-                                                </div>
-                                                
-                                                </div>
-                                                </div>
-                                            
-                                        </div>
-                                        
-                                        <?php echo Form::close(); ?>
+        <?php echo Form::close(); ?>
 
-                                    </div>
-                                </div>
-                            </div>
+        </div>
+        </div>
+        </div>
 
 
 

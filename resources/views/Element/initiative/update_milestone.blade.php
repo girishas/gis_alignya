@@ -9,12 +9,12 @@
             </div>
             <div class="modal-body">
                 
-                {!! Form::open(array('url' => array($route_prefix.'/addmilestoneinitiative'), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+                {!! Form::open(array('url' => array($route_prefix.'/addmilestoneinitiative'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                     
                     <div class="container-fluid">
                     <div class="row">
                         
-                    <div class="col-lg-8">
+                    <div class="col-lg-12">
                         <div class="form-group">
                         <label>Milestone Name</label>
                         {!!Form::text('milestone_name', null, array('class'=>'form-control','id'=>'milestonenameini'))!!}

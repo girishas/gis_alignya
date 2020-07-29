@@ -15,7 +15,7 @@ class Perspective extends Model
 	use SortableTrait;
 	protected $table = "al_perspectives";
     protected $fillable = [
-        'name','status'];
+        'name','status','company_id'];
     public $timestamps = false;
 
 

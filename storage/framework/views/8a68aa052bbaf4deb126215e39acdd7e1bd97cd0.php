@@ -65,57 +65,13 @@
 
 								<div class="invalid-tooltip"></div>
 							</div>
-						</div>
-						<label class="form-group has-float-label position-relative error-l-100 mb-4">Choose Pricing Plan</label>
-								
-										<div style="display: inline-flex;">
-											<div class="custom-control custom-radio">
-												
-												<input type="radio" id="monthlyplan" name="plan_type" class="custom-control-input plan_type" value="1" checked="checked">
-												<label class="custom-control-label" for="monthlyplan">
-													Monthly &nbsp;&nbsp;&nbsp;
-												</label>
-											</div>
-											<div class="custom-control custom-radio">
-												<input type="radio" id="yearlyplan" name="plan_type" class="custom-control-input plan_type" value="2">
-												<label class="custom-control-label" for="yearlyplan">Yerly</label>
-											</div>
-										</div>
-						<div class="form-group">
+							<div class="form-group  position-relative error-l-100 col-md-6">
+								<label for="inputFirstname"><?php echo getLabels('Status'); ?></label>
+								<?php echo Form::select('status', config('constants.STATUS'),null, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>
 
-						<div class="monthlyshow">
-											<?php if(!empty($plans)): ?>
-											<?php $__currentLoopData = $plans; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $plan): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-											<div class="custom-control custom-radio">
-												<?php if($plan->id == $data->plan_id): ?>
-												<input type="radio" id="jQueryCustomRadio<?php echo $key; ?>" name="plan_id" class="custom-control-input" value="<?php echo $plan->id; ?>" checked="checked">
-												<?php else: ?>
-												<input type="radio" id="jQueryCustomRadio<?php echo $key; ?>" name="plan_id" class="custom-control-input" value="<?php echo $plan->id; ?>">
-												<?php endif; ?>
-												<label class="custom-control-label" for="jQueryCustomRadio<?php echo $key; ?>">
-													<?php echo $plan->heading; ?> ( $<?php echo $plan->plan_fee; ?> per month | Upto <?php echo $plan->emp_limit; ?> Member )
-												</label>
-											</div>
-											<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-										</div>
-										<div class= "yearlyshow" style="display: none;">
-											<?php endif; ?>
-											<?php if(!empty($yearly)): ?>
-											<?php $__currentLoopData = $yearly; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $yp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-											<div class="custom-control custom-radio">
-												
-												<input type="radio" id="yearly<?php echo $key; ?>" name="plan_id" class="custom-control-input" value="<?php echo $plan->id; ?>">
-												<label class="custom-control-label" for="yearly<?php echo $key; ?>">
-													<?php echo $yp->heading; ?> ( $<?php echo $yp->plan_fee; ?> per month | Upto <?php echo $yp->emp_limit; ?> Member )
-												</label>
-											</div>
-											<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-											<?php endif; ?>
-										</div>
-										<div class="invalid-tooltip"></div>	
-							
+								<div class="invalid-tooltip"></div>
+							</div>
 						</div>
-						
 						
 						<div class="form-group ">
 						<button type="submit" class="btn btn-primary"><?php echo getLabels('update'); ?></button>&nbsp;&nbsp;
@@ -126,17 +82,7 @@
 				</div>
 			</div>
         </div>
-	<script>
-	$('.plan_type').click(function(){
-			if($(this).val() == 2){
-				$(".monthlyshow").hide();
-				$(".yearlyshow").show();
-			}else{
-				$(".monthlyshow").show();
-				$(".yearlyshow").hide();
-			}
-		});
-</script>	
+		
 	<?php if(empty($_POST)): ?>
     </main>
 <?php $__env->stopSection(); ?>

@@ -94,7 +94,9 @@
     </div>
     </div>
     </main>
+<?php echo $__env->make('Element/js/includejs', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
         <script>
+      
     $(document).ready(function(){
         $("#popupaddhideupdateTask").click(function(){
             $("#myModalUpdateTask").modal("hide");
@@ -152,7 +154,7 @@
 function filter(){
     $("#filterPop").modal('show');
 }
-function measureGraph(target_data,labels,actual_data,max_value,projection_data){
+function measureGraph(target_data,labels,actual_data,max_value,projection_data,actual_color,target_color,projection_color){
     document.getElementById("viewlargemeasuregraph").innerHTML = " ";
     document.getElementById("measuregraph").innerHTML = " ";
     var contributionChartOptions = {
@@ -203,10 +205,10 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
           borderWidth: 2,
           label: "",
           data: target_data,
-          borderColor: "red",
+          borderColor: target_color,
        
-          pointBorderColor: "red",
-          pointHoverBackgroundColor: "red",
+          pointBorderColor: target_color,
+          pointHoverBackgroundColor: target_color,
          
           pointRadius: 4,
           pointBorderWidth: 2,
@@ -217,10 +219,10 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
           borderWidth: 2,
           label: "",
           data: actual_data,
-          borderColor: "blue",
+          borderColor: actual_color,
        
-          pointBorderColor: "blue",
-          pointHoverBackgroundColor: "blue",
+          pointBorderColor: actual_color,
+          pointHoverBackgroundColor: actual_color,
          
           pointRadius: 4,
           pointBorderWidth: 2,
@@ -231,10 +233,10 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
           borderWidth: 2,
           label: "",
           data: projection_data,
-          borderColor: "yellow",
+          borderColor: projection_color,
        
-          pointBorderColor: "yellow",
-          pointHoverBackgroundColor: "yellow",
+          pointBorderColor: projection_color,
+          pointHoverBackgroundColor: projection_color,
          
           pointRadius: 4,
           pointBorderWidth: 2,
@@ -268,6 +270,8 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
         $("#view_measure_heading").html("");
         $("#milestonelistmeasureview").html("");
         $("#addtaskmeasureview").html("");
+        $("#kpi_name_graph_side").html("");
+        $("#addtaskmeasureview").html("");
         var token = "<?php echo csrf_token(); ?>";
         var company_id = "<?php echo Auth::User()->company_id; ?>"; 
         $.ajax({
@@ -276,19 +280,24 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
             data:'_token='+token+'&company_id='+company_id+'&measure_id='+id,
             dataType:'JSON',
             success: function (response) {
-                measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
-                
                 var all_response = response.measures;
+                var actual_color = all_response.actual_color != "" ? all_response.actual_color : "blue";
+                var target_color = all_response.target_color != "" ? all_response.target_color : "red";
+                var projection_color = all_response.projection_color != "" ? all_response.projection_color : "yellow";
+                measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data,actual_color,target_color,projection_color);
+                
                 $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+' <a href="javascript:void(0);" onclick="updateKPI('+all_response.id+')"><i class="simple-icon-pencil"></i></a><p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
+                $("#kpi_name_graph_side").html('<p class="mb-0 truncate">'+all_response.heading+'</p><p class="text-muted mb-0 text-small"> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'</p>');
                 var milstonesli = response.milestones;
                 for (var i = 0; i < milstonesli.length; i++) {
                     $("#milestonelistmeasureview").append('<tr><td>'+milstonesli[i].milestone_name+'</td><td>'+(milstonesli[i].mile_actual == null?"":milstonesli[i].mile_actual)+'</td><td>'+milstonesli[i].sys_target+'</td><td>'+milstonesli[i].start_date+'</td><td>'+milstonesli[i].end_date+'</td><td><a href="javascript:void(0);" onclick="updatemilestone('+milstonesli[i].id+')"><i class="simple-icon-pencil"></i></a></td></tr>');
                 }
                 var taskli = response.tasklist;
+                
                 for (var i = 0; i < taskli.length; i++) {
-                    $("#addtaskmeasureview").html('<tr><td>'+taskli[i].task_name+'</td><td>'+taskli[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+taskli[i].bg_color+'">'+taskli[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+taskli[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a></td></tr>');
+                    $("#addtaskmeasureview").append('<tr><td>'+taskli[i].task_name+'</td><td>'+taskli[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+taskli[i].bg_color+'">'+taskli[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+taskli[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a></td></tr>');
                 }
-                $("#viewLargePlot").html('<a href="javascript:void(0);" onclick="viewLargeGraph('+measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data)+')"><i class="iconsminds-maximize heading-icon"></i></a>');
+                $("#viewLargePlot").html('<a href="javascript:void(0);" onclick="viewLargeGraph('+measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data,actual_color,target_color,projection_color)+')"><i class="iconsminds-maximize heading-icon"></i></a>');
             }
         })  
         $("#viewkpimodal").modal('show');
@@ -418,6 +427,7 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
     }
     function updateTask(id){
         $("#update_task_id").val(id);
+        $("#owners_update_id").html("");
         var token = "<?php echo csrf_token(); ?>";
         var company_id = "<?php echo Auth::User()->company_id; ?>";
         $.ajax({

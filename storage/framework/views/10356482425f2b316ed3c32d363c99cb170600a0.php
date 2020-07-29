@@ -137,19 +137,19 @@ $(document).ready(function(){
                                 <div class="card col-lg-12 col-12 mb-4 ">
                                    
                                         <div class="position-absolute card-top-buttons">
-                                            <?php if($id): ?>
+                                        
                                             <button class="btn btn-header-light icon-button" onclick="updateDepartment()">
                                                 <i class="simple-icon-pencil"></i>
                                             </button>
 											<?php
-                                                $remove_url = url($route_prefix."/department/remove/".$id); 
+                                                $remove_url = url($route_prefix."/department/remove/".$parent_department->id); 
                                                 $remove_msg = getLabels('are_you_sure'); ?>
                                                 <a onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);">
                                                     <button class="btn btn-header-light icon-button">
                                                         <i class="simple-icon-trash"></i>
                                                     </button>
                                                     </a>
-                                            <?php endif; ?>
+                                           
                                         </div>
                                         <div class="card-body">
                                             <p class="list-item-heading mb-4"><?php echo $parent_department->department_name; ?></p> 

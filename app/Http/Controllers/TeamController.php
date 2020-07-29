@@ -60,9 +60,9 @@ class TeamController extends Controller
 			}
 		}
 		
-		$team_members_pluck = TeamsMembers::leftjoin('users','users.id','=','al_teams_members.member_id')->where('al_teams_members.team_id',$id)->where('is_head',0)->select('users.id','users.photo','users.first_name','users.last_name','users.designation')->pluck('users.id','users.first_name');
-		$teamleads = User::where('role_id',4)->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
-		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('role_id',5)->pluck('full_name','id');
+		$team_members_pluck = TeamsMembers::leftjoin('users','users.id','=','al_teams_members.member_id')->where('al_teams_members.team_id',isset($team_detail->id) ? $team_detail->id:$id)->where('is_head',0)->select('users.id','users.photo','users.first_name','users.last_name','users.designation')->pluck('users.id','users.first_name');
+		$teamleads = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as first_name'),'id')->whereIn('role_id',array(4,2))->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->whereIn('role_id',array(5,2))->pluck('full_name','id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$page_title  = getLabels("Teams");
 
@@ -135,7 +135,7 @@ class TeamController extends Controller
 			return redirect()->back()->with('message',$message);
 		}
 		if(isset($team_detail)){
-			$objectives = Objective::where('owner_user_id',$team_detail->team_lead_id)->get();
+			$objectives = Objective::where('company_id',Auth::User()->company_id)->where('owner_user_id',$team_detail->team_lead_id)->get();
 		}else{
 			$objectives = array();
 		}
@@ -423,7 +423,7 @@ class TeamController extends Controller
 		}
 		$al_goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id')->toArray();
 		$al_themes = Theme::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('theme_name','id')->toArray();
-		$all_perspective = Perspective::where('status',1)->pluck('name','id')->toArray();
+		$all_perspective = Perspective::where('status',1)->where('company_id',Auth::User()->company_id)->pluck('name','id')->toArray();
 		$all_department = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('department_name','id')->toArray();
 		$all_users = User::select(DB::Raw('CONCAT(COALESCE(`first_name`,"")," ",COALESCE(`last_name`,"")) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('status',1)->get()->pluck('full_name','id')->toArray();
 		
@@ -431,7 +431,7 @@ class TeamController extends Controller
 		if(!empty($perspective_id)){
 			$perspective_data = Perspective::where('id',$perspective_id)->where('status',1)->get();
 		}else{
-			$perspective_data = Perspective::where('status',1)->get();
+			$perspective_data = Perspective::where('status',1)->where('company_id',Auth::User()->company_id)->get();
 		}
 		$scorecard_data = array();
 		foreach($perspective_data as $val){
@@ -494,14 +494,14 @@ class TeamController extends Controller
 		}
 		$al_goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id')->toArray();
 		$al_themes = Theme::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('theme_name','id')->toArray();
-		$all_perspective = Perspective::where('status',1)->pluck('name','id')->toArray();
+		$all_perspective = Perspective::where('status',1)->where('company_id',Auth::User()->company_id)->pluck('name','id')->toArray();
 		$all_department = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('department_name','id')->toArray();
 		$all_users = User::select(DB::Raw('CONCAT(COALESCE(`first_name`,"")," ",COALESCE(`last_name`,"")) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('status',1)->get()->pluck('full_name','id')->toArray();
 		
 		if(!empty($perspective_id)){
 			$perspective_data = Perspective::where('id',$perspective_id)->where('status',1)->get();
 		}else{
-			$perspective_data = Perspective::where('status',1)->get();
+			$perspective_data = Perspective::where('status',1)->where('company_id',Auth::User()->company_id)->get();
 		}
 		$strategic_data = array();
 		foreach($perspective_data as $val){

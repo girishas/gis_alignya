@@ -60,7 +60,7 @@
                     </thead>
                     <tbody id="milestonelistmeasureview">     
                     </tbody>
-                    <tbody>
+                    <tbody id = "hideforObj">
                         <input type="hidden" name="measure_id" id="measure_id_view">
                         <tr>
                             <th scope="row"><a href="javascript:void(0);" onclick="addmilestoneMeasureView()"><h6><strong><i class="simple-icon-plus btn-group-icon"></i> Add Milestone</strong></a></h6></th>

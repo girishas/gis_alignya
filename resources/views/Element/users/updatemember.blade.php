@@ -55,7 +55,7 @@
                             </div>
                             
                         </div>
-                         <div class="form-row">
+                         <!-- <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="">{!! getLabels('profile_picture') !!}</label>
                                 <div class="slim" data-ratio="1:1" data-instant-edit="true" data-will-remove="profileimageWillBeRemoved">
@@ -65,7 +65,7 @@
                                     <input type="file" name="photo"/>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="form-group ">
                         <button type="submit" class="btn btn-primary">{!! getLabels('update') !!}</button>&nbsp;&nbsp;
                         <a href="{!! url($route_prefix, 'users') !!}" class="btn btn-dark steamerst_link">{!! getLabels('back') !!}</a>

@@ -7,7 +7,11 @@
                 <div class="col-12">
                     <h1><?php echo getLabels('Members'); ?></h1>
                      <div class="float-md-right">
+                     		<?php if($data->total() < getEmpLimit(Auth::User()->current_membership_plan)->emp_limit): ?>
 							<button type="button" class="btn btn-outline-primary mb-1" onclick="addMember()">Add Member</button>
+							<button type="button" class="btn btn-outline-primary mb-1" onclick="importcsv()">Import Members</button>
+							<?php endif; ?>
+							
 							
 							<a href="<?php echo url('department'); ?>"><button type="button" class="btn btn-primary mb-1">Departments</button></a>
 							<a href="<?php echo url('team'); ?>"><button type="button" class="btn btn-primary mb-1">Teams</button></a>
@@ -29,9 +33,17 @@
                 </div>
             </div>
             <?php if(session('message')): ?>
-			<div class="alert alert-success" role="alert" style="z-index: unset;">
+			<div class="alert alert-success alert-dismissible" role="alert" style="z-index: unset;">
 				<?php echo session('message'); ?>
 
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
+			</div>
+			<?php endif; ?>
+
+			<?php if(Auth::User()->current_membership_plan == 1 || Auth::User()->current_membership_plan == 4): ?>
+			<div class="alert alert-warning alert-dismissible" role="alert" style="z-index: unset;">
+				Upgrade your membership for add more team members. <a href="<?php echo url('subscription'); ?>">Click Here</a>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
 			</div>
 			<?php endif; ?>
 			<div class="row">
@@ -108,8 +120,8 @@
 													</td>
 													<td class="text-center"><?php echo config('constants.STATUS.'.$val->status); ?></td>
 													<td>
-														<a href="javascript:void(0);" onclick="updatemember(<?php echo $val->id; ?>)"><i class="simple-icon-pencil"></i></a>
-																<a href="javascript:void(0);" onclick="viewmember(<?php echo $val->id; ?>)"><i class="iconsminds-information"></i></a>
+														<a href="javascript:void(0);" onclick="updatemember(<?php echo $val->id; ?>)"><i class="heading-icon simple-icon-pencil"></i></a>
+																<a href="javascript:void(0);" onclick="viewmember(<?php echo $val->id; ?>)"><i class="heading-icon iconsminds-information"></i></a>
 																
 													</td>
 												</tr>
@@ -142,6 +154,8 @@
         </div>
     </main>
     <?php echo $__env->make('Element/users/addmember', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    <?php echo $__env->make('Element/users/importmember', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    <?php echo $__env->make('Element/js/includejs', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <div id="viewMemberShow"></div>
     <div id="modalShow"></div>
     <script type="text/javascript">
@@ -154,6 +168,15 @@
     		if(errorupdate != ""){
     			$("#updatemember").modal("show");
     		}
+    		$("#importmemberhide").click(function(){
+    			$("#importmember").modal("hide");
+    		})
+    		var rejected = <?=json_encode(session('rejected_arr'))?>;
+    		var errormessage = "<?php echo session('errormessage')?session('errormessage'):''; ?>";
+    		if(rejected != null || errormessage != ''){
+    			importcsv();
+    		}
+
     	});
     	function addMember(){
     		$("#addmember").modal("show");
@@ -187,6 +210,10 @@
     				$("#viewmember").modal("show");
 	            }  
 	        });
+    	}
+
+    	function importcsv(){
+    		$("#importmember").modal("show");
     	}
     	
     </script>

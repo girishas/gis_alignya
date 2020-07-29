@@ -29,12 +29,16 @@ public static function validate($input){
 		
 			'heading'         	=> 'required',
 			'cycle_id'    	=> 'required',
-		);
+			'perspective_id' => 'required',
+			'ownership' => 'required',
+ 		);
 		
 		
 		$messages = array(
 			'heading.required'			    => getLabels('objective_name_required'),
 			'cycle_id.required'				=> getLabels('time_period_required'),
+			'perspective_id.required'				=> getLabels('perspective_required'),
+			'ownership.required'				=> getLabels('ownership_required'),
 		);
 		return validator($input, $rules, $messages);
 	}

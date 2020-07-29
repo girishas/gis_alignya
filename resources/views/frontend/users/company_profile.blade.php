@@ -17,6 +17,9 @@
                                 <li class="breadcrumb-item">
                                     <a href="#">Home</a>
                                 </li> 
+                                 <li class="breadcrumb-item">
+                                <a class="steamerst_link" href="{!! url($route_prefix, 'companies') !!}">{!! getLabels('company') !!}</a>
+                            </li>
                                 <li class="breadcrumb-item active" aria-current="page">Company Profile</li>
                             </ol>
                         </nav>
@@ -41,21 +44,13 @@
                        <div class="col-md-3 col-lg-4 col-sm-4 col-6 mb-4">
                             <a href="{!!url('team')!!}" class="card">
                                 <div class="card-body text-center">
-                                    <i class="simple-icon-organization"></i>
-                                    <p class="card-text font-weight-semibold mb-0">Teams</p>
-                                    <p class="lead text-center">{!!$total_teams!!}</p>
+                                    <i class="iconsminds-money-bag"></i>
+                                    <p class="card-text font-weight-semibold mb-0">Transactions</p>
+                                    <p class="lead text-center">{!!$total_transactions!!}</p>
                                 </div>
                             </a>
                         </div>
-                        <div class="col-md-3 col-lg-4 col-sm-4 col-6 mb-4">
-                            <a href="{!!url('department')!!}" class="card">
-                                <div class="card-body text-center">
-                                    <i class="iconsminds-embassy"></i>
-                                    <p class="card-text font-weight-semibold mb-0">Departments</p>
-                                    <p class="lead text-center">{!!$total_departments!!}</p>
-                                </div>
-                            </a>
-                        </div>
+                        
                     </div>
                    
 				   
@@ -164,7 +159,7 @@
         </div>
 
 	</main>
-	@extends('Element/users/updateprofile')
+
 	<script type="text/javascript">
 		function updateProfile(){
 			$("#updateprofileopen").modal('show');
