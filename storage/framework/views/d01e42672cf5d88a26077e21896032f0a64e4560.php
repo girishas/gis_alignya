@@ -139,6 +139,20 @@
                          <a href="<?php echo url($route_prefix, 'themes'); ?>" class="steamerst_link" data-main-link="st_settings">
                             <i class="simple-icon-cursor"></i> <span class="d-inline-block"><?php echo getLabels('themes'); ?></span>
                         </a>
+                    </li><?php
+					$class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['goalcycles']))?"active":""; ?>
+						
+                    <li class="<?php echo $class_subnav; ?>">
+                         <a href="<?php echo url($route_prefix, 'goalcycles'); ?>" class="steamerst_link" data-main-link="st_settings">
+                            <i class="simple-icon-cursor"></i> <span class="d-inline-block"><?php echo getLabels('goal_cycles'); ?></span>
+                        </a>
+                    </li><?php
+					$class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['perspectives']))?"active":""; ?>
+						
+                    <li class="<?php echo $class_subnav; ?>">
+                         <a href="<?php echo url($route_prefix, 'perspectives'); ?>" class="steamerst_link" data-main-link="st_settings">
+                            <i class="simple-icon-cursor"></i> <span class="d-inline-block"><?php echo getLabels('perspectives'); ?></span>
+                        </a>
                     </li>
                 </ul>
                 <ul class="list-unstyled" data-link="roadmap_manager"><?php

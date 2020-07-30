@@ -86,7 +86,7 @@
 											@foreach($plans as $key => $plan)
 											<div class="custom-control custom-radio">
 												
-												<input type="radio" id="jQueryCustomRadio{!!$key!!}" name="plan_id" class="custom-control-input" value="{!!$plan->id!!}">
+												<input type="radio" id="jQueryCustomRadio{!!$key!!}" name="plan_id" class="custom-control-input" value="{!!$plan->id!!}" required="required">
 												<label class="custom-control-label" for="jQueryCustomRadio{!!$key!!}">
 													{!!$plan->heading!!} ( ${!!$plan->plan_fee!!} per month | Upto {!!$plan->emp_limit!!} Member )
 												</label>

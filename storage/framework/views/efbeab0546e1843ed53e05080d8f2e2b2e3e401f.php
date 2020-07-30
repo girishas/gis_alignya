@@ -5,9 +5,9 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <h1><?php echo getLabels('themes'); ?></h1>
+                    <h1><?php echo getLabels('perspectives'); ?></h1>
                      <div class="float-md-right">
-                     		<button type="button" class="btn btn-outline-primary mb-1" onclick="addTheme()">Add Theme</button>
+                     		<button type="button" class="btn btn-outline-primary mb-1" onclick="addTheme()">Add Perspective</button>
                         </div>
 					
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
@@ -16,7 +16,7 @@
                                 <a class="steamerst_link" href="<?php echo url($route_prefix, 'dashboard'); ?>"><?php echo getLabels('Dashboard'); ?></a>
                             </li>
                             
-                            <li class="breadcrumb-item active" aria-current="page"><?php echo getLabels('themes'); ?></li>
+                            <li class="breadcrumb-item active" aria-current="page"><?php echo getLabels('perspectives'); ?></li>
                         </ol>
                     </nav>
                     <div class="separator mb-5"></div>
@@ -29,13 +29,13 @@
                         <div class="card-body">
 
                             <h5 class="mb-4"><?php echo getLabels('Search'); ?></h5>
-                            <?php echo Form::open(array('url' => array($route_prefix.'/themes'), 'class' =>'steamerstudio_searchform', 'name'=>'Search')); ?>
+                            <?php echo Form::open(array('url' => array($route_prefix.'/perspectives'), 'class' =>'steamerstudio_searchform', 'name'=>'Search')); ?>
 
 								<div class="form-body">
 									<div class="row">
 										<div class="col-lg-3">
 											<div class="form-group">
-												<?php echo Form::text('name', isset($_POST['name'])?trim($_POST['name']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_name'))); ?>
+												<?php echo Form::text('name', isset($_POST['name'])?trim($_POST['name']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_perspective'))); ?>
 
 											</div>
 										</div>
@@ -49,7 +49,7 @@
 										
 										<div class="col-lg-3">               
 											<button class="btn btn-primary mb-1" type="submit"><?php echo getLabels('Search'); ?></button>
-											<a class="btn btn-dark mb-1 steamerst_link" href="<?php echo url($route_prefix, 'themes'); ?>"><?php echo getLabels('show_all'); ?></a>
+											<a class="btn btn-dark mb-1 steamerst_link" href="<?php echo url($route_prefix, 'perspectives'); ?>"><?php echo getLabels('show_all'); ?></a>
 										</div>
 									</div>
 								</div>
@@ -68,8 +68,8 @@
 								<table class="table">
 									<thead class="thead-light">
 										<tr>
-										   <th> <?php echo getLabels('theme_name'); ?> </th>
-											<th class="text-center"> <?php echo getLabels('status'); ?> </th>
+										   <th> <?php echo getLabels('name'); ?> </th>
+										   <th class="text-center"> <?php echo getLabels('status'); ?> </th>
 											<th> <?php echo getLabels('action'); ?> </th>
 										</tr>
 									</thead>
@@ -77,16 +77,15 @@
 										<?php if(!$data->isEmpty()): ?>
 											<?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 												<tr class="odd gradeX">
-													<td><?php echo $val->theme_name; ?></td>
-													
+													<td><?php echo $val->name; ?></td>
 													<td class="text-center"><?php echo config('constants.MASTER_STATUS.'.$val->status); ?></td>
 													<td>
 														<a href="javascript:void(0);" onclick="updatetheme(<?php echo $val->id; ?>)"><i class="heading-icon simple-icon-pencil"></i></a>
 														<?php
-															$remove_url = url("theme/remove/".$val->id); 
+															$remove_url = url("perspective/remove/".$val->id); 
 															$remove_msg = getLabels('are_you_sure?'); 
 														?>
-														<a onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);"><i class="simple-icon-trash heading-icon"></i></a>
+														<!--<a onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);"><i class="simple-icon-trash heading-icon"></i></a>-->
 														
 													</td>
 												</tr>
@@ -118,8 +117,8 @@
             </div>
         </div>
     </main>
-    <?php echo $__env->make('Element/department/addtheme', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
-    <?php echo $__env->make('Element/department/updatetheme', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    <?php echo $__env->make('Element/department/addperspective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
+    <?php echo $__env->make('Element/department/updateperspective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <?php echo $__env->make('Element/js/includejs', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
     <script type="text/javascript">
     	function addTheme(){
@@ -130,11 +129,11 @@
     		var token = "<?php echo csrf_token(); ?>";
 	        $.ajax({
 	            type:"POST",
-	            url: "<?php echo url('single-theme-details'); ?>"+"/"+id,
+	            url: "<?php echo url('single-perspective-details'); ?>"+"/"+id,
 	            data:'_token='+token,
 	            dataType:'JSON',
 	            success: function (response) {
-	            	$("#inputThemeName").val(response.theme_name);
+	            	$("#inputThemeName").val(response.name);
 	            	$("#theme_status").val(response.status);
 	            	$("#updatetheme").modal("show");
 	            }

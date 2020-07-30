@@ -411,12 +411,21 @@ class InitiativeController extends Controller
 	public function remove_milestone($id = null){
 		$data = Milestones::destroy($id);
 		
-//return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'initiative'));
+		if($data){
+			return response()->json(array("type" => "success", "url" => 'comment_remove', "popup_name" => 'initiative'));
+		}else{
+			return response()->json(array("type" => "error", "url" => 'close_modal', "popup_name" => 'initiative'));
+		}
+		return json_encode($results);
+	}
+
+	public function remove_tasks($id = null){
+		$data = Tasks::destroy($id);
 		
 		if($data){
-			$results = array("type" => "success", "url" => url('initiatives'), "message" => getLabels('milestone_removed'));
+			return response()->json(array("type" => "success", "url" => 'comment_remove', "popup_name" => 'initiative'));
 		}else{
-			$results = array("type" => "error", "url" => url('initiatives'), "message" => getLabels('milestone_not_removed'));
+			return response()->json(array("type" => "error", "url" => 'close_modal', "popup_name" => 'initiative'));
 		}
 		return json_encode($results);
 	}

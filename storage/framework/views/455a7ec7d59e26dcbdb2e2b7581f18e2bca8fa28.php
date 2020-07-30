@@ -82,6 +82,13 @@
 													<td class="text-center"><?php echo config('constants.MASTER_STATUS.'.$val->status); ?></td>
 													<td>
 														<a href="javascript:void(0);" onclick="updatescorecard(<?php echo $val->id; ?>)"><i class="heading-icon simple-icon-pencil"></i></a>
+														
+														<?php
+															$remove_url = url("scorecard/remove/".$val->id); 
+															$remove_msg = getLabels('are_you_sure?'); 
+														?>
+														<a onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);"><i class="simple-icon-trash heading-icon"></i></a>
+														 
 													</td>
 												</tr>
 											<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
@@ -120,6 +127,21 @@
     		$("#addscorecards").modal("show");
     	}
     	function updatescorecard(id){
+    		$(".scorecard_id").val(id);
+    		var token = "<?php echo csrf_token(); ?>";
+	        $.ajax({
+	            type:"POST",
+	            url: "<?php echo url('single-scorecards-details'); ?>"+"/"+id,
+	            data:'_token='+token,
+	            dataType:'JSON',
+	            success: function (response) {
+	            	$("#inputScorecardName").val(response.name);
+	            	$("#scorecard_status").val(response.status);
+	            	$("#updatescorecards").modal("show");
+	            }
+	        });
+    	}
+		function deletescorecard(id){
     		$(".scorecard_id").val(id);
     		var token = "<?php echo csrf_token(); ?>";
 	        $.ajax({

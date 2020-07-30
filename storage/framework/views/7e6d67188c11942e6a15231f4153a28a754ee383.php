@@ -227,6 +227,7 @@ Website: http://www.mosaddek.com
 
 			<?php echo HTML::script('public/hierarchy/hierarchy-select.min.js'); ?>
 
+			<?php echo $__env->make('Element/js/custom_delete_modal', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 	
 			<div class="modal fade" id="showConfirmationModal" tabindex="-1" role="dialog" aria-hidden="true">
 				<div class="modal-dialog" role="document">

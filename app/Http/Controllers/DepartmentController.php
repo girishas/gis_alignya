@@ -1504,5 +1504,77 @@ class DepartmentController extends Controller
 		}
 		 return json_encode($results);
 	}
+	public function perspectivelist(){
+		$page_title = "Perspective";
+		$data  = Perspective::sortable()->where('company_id',Auth::User()->company_id);
+		
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+				
+		if(! empty($_POST)){
+			if(isset($_POST['name']) and $_POST['name'] !=''){
+				$name = $_POST['name'];
+				$this->request->session()->put('usearch.name', $name);
+				$data = $data->whereRaw('name like ?', "%{$name}%");
+			}
+			
+			if(isset($_POST['status']) and $_POST['status'] !=''){
+				$status = $_POST['status'];
+				$this->request->session()->put('usearch.status', $status);
+				$data = $data->where('status', $status);
+			}
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		$data  = $data->orderBy('id', 'desc')->paginate(config('constants.PAGINATION'));
+		
+		if(isset($_GET['s']) and $_GET['s']){
+			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		}
+		return view('frontend/departments/perspectivelist',compact('page_title','data'));
+	}
+	
+	public function perspectiveadd(){
+		$validator = Perspective::validate($this->request->all());
+		
+		if ( $validator->fails() ) {
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+		} else {
+			$formData              	= $this->request->except('_token');
+			$formData['company_id']	= Auth::User()->company_id;
+			if(isset($formData['id']) && !empty($formData['id'])){
+				$theme = Perspective::where('id',$formData['id'])->update($formData);
+				$message  = getLabels('perspective_updated_successfully');
+			}else{
+				$theme  = Perspective::create($formData);
+				$message  = getLabels('perspective_successfully');
+			}
+			if($theme){
+				return response()->json(['type' => 'success', 'url'=> url('perspectives'), 'message' => $message]);
+			}else{
+				return response()->json(['type' => 'error', 'url'=> url('perspectives'), 'message' => getLabels('something_wrong_try_again')]);
+			}
+		}
+	}
+
+	public function singleperspective($id){
+		$singletheme = Perspective::where('id',$id)->first();
+		return json_encode($singletheme);
+	}
+	
+	public function remove_perspective($id = null){
+		$data = Perspective::destroy($id);
+		if($data){
+			$results = array("type" => "success", "url" => url('perspectives'), "message" => getLabels('perspective_removed'));
+		}else{
+			$results = array("type" => "error", "url" => url('perspectives'), "message" => getLabels('perspective_not_removed'));
+			//return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+		}
+		 return json_encode($results);
+	}
 	
 }

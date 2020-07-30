@@ -233,6 +233,7 @@ class UserController extends Controller
 				if($usr_data){
 					
 					$mail_data  	= getEmailTemplate('forgot_password');
+					
 					if($mail_data){
 						$number =   rand(0,100000);
                     	$varify_hash    =   base64_encode($usr_data['id'].$usr_data['emp_code'].time());
@@ -244,14 +245,35 @@ class UserController extends Controller
                         $site_name      = config('constants.SITE_TITLE');
                         $admin_email    = config('constants.SITE_EMAIL'); 
 						if($email){
-							if(config('constants.SITE_MODE') == 'live'){
-								$message        = str_replace(array('{NAME}','{LINK}', '{SITE}'), array($usr_name, $link, $site_name),  $mail_data['content']);
-								$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data['subject']);
-								Mail::send('frontend.my_email', array('data'=>$message), function($message) use ($subject,$usr_name,$email, $site_name, $admin_email){
-									$message->from($admin_email, $site_name);
-									$message->to($email, $usr_name)->subject($subject);
-								}); 
-							}
+							//if(config('constants.SITE_MODE') == 'live'){
+								$message        = str_replace(array('{NAME}','{LINK}', '{SITE}'), array($usr_name, $link, $site_name),  $mail_data->template_body);
+								//pr($message);
+								$subject        = str_replace(array('{SITE}'), array($site_name), $mail_data->subject);
+
+							require (base_path()."/Phpmailer/Phpmailer/vendor/autoload.php");
+							$mail = new PHPMailer();                    // Enable verbose debug output
+						    $mail->isSMTP();                                            // Send using SMTP
+						    $mail->Host       = 'smtp-mail.outlook.com';                    // Set the SMTP server to send through
+						    $mail->SMTPAuth   = true;                                   // Enable SMTP authentication
+						    $mail->Username   = 'alignya@outlook.com';                     // SMTP username
+						    $mail->Password   = 'Gisllp@123';                               // SMTP password
+						    $mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
+
+						    //Recipients
+						    $mail->setFrom('alignya@outlook.com', 'Alignya');
+						    $mail->addAddress($email, $usr_name);     // Add a recipient
+						     // Add a recipient
+						    $mail->addReplyTo('dev.girishas@gmail.com', 'Gisllp');
+						   
+						    // Content
+						    $mail->isHTML(true);                                  // Set email format to HTML
+						    $mail->Subject = $subject;
+						    $mail->Body    = $message;
+						    $mail->AltBody = 'Someone want to contact you via Alignya platform. Here are the information:- Email:';
+						    $mail->send();
+						    //pr($mail);
+								
+							//}
 						}
 						return response()->json(array("type" => "success", "url" => url('login'), "message" => getLabels('email_sent_recover_pwd')));
 					}

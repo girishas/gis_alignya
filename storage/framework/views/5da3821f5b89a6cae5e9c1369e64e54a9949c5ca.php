@@ -15,11 +15,11 @@
                 	<div class="row">
                 		
                 	<div class="col-lg-6">
-                		<div class="form-group">
+                		<div class="form-group position-relative error-l-100">
                         <label>Objective Title</label>
                         <?php echo Form::text('heading',null,array('class'=>'form-control','id'=>'objective_heading_value')); ?>
 
-                       
+                       <div class="invalid-tooltip"></div>
                         <input type="hidden" name="team_type" value="department" id = "obj_teamtype_update">
                         <input type="hidden" name="team_id" value="" id = "obj_teamid_update">
                         <input type="hidden" name="department_id" value="" id = "obj_department_id_update">
@@ -29,21 +29,21 @@
                     </div>
                    
 
-                    <div class="form-group">
+                    <div class="form-group position-relative error-l-50">
                         <label>Time Period</label>
                         <select class="form-control" name="cycle_id" data-width="100%" id="timeperiodsupdate">
                         <?php $__currentLoopData = $goal_cycles; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $balue): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <option value="<?php echo $key; ?>"><?php echo $balue; ?></option>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         </select>
-                        
+                       <div class="invalid-tooltip"></div> 
                         
                     </div>
-                    <div class="form-group">
+                    <div class="form-group position-relative error-l-50">
                         <label>Perspective</label>
                         <?php echo Form::select('perspective_id',$perspectives,null,array('class'=>'form-control', 'id'=>'perspectiveId')); ?>
 
-                        
+                        <div class="invalid-tooltip"></div>
                     </div>
                     <div class="form-group">	
                         <label>Ownership</label>
@@ -61,7 +61,7 @@
                         </div>
                     </div>
 
-                   <div class="form-group">
+                   <div class="form-group position-relative error-l-50">
 						<select class="form-control" onchange="ownershipdropupdate()" name="ownership" data-width="100%" id = "ownership_update">
                             <?php if(!empty($departments)): ?>
                         	<?php $__currentLoopData = $departments; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $vale): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>

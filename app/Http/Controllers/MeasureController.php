@@ -231,24 +231,25 @@ class MeasureController extends Controller
 
 	public function addmeasure(){
 		//pr($this->request->all()); 
-		$validator = Measure::validate($this->request->all());
+		$input = $this->request->except('contributers');
+		//pr($input);
+		if($input['measure_type'] == "revenue"){
+			$input['measure_target'] = $input['revenue_target'];
+			$input['measure_actual'] = $input['revenue_actual']; 
+		}else if($input['measure_type'] == "binary"){
+			$input['measure_unit'] = 'USD';
+		}else if($input['measure_type'] == "currency"){
+			$input['measure_unit'] = 'USD';
+		}else if($input['measure_type'] == "percentage"){
+			$input['measure_unit'] = '%';
+		}
+		$validator = Measure::validate($input);
 		if($validator->fails()){
 			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
 		}else{
 			
 			
-			$input = $this->request->except('contributers');
-			//pr($input);
-			if($input['measure_type'] == "revenue"){
-				$input['measure_target'] = $input['revenue_target'];
-				$input['measure_actual'] = $input['revenue_actual']; 
-			}else if($input['measure_type'] == "binary"){
-				$input['measure_unit'] = 'USD';
-			}else if($input['measure_type'] == "currency"){
-				$input['measure_unit'] = 'USD';
-			}else if($input['measure_type'] == "percentage"){
-				$input['measure_unit'] = '%';
-			}
+			
 			  
 			//pr($input);
 			$input['user_id'] = Auth::User()->id;

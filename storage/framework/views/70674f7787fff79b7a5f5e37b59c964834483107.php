@@ -165,7 +165,7 @@
                                     
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
+                            <!--<div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
                                       <div class="row">
 
                                     <div class="col-lg-8 col-12 mb-4">
@@ -217,7 +217,7 @@
                                     </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                         </div>
 

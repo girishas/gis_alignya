@@ -1,6 +1,6 @@
 <div class="modal modal-right" id="viewmeasuremodal" role="dialog" >
         <div class="modal-dialog" style="max-width: 99.99%;">
-            <div class="modal-content">
+            <div class="modal-content" style="overflow:scroll;height:500px;">
                 <div class="modal-header">
                     <h5 class="modal-title" id="view_measure_heading"></h5>
                     <button type="button" class="close" id="view_measuremodal_hide" aria-label="Close">

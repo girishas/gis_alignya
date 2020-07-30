@@ -91,6 +91,11 @@ Route::any('goalcycle/remove/{id?}', array('as'=>'users.remove_goalcycle', 'uses
 Route::any('goalcycles/new', array('as'=>'users.goalcycleadd', 'uses'=>'DepartmentController@goalcycleadd'));
 Route::any('single-goalcycle-details/{id?}', array('as'=>'users.singlegoalcycle', 'uses'=>'DepartmentController@singlegoalcycle'));
 
+Route::any('perspectives', array('as'=>'users.perspectivelist', 'uses'=>'DepartmentController@perspectivelist'));
+Route::any('perspective/remove/{id?}', array('as'=>'users.remove_perspective', 'uses'=>'DepartmentController@remove_perspective')) ;
+Route::any('perspectives/new', array('as'=>'users.perspectiveadd', 'uses'=>'DepartmentController@perspectiveadd'));
+Route::any('single-perspective-details/{id?}', array('as'=>'users.singleperspective', 'uses'=>'DepartmentController@singleperspective'));
+
 Route::any('submitscorecard', array('as'=>'users.submitscorecard', 'uses'=>'ObjectiveController@submitscorecard'));
 Route::any('getthemes', array('as'=>'users.getthemes', 'uses'=>'ObjectiveController@getthemes'));
 Route::any('getcontributers', array('as'=>'users.getcontributers', 'uses'=>'ObjectiveController@getcontributers'));
@@ -109,6 +114,7 @@ Route::any('/measure/remove/{id?}', array('as'=>'users.remove_measure', 'uses'=>
 
 
 Route::any('/milestone/remove/{id?}', array('as'=>'users.remove_milestone', 'uses'=>'InitiativeController@remove_milestone'));
+Route::any('/tasks/remove/{id?}', array('as'=>'users.remove_tasks', 'uses'=>'InitiativeController@remove_tasks'));
 Route::any('auth/{provider?}', 'UserController@redirectToProvider');
 Route::any('auth/{provider?}/callback', 'UserController@handleProviderCallback');
 Route::any('/', array('as'=>'users.home', 'uses'=>'UserController@home'));

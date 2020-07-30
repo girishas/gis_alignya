@@ -61,7 +61,7 @@ class ObjectiveController extends Controller
 		
 		$data  = Objective::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id)->where(function($queryW){
 					$queryW->where("al_objectives.owner_user_id", Auth::User()->id)
-					->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_objectives.contributers) = 0'));
+					->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_objectives.contributers) > 0'));
 				});
 			
 		
@@ -92,8 +92,8 @@ class ObjectiveController extends Controller
 		if(isset($_GET['s']) and $_GET['s']){
 			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
 		}
-		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->pluck('cycle_name','id');
-		$perspectives = Perspective::where('company_id',Auth::User()->company_id)->pluck('name','id');
+		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id');
+		$perspectives = Perspective::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('name','id');
 
 		$contributers = User::select(DB::raw('CONCAT(first_name," ",last_name," (",role_id,")")'))->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
@@ -364,35 +364,40 @@ class ObjectiveController extends Controller
 	}
 
 	public function updateobjectivesubmit(){
-		$input = $this->request->except('contributers','scorecard_id');
-		$data = Objective::find($input['id']);
-		$input['user_id'] = Auth::User()->id;
-		$input['company_id'] = Auth::User()->company_id;
-		if($this->request->get('team_type') == 'team'){
-			$owner_user_id = TeamsMembers::where('team_id',$this->request->get('team_id'))->where('is_head',1)->value('member_id');
-			$input['owner_user_id'] = $owner_user_id;
-		}elseif($this->request->get('team_type') == 'department'){
-			$owner_user_id = DepartmentMember::where('department_id',$this->request->get('department_id'))->where('is_head',1)->value('member_id');
-			$input['owner_user_id'] = $owner_user_id;
-		}
-		if($this->request->get('contributers')){
-			$input['contributers'] = implode(',', $this->request->get('contributers'));
-		}
-		if($this->request->get('scorecard_id')){
-			$input['scorecard_id'] = implode(',', $this->request->get('scorecard_id'));
-		}
-		//pr($input);
-		$objective = $data->update($input);
-		if($objective){
-			if($this->request->get('is_popup')){
-
-				return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'objective'));
-			}else{
-
-				return response()->json(array("type" => "success", "url" => url('Objectives'), "message" => getLabels('measure_update_successfully')));
-			}
+		$validator = Objective::validate($this->request->all());
+		if($validator->fails()){
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
 		}else{
-			return redirect()->back()->with('objective_add_error',getLabels('something_wen_wrong'));
+			$input = $this->request->except('contributers','scorecard_id');
+			$data = Objective::find($input['id']);
+			$input['user_id'] = Auth::User()->id;
+			$input['company_id'] = Auth::User()->company_id;
+			if($this->request->get('team_type') == 'team'){
+				$owner_user_id = TeamsMembers::where('team_id',$this->request->get('team_id'))->where('is_head',1)->value('member_id');
+				$input['owner_user_id'] = $owner_user_id;
+			}elseif($this->request->get('team_type') == 'department'){
+				$owner_user_id = DepartmentMember::where('department_id',$this->request->get('department_id'))->where('is_head',1)->value('member_id');
+				$input['owner_user_id'] = $owner_user_id;
+			}
+			if($this->request->get('contributers')){
+				$input['contributers'] = implode(',', $this->request->get('contributers'));
+			}
+			if($this->request->get('scorecard_id')){
+				$input['scorecard_id'] = implode(',', $this->request->get('scorecard_id'));
+			}
+			//pr($input);
+			$objective = $data->update($input);
+			if($objective){
+				if($this->request->get('is_popup')){
+
+					return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'objective'));
+				}else{
+
+					return response()->json(array("type" => "success", "url" => url('objectives'), "message" => getLabels('objective_updated_successfully')));
+				}
+			}else{
+				return redirect()->back()->with('objective_add_error',getLabels('something_went_wrong'));
+			}
 		}
 	} 
 
@@ -406,6 +411,7 @@ class ObjectiveController extends Controller
 
 	public function remove_objective($id = null){		
 		$data = Objective::destroy($id);
+		$delete_measure = Measure::where('objective_id',$id)->delete();
 		if($data){
 			$results = array("type" => "success", "url" => url('objectives'), "message" => getLabels('objective_removed'));
 		}else{

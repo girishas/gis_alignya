@@ -26,14 +26,14 @@
                     </div>
                      <div class="form-group ">
                         <label>Start Date</label>
-                        <?php echo Form::text('start_date', null, array('class'=>'form-control datepicker')); ?>
+                        <?php echo Form::text('start_date', null, array('class'=>'form-control datepicker','required'=>'required')); ?>
 
                         
                         <div class="invalid-tooltip"></div>
                         </div>
                         <div class="form-group ">
                             <label>End Date</label>
-                        <?php echo Form::text('end_date', null, array('class'=>'form-control datepicker')); ?>
+                        <?php echo Form::text('end_date', null, array('class'=>'form-control datepicker','required'=>'required')); ?>
 
                             <div class="invalid-tooltip"></div>
                         </div>

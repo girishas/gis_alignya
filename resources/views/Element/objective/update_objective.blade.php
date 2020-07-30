@@ -14,10 +14,10 @@
                 	<div class="row">
                 		
                 	<div class="col-lg-6">
-                		<div class="form-group">
+                		<div class="form-group position-relative error-l-100">
                         <label>Objective Title</label>
                         {!!Form::text('heading',null,array('class'=>'form-control','id'=>'objective_heading_value'))!!}
-                       
+                       <div class="invalid-tooltip"></div>
                         <input type="hidden" name="team_type" value="department" id = "obj_teamtype_update">
                         <input type="hidden" name="team_id" value="" id = "obj_teamid_update">
                         <input type="hidden" name="department_id" value="" id = "obj_department_id_update">
@@ -27,20 +27,20 @@
                     </div>
                    
 
-                    <div class="form-group">
+                    <div class="form-group position-relative error-l-50">
                         <label>Time Period</label>
                         <select class="form-control" name="cycle_id" data-width="100%" id="timeperiodsupdate">
                         @foreach($goal_cycles as $key => $balue)
                             <option value="{!!$key!!}">{!!$balue!!}</option>
                         @endforeach
                         </select>
-                        
+                       <div class="invalid-tooltip"></div> 
                         
                     </div>
-                    <div class="form-group">
+                    <div class="form-group position-relative error-l-50">
                         <label>Perspective</label>
                         {!!Form::select('perspective_id',$perspectives,null,array('class'=>'form-control', 'id'=>'perspectiveId'))!!}
-                        
+                        <div class="invalid-tooltip"></div>
                     </div>
                     <div class="form-group">	
                         <label>Ownership</label>
@@ -58,7 +58,7 @@
                         </div>
                     </div>
 
-                   <div class="form-group">
+                   <div class="form-group position-relative error-l-50">
 						<select class="form-control" onchange="ownershipdropupdate()" name="ownership" data-width="100%" id = "ownership_update">
                             @if(!empty($departments))
                         	@foreach($departments as $key => $vale)

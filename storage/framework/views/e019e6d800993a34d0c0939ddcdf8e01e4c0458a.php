@@ -67,7 +67,7 @@
                                     <?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <?php
                                                     $remove_url = url("initiative/remove/".$value->id); 
-                                                    $remove_msg = getLabels('are_you_sure'); ?>
+                                                    $remove_msg = getLabels('are_you_sure?'); ?>
                                                 <tr>
                                                     <td><a href="javascript:void(0);" onclick="view_initiativepop('<?php echo $value->id; ?>')"> <i class="<?php echo $value->status_icon; ?> heading-icon" style="color:<?php echo $value->bg_color; ?>;"></i><?php echo $value->heading; ?></td>
                                                     <td>FY<?php echo $value->measure_cycle_year; ?>-<?php echo config('constants.Quarter.'.$value->measure_cycle_quarter); ?></td>

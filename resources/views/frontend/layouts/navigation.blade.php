@@ -139,11 +139,11 @@
                     </li><?php
 					$class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['perspectives']))?"active":""; ?>
 						
-                    <!--<li class="{!! $class_subnav !!}">
+                    <li class="{!! $class_subnav !!}">
                          <a href="{!! url($route_prefix, 'perspectives') !!}" class="steamerst_link" data-main-link="st_settings">
                             <i class="simple-icon-cursor"></i> <span class="d-inline-block">{!! getLabels('perspectives') !!}</span>
                         </a>
-                    </li>-->
+                    </li>
                 </ul>
                 <ul class="list-unstyled" data-link="roadmap_manager"><?php
 					$class_subnav  = ($controller == "DepartmentController

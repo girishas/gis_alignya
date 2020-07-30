@@ -383,10 +383,11 @@ $(document).ready(function(){
                     data:'_token='+token+'&company_id='+company_id,
                     dataType:'JSON',
                     success: function (scorecards) {
+					//alert(scorecards);
                         for (var scs in scorecards) {
                           if (scorecards.hasOwnProperty(scs)) {
                             var vals = scorecards[scs];
-                            if(selectedscorecard.indexOf(scs) != -1){
+                            if(selectedscorecard && selectedscorecard.indexOf(scs) != -1){
                                 $("#scorecardsliupdate").append('<option value = "'+scs+'" selected="selected">'+vals+'</option>');
                             }else{
                                 $("#scorecardsliupdate").append('<option value = "'+scs+'">'+vals+'</option>');
@@ -424,7 +425,7 @@ $(document).ready(function(){
                         for (var contri in contributers) {
                           if (contributers.hasOwnProperty(contri)) {
                             var con = contributers[contri];
-                            if(selectedcontributers.indexOf(contri) != -1){
+                            if(selectedscorecard && selectedcontributers.indexOf(contri) != -1){
                                 $("#contributersupdate").append('<option value = "'+contri+'" selected="selected">'+con+'</option>');
                             }else{
                                 $("#contributersupdate").append('<option value = "'+contri+'">'+con+'</option>');

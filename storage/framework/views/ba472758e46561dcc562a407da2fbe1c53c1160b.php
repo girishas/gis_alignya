@@ -213,7 +213,7 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data){
             },
             ticks: {
               beginAtZero: true,
-              stepSize: 50,
+              stepSize: max_value/10,
               min: 0,
               max: parseInt(max_value),
               padding: 20
@@ -504,12 +504,15 @@ function updateMeasure(id){
                 var initiative =response.initiatives; 
                 $("#initiativeheading").html('<i class="'+initiative.status_icon+' heading-icon" style="color:'+initiative.bg_color+';"></i>'+initiative.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+initiative.measure_cycle_year+'-'+getQuarter(initiative.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+initiative.owner_name )
                 chartload(response.milestones);
+				        remove_msg = 'Are you sure?';
                 for(var i = 0; i < response.milestones.length; i++){
-                    $("#initiativemilestonelist").append('<tr><td>'+response.milestones[i].name+'</td><td>'+response.milestones[i].fromDate+'</td><td>'+response.milestones[i].toDate+'</td><td><a href="javascript:void(0);" onclick="updatemilestoneini('+response.milestones[i].id+')"><i class="simple-icon-pencil"></i></a></td></tr>');
+					          remove_url = '<?php echo url("milestone/remove/'+response.milestones[i].id+'"); ?>';
+                    $("#initiativemilestonelist").append('<tr><td>'+response.milestones[i].name+'</td><td>'+response.milestones[i].fromDate+'</td><td>'+response.milestones[i].toDate+'</td><td><a href="javascript:void(0);" onclick="updatemilestoneini('+response.milestones[i].id+')"><i class="heading-icon simple-icon-pencil"></i></a>  <a onclick = \'showDeleteConfirmationModal("Remove", "'+ remove_msg +'", "'+ remove_url +'");\' href="javascript:void(0);"><i class="heading-icon simple-icon-trash"></i></a></td></tr>');
 
                 }
                 for(var i = 0; i < response.tasklist.length; i++){
-                    $("#initiativetasklistview").append('<tr><td>'+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background-color:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"> <i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a></td></tr>');
+                    remove_url = '<?php echo url("tasks/remove/'+response.tasklist[i].id+'"); ?>';
+                    $("#initiativetasklistview").append('<tr><td>'+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background-color:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"> <i class="heading-icon simple-icon-pencil" style="cursor: pointer;"></i></a> <a onclick = \'showDeleteConfirmationModal("Remove", "'+ remove_msg +'", "'+ remove_url +'");\' href="javascript:void(0);"><i class="heading-icon simple-icon-trash"></i></a></td></tr>');
 
                 }
             }
@@ -688,4 +691,41 @@ function updateMeasure(id){
             }  
         });
     }
+
+
+    // delete popup JSON
+
+$("body").on('click', ".alignya_status", function(e) {
+  $('.modal').modal('hide');
+  pageUrl = $(this).attr('href');
+  pageUrlpost = $(this).attr('data-link');
+   $.ajax({
+    type:"GET",
+        url: pageUrl,
+    dataType:"json",
+    beforeSend: function(){
+      $('body').addClass('show-spinner');
+    },
+        success: function (data) {
+      pageUrl = data.url;
+      if(pageUrl == 'comment_remove'){
+        if(data.type == 'error') return false;
+        if(data.popup_name == 'initiative'){
+          view_initiativepop(localStorage.getItem('popup_id'))
+        }
+        
+      }
+      
+      $('body').removeClass("show-spinner");
+        }
+    });
+   
+    e.preventDefault();
+});
+function showDeleteConfirmationModal(title, message, url){
+    $('#modalTitle1').html(title);
+    $('#modalBody1').html(message);
+    $('#confirmURL1').attr('href', url);
+    $('#showDeleteConfirmationModal').modal('show');
+  }
 </script>

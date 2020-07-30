@@ -43,7 +43,7 @@
                        
                         <?php if(Auth::User()->role_id == 1): ?>
                          <div class="col-md-3 col-lg-2 col-sm-4 col-6 mb-4">
-                                        <a href="<?php echo url($route_prefix.'/companies'); ?>" class="card">
+                                        <a href="" class="card">
                                             <div class="card-body text-center">
                                                 <i class="iconsminds-male-female"></i>
                                                 <p class="card-text mb-0">Company</p>
@@ -52,7 +52,7 @@
                                         </a>
                                 </div>
                                 <div class="col-md-3 col-lg-2 col-sm-4 col-6 mb-4">
-                                        <a href="<?php echo url('measures'); ?>" class="card">
+                                        <a href="" class="card">
                                             <div class="card-body text-center">
                                                 <i class="iconsminds-money-bag"></i>
                                                 <p class="card-text mb-0">Transactions</p>

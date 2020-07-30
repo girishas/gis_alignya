@@ -18,7 +18,7 @@
                     <div class="col-lg-12">
                         <div class="form-group">
                         <label>Milestone Name</label>
-                        <?php echo Form::text('milestone_name', null, array('class'=>'form-control','id'=>'milestonenameini')); ?>
+                        <?php echo Form::text('milestone_name', null, array('class'=>'form-control','id'=>'milestonenameini','required'=>'required')); ?>
 
                         <input type="hidden" name="initiative_id" id="ini_idformilestoneup">
                         <input type="hidden" name="id" id="milestone_id_ini">
@@ -26,14 +26,14 @@
                     </div>
                      <div class="form-group ">
                         <label>Start Date</label>
-                        <?php echo Form::text('start_date', null, array('class'=>'form-control datepicker','id'=>'start_date_ini')); ?>
+                        <?php echo Form::text('start_date', null, array('class'=>'form-control datepicker','required'=>'required','id'=>'start_date_ini')); ?>
 
                         
                         <div class="invalid-tooltip"></div>
                         </div>
                         <div class="form-group ">
                             <label>End Date</label>
-                        <?php echo Form::text('end_date', null, array('class'=>'form-control datepicker','id'=>'end_date_ini')); ?>
+                        <?php echo Form::text('end_date', null, array('class'=>'form-control datepicker','required'=>'required','id'=>'end_date_ini')); ?>
 
                             <div class="invalid-tooltip"></div>
                         </div>
