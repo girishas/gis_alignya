@@ -6,9 +6,9 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
-                    <h1>{!! getLabels('themes') !!}</h1>
+                    <h1>{!! getLabels('goal_cycles') !!}</h1>
                      <div class="float-md-right">
-                     		<button type="button" class="btn btn-outline-primary mb-1" onclick="addTheme()">Add Theme</button>
+                     		<button type="button" class="btn btn-outline-primary mb-1" onclick="addTheme()">Add Goal Cycle</button>
                         </div>
 					
                     <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
@@ -17,7 +17,7 @@
                                 <a class="steamerst_link" href="{!! url($route_prefix, 'dashboard') !!}">{!! getLabels('Dashboard') !!}</a>
                             </li>
                             
-                            <li class="breadcrumb-item active" aria-current="page">{!! getLabels('themes') !!}</li>
+                            <li class="breadcrumb-item active" aria-current="page">{!! getLabels('goal_cycles') !!}</li>
                         </ol>
                     </nav>
                     <div class="separator mb-5"></div>
@@ -30,12 +30,12 @@
                         <div class="card-body">
 
                             <h5 class="mb-4">{!! getLabels('Search') !!}</h5>
-                            {!! Form::open(array('url' => array($route_prefix.'/themes'), 'class' =>'steamerstudio_searchform', 'name'=>'Search')) !!}
+                            {!! Form::open(array('url' => array($route_prefix.'/goalcycles'), 'class' =>'steamerstudio_searchform', 'name'=>'Search')) !!}
 								<div class="form-body">
 									<div class="row">
 										<div class="col-lg-3">
 											<div class="form-group">
-												{!! Form::text('name', isset($_POST['name'])?trim($_POST['name']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_name')))!!}
+												{!! Form::text('goalcycle_name', isset($_POST['goalcycle_name'])?trim($_POST['goalcycle_name']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_cycle')))!!}
 											</div>
 										</div>
 										
@@ -47,7 +47,7 @@
 										
 										<div class="col-lg-3">               
 											<button class="btn btn-primary mb-1" type="submit">{!! getLabels('Search') !!}</button>
-											<a class="btn btn-dark mb-1 steamerst_link" href="{!! url($route_prefix, 'themes') !!}">{!! getLabels('show_all') !!}</a>
+											<a class="btn btn-dark mb-1 steamerst_link" href="{!! url($route_prefix, 'goalcycles') !!}">{!! getLabels('show_all') !!}</a>
 										</div>
 									</div>
 								</div>
@@ -65,7 +65,8 @@
 								<table class="table">
 									<thead class="thead-light">
 										<tr>
-										   <th> {!! getLabels('theme_name') !!} </th>
+										   <th> {!! getLabels('cycle_name') !!} </th>
+										   <th> {!! getLabels('no_of_months') !!} </th>
 											<th class="text-center"> {!! getLabels('status')!!} </th>
 											<th> {!! getLabels('action') !!} </th>
 										</tr>
@@ -74,16 +75,17 @@
 										@if(!$data->isEmpty())
 											@foreach($data as $val)
 												<tr class="odd gradeX">
-													<td>{!! $val->theme_name!!}</td>
+													<td>{!! $val->cycle_name!!}</td>
+													<td>{!! $val->no_months!!}</td>
 													
 													<td class="text-center">{!!config('constants.MASTER_STATUS.'.$val->status)!!}</td>
 													<td>
 														<a href="javascript:void(0);" onclick="updatetheme({!!$val->id!!})"><i class="heading-icon simple-icon-pencil"></i></a>
 														<?php
-															$remove_url = url("theme/remove/".$val->id); 
+															$remove_url = url("goalcycle/remove/".$val->id); 
 															$remove_msg = getLabels('are_you_sure?'); 
 														?>
-														<a onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);"><i class="simple-icon-trash heading-icon"></i></a>
+														<!--<a onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);"><i class="simple-icon-trash heading-icon"></i></a>-->
 														
 													</td>
 												</tr>
@@ -114,8 +116,8 @@
             </div>
         </div>
     </main>
-    @include('Element/department/addtheme')
-    @include('Element/department/updatetheme')
+    @include('Element/department/addgoalcycle')
+    @include('Element/department/updategoalcycle')
     @include('Element/js/includejs')
     <script type="text/javascript">
     	function addTheme(){
@@ -126,11 +128,12 @@
     		var token = "{!!csrf_token()!!}";
 	        $.ajax({
 	            type:"POST",
-	            url: "{!!url('single-theme-details')!!}"+"/"+id,
+	            url: "{!!url('single-goalcycle-details')!!}"+"/"+id,
 	            data:'_token='+token,
 	            dataType:'JSON',
 	            success: function (response) {
-	            	$("#inputThemeName").val(response.theme_name);
+	            	$("#inputThemeName").val(response.cycle_name);
+	            	$("#inputMonths").val(response.no_months);
 	            	$("#theme_status").val(response.status);
 	            	$("#updatetheme").modal("show");
 	            }

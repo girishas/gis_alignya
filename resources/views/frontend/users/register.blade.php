@@ -78,7 +78,7 @@
 											</div>
 											<div class="custom-control custom-radio">
 												<input type="radio" id="yearlyplan" name="plan_type" class="custom-control-input plan_type" value="2">
-												<label class="custom-control-label" for="yearlyplan">Yerly</label>
+												<label class="custom-control-label" for="yearlyplan">Yearly</label>
 											</div>
 										</div>
 										<div class="monthlyshow">

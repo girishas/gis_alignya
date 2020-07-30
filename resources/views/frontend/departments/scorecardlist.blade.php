@@ -79,6 +79,13 @@
 													<td class="text-center">{!!config('constants.MASTER_STATUS.'.$val->status)!!}</td>
 													<td>
 														<a href="javascript:void(0);" onclick="updatescorecard({!!$val->id!!})"><i class="heading-icon simple-icon-pencil"></i></a>
+														
+														<?php
+															$remove_url = url("scorecard/remove/".$val->id); 
+															$remove_msg = getLabels('are_you_sure?'); 
+														?>
+														<a onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);"><i class="simple-icon-trash heading-icon"></i></a>
+														 
 													</td>
 												</tr>
 											@endforeach
@@ -116,6 +123,21 @@
     		$("#addscorecards").modal("show");
     	}
     	function updatescorecard(id){
+    		$(".scorecard_id").val(id);
+    		var token = "{!!csrf_token()!!}";
+	        $.ajax({
+	            type:"POST",
+	            url: "{!!url('single-scorecards-details')!!}"+"/"+id,
+	            data:'_token='+token,
+	            dataType:'JSON',
+	            success: function (response) {
+	            	$("#inputScorecardName").val(response.name);
+	            	$("#scorecard_status").val(response.status);
+	            	$("#updatescorecards").modal("show");
+	            }
+	        });
+    	}
+		function deletescorecard(id){
     		$(".scorecard_id").val(id);
     		var token = "{!!csrf_token()!!}";
 	        $.ajax({

@@ -1261,6 +1261,7 @@ class DepartmentController extends Controller
 		$createSubscription = Subscription::create($subscriptionarray);
 		return redirect()->back()->with('message','Membership Plan Upgrade Successfully');
 	}
+	
 
 	public function scorecardlist(){
 		$page_title = "Scorecards";
@@ -1297,6 +1298,46 @@ class DepartmentController extends Controller
 		}
 		return view('frontend/departments/scorecardlist',compact('page_title','data'));
 	}
+	
+	public function remove_scorecard($id = null){
+		$data = Scorecard::destroy($id);
+		if($data){
+			$objective_data = Objective::where('company_id',Auth::User()->company_id)->whereRaw("find_in_set(".$id.",scorecard_id) >0")->get();
+			foreach($objective_data as $key=>$val){
+				$scorecard_ids = !empty($val->scorecard_id)?explode(',',$val->scorecard_id):array();
+				foreach($scorecard_ids as $k=>$v){
+					if($id == $v){
+						unset($scorecard_ids[$k]);
+					}
+				}
+				if(empty($scorecard_ids)){
+					$new_scorecard_ids='';
+				}else{
+					$new_scorecard_ids = implode(',',$scorecard_ids);
+				}
+				
+				Objective::where('id',$val->id)->update(array('scorecard_id'=>$new_scorecard_ids));
+			}
+			$results = array("type" => "success", "url" => url('scorecards'), "message" => getLabels('scorecard_removed'));
+		}else{
+			$results = array("type" => "error", "url" => url('scorecards'), "message" => getLabels('scorecard_not_removed'));
+			//return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+		}
+		 return json_encode($results);
+	}
+	
+	public function remove_theme($id = null){
+		$data = Theme::destroy($id);
+		if($data){
+			$theme_data = Objective::where('company_id',Auth::User()->company_id)->where('theme_id',$id)->update(array('theme_id'=>null));
+			$results = array("type" => "success", "url" => url('themes'), "message" => getLabels('theme_removed'));
+		}else{
+			$results = array("type" => "error", "url" => url('themes'), "message" => getLabels('theme_not_removed'));
+			//return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+		}
+		 return json_encode($results);
+	}
+	
 
 	public function scorecardadd(){
 		$validator = Scorecard::validateadd($this->request->all());
@@ -1353,7 +1394,6 @@ class DepartmentController extends Controller
 			$this->request->session()->forget('usearch');
 		}
 		
-		
 		$data  = $data->orderBy('id', 'desc')->paginate(config('constants.PAGINATION'));
 		
 		if(isset($_GET['s']) and $_GET['s']){
@@ -1361,7 +1401,8 @@ class DepartmentController extends Controller
 		}
 		return view('frontend/departments/themelist',compact('page_title','data'));
 	}
-
+	
+	
 	public function themeadd(){
 		$validator = Theme::validateadd($this->request->all());
 		
@@ -1384,9 +1425,84 @@ class DepartmentController extends Controller
 			}
 		}
 	}
+	
 
 	public function singletheme($id){
 		$singletheme = Theme::where('id',$id)->first();
 		return json_encode($singletheme);
 	}
+	
+	public function goalcyclelist(){
+		$page_title = "Goal Cycle";
+		$data  = GoalCycles::sortable()->where('company_id',Auth::User()->company_id);
+		
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+				
+		if(! empty($_POST)){
+			if(isset($_POST['goalcycle_name']) and $_POST['goalcycle_name'] !=''){
+				$theme_name = $_POST['goalcycle_name'];
+				$this->request->session()->put('usearch.goalcycle_name', $theme_name);
+				$data = $data->whereRaw('cycle_name like ?', "%{$theme_name}%");
+			}
+			
+			if(isset($_POST['status']) and $_POST['status'] !=''){
+				$status = $_POST['status'];
+				$this->request->session()->put('usearch.status', $status);
+				$data = $data->where('status', $status);
+			}
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		$data  = $data->orderBy('id', 'desc')->paginate(config('constants.PAGINATION'));
+		
+		if(isset($_GET['s']) and $_GET['s']){
+			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		}
+		return view('frontend/departments/goalcyclelist',compact('page_title','data'));
+	}
+	
+	public function goalcycleadd(){
+		$validator = GoalCycles::validateadd($this->request->all());
+		
+		if ( $validator->fails() ) {
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+		} else {
+			$formData              	= $this->request->except('_token');
+			$formData['company_id']	= Auth::User()->company_id;
+			if(isset($formData['id']) && !empty($formData['id'])){
+				$theme = GoalCycles::where('id',$formData['id'])->update($formData);
+				$message  = getLabels('Goal_cycle_updated_successfully');
+			}else{
+				$theme  = GoalCycles::create($formData);
+				$message  = getLabels('Goal_added_successfully');
+			}
+			if($theme){
+				return response()->json(['type' => 'success', 'url'=> url('goalcycles'), 'message' => $message]);
+			}else{
+				return response()->json(['type' => 'error', 'url'=> url('goalcycles'), 'message' => getLabels('something_wrong_try_again')]);
+			}
+		}
+	}
+
+	public function singlegoalcycle($id){
+		$singletheme = GoalCycles::where('id',$id)->first();
+		return json_encode($singletheme);
+	}
+	
+	public function remove_goalcycle($id = null){
+		$data = GoalCycles::destroy($id);
+		if($data){
+			$results = array("type" => "success", "url" => url('goalcycles'), "message" => getLabels('goal_removed'));
+		}else{
+			$results = array("type" => "error", "url" => url('goalcycles'), "message" => getLabels('goal_not_removed'));
+			//return redirect()->back()->with('adderrormessage',getLabels('something_wen_wrong'));
+		}
+		 return json_encode($results);
+	}
+	
 }

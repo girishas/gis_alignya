@@ -504,8 +504,10 @@ function updateMeasure(id){
                 var initiative =response.initiatives; 
                 $("#initiativeheading").html('<i class="'+initiative.status_icon+' heading-icon" style="color:'+initiative.bg_color+';"></i>'+initiative.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+initiative.measure_cycle_year+'-'+getQuarter(initiative.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+initiative.owner_name )
                 chartload(response.milestones);
+				remove_msg = 'Are you sure?';
                 for(var i = 0; i < response.milestones.length; i++){
-                    $("#initiativemilestonelist").append('<tr><td>'+response.milestones[i].name+'</td><td>'+response.milestones[i].fromDate+'</td><td>'+response.milestones[i].toDate+'</td><td><a href="javascript:void(0);" onclick="updatemilestoneini('+response.milestones[i].id+')"><i class="simple-icon-pencil"></i></a></td></tr>');
+					remove_url = '{!!url("milestone/remove/'+response.milestones[i].id+'")!!}';
+                    $("#initiativemilestonelist").append('<tr><td>'+response.milestones[i].name+'</td><td>'+response.milestones[i].fromDate+'</td><td>'+response.milestones[i].toDate+'</td><td><a href="javascript:void(0);" onclick="updatemilestoneini('+response.milestones[i].id+')"><i class="simple-icon-pencil"></i></a>  <a onclick = \'showConfirmationModal("Remove", "'+ remove_msg +'", "'+ remove_url +'");\' href="javascript:void(0);"><i class="simple-icon-trash"></i></a></td></tr>');
 
                 }
                 for(var i = 0; i < response.tasklist.length; i++){

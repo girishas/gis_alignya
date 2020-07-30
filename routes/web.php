@@ -78,10 +78,18 @@ Route::any('getscorecards', array('as'=>'users.getscorecards', 'uses'=>'Objectiv
 Route::any('getcontributersforobjective', array('as'=>'users.getcontributersforobjective', 'uses'=>'ObjectiveController@getcontributersforobjective'));
 Route::any('scorecards', array('as'=>'users.scorecardlist', 'uses'=>'DepartmentController@scorecardlist'));
 Route::any('scorecards/new', array('as'=>'users.scorecardadd', 'uses'=>'DepartmentController@scorecardadd'));
+Route::any('scorecard/remove/{id?}', array('as'=>'users.remove_scorecard', 'uses'=>'DepartmentController@remove_scorecard')) ;
 Route::any('single-scorecards-details/{id?}', array('as'=>'users.singlescorecard', 'uses'=>'DepartmentController@singlescorecard'));
+
 Route::any('themes', array('as'=>'users.themelist', 'uses'=>'DepartmentController@themelist'));
+Route::any('theme/remove/{id?}', array('as'=>'users.remove_theme', 'uses'=>'DepartmentController@remove_theme')) ;
 Route::any('themes/new', array('as'=>'users.themeadd', 'uses'=>'DepartmentController@themeadd'));
 Route::any('single-theme-details/{id?}', array('as'=>'users.singletheme', 'uses'=>'DepartmentController@singletheme'));
+
+Route::any('goalcycles', array('as'=>'users.goalcyclelist', 'uses'=>'DepartmentController@goalcyclelist'));
+Route::any('goalcycle/remove/{id?}', array('as'=>'users.remove_goalcycle', 'uses'=>'DepartmentController@remove_goalcycle')) ;
+Route::any('goalcycles/new', array('as'=>'users.goalcycleadd', 'uses'=>'DepartmentController@goalcycleadd'));
+Route::any('single-goalcycle-details/{id?}', array('as'=>'users.singlegoalcycle', 'uses'=>'DepartmentController@singlegoalcycle'));
 
 Route::any('submitscorecard', array('as'=>'users.submitscorecard', 'uses'=>'ObjectiveController@submitscorecard'));
 Route::any('getthemes', array('as'=>'users.getthemes', 'uses'=>'ObjectiveController@getthemes'));
@@ -97,7 +105,10 @@ Route::any('submitaddcycle', array('as'=>'users.submitaddcycle', 'uses'=>'Object
 Route::any('getMeasureCycles', array('as'=>'users.getMeasureCycles', 'uses'=>'MeasureController@getMeasureCycles'));
 Route::any('/initiative/remove/{id?}', array('as'=>'users.remove_initiative', 'uses'=>'InitiativeController@remove_initiative'));
 Route::any('/objective/remove/{id?}', array('as'=>'users.remove_objective', 'uses'=>'ObjectiveController@remove_objective'));
-Route::any('/measure/remove/{id?}', array('as'=>'users.remove_measure', 'uses'=>'MeasureController@remove_measure'));
+Route::any('/measure/remove/{id?}', array('as'=>'users.remove_measure', 'uses'=>'MeasureController@remove_measure')) ;
+
+
+Route::any('/milestone/remove/{id?}', array('as'=>'users.remove_milestone', 'uses'=>'InitiativeController@remove_milestone'));
 Route::any('auth/{provider?}', 'UserController@redirectToProvider');
 Route::any('auth/{provider?}/callback', 'UserController@handleProviderCallback');
 Route::any('/', array('as'=>'users.home', 'uses'=>'UserController@home'));

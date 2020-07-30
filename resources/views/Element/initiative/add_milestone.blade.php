@@ -24,13 +24,13 @@
                     </div>
                      <div class="form-group ">
                         <label>Start Date</label>
-                        {!!Form::text('start_date', null, array('class'=>'form-control datepicker'))!!}
+                        {!!Form::text('start_date', null, array('class'=>'form-control datepicker','required'=>'required'))!!}
                         
                         <div class="invalid-tooltip"></div>
                         </div>
                         <div class="form-group ">
                             <label>End Date</label>
-                        {!!Form::text('end_date', null, array('class'=>'form-control datepicker'))!!}
+                        {!!Form::text('end_date', null, array('class'=>'form-control datepicker','required'=>'required'))!!}
                             <div class="invalid-tooltip"></div>
                         </div>
                         <div class="form-group ">

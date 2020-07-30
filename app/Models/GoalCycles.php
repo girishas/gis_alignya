@@ -22,4 +22,19 @@ class GoalCycles extends Model
 
     public $timestamps = false;	
 	
+	public static function validateadd($input){
+		$rules = array(
+			'cycle_name'         	=> 'required',
+			'no_months'         	=> 'required',
+		);
+		
+		$messages = array(			
+			'cycle_name.required' 			=> getLabels('goal_cycle_is_required'),
+			'no_months.required' 			=> getLabels('no_of_months_is_required'),
+			
+		);
+		return validator($input, $rules, $messages);
+	}
+
+	
 }

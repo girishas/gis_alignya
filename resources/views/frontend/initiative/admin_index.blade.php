@@ -68,7 +68,7 @@
                                     @foreach($data as $key => $value)
                                                 <?php
                                                     $remove_url = url("initiative/remove/".$value->id); 
-                                                    $remove_msg = getLabels('are_you_sure'); ?>
+                                                    $remove_msg = getLabels('are_you_sure?'); ?>
                                                 <tr>
                                                     <td><a href="javascript:void(0);" onclick="view_initiativepop('{!!$value->id!!}')"> <i class="{!!$value->status_icon!!} heading-icon" style="color:{!!$value->bg_color!!};"></i>{!!$value->heading!!}</td>
                                                     <td>FY{!!$value->measure_cycle_year!!}-{!!config('constants.Quarter.'.$value->measure_cycle_quarter)!!}</td>
