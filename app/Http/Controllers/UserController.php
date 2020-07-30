@@ -1322,7 +1322,7 @@ class UserController extends Controller
 
 	public function getmembers(){
 		$input = $this->request->all();
-		$members = User::where('company_id',$input['company_id'])->pluck('first_name','id');
+		$members = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," ")," ( ",al_users_role.role," )") as first_name'), 'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',$input['company_id'])->pluck('first_name','users.id');
 		return json_encode($members);
 	}
 

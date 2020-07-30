@@ -74,7 +74,7 @@ Route::any('team/{id?}', array('as'=>'users.admin_index', 'uses'=>'TeamControlle
 Route::any('scorecard', array('as'=>'users.scorecard', 'uses'=>'TeamController@scorecard'));
 Route::any('strategic-map', array('as'=>'users.startegic_map', 'uses'=>'TeamController@startegic_map'));
 Route::any('viewmember', array('as'=>'users.viewmember', 'uses'=>'UserController@viewmember'));
-Route::any('getscorecards', array('as'=>'users.getscorecards', 'uses'=>'ObjectiveController@getscorecards'));
+Route::any('getscorecards/{id?}', array('as'=>'users.getscorecards', 'uses'=>'ObjectiveController@getscorecards'));
 Route::any('getcontributersforobjective', array('as'=>'users.getcontributersforobjective', 'uses'=>'ObjectiveController@getcontributersforobjective'));
 Route::any('scorecards', array('as'=>'users.scorecardlist', 'uses'=>'DepartmentController@scorecardlist'));
 Route::any('scorecards/new', array('as'=>'users.scorecardadd', 'uses'=>'DepartmentController@scorecardadd'));

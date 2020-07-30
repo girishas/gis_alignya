@@ -42,6 +42,8 @@ Website: http://www.mosaddek.com
 
 			<?php echo HTML::style('public/css/vendor/dataTables.bootstrap4.min.css'); ?>
 
+			<?php echo HTML::style('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput-typeahead.css'); ?>
+
 			<?php echo HTML::style('public/css/vendor/select2.min.css'); ?>
 
 			<?php echo HTML::style('public/css/vendor/select2-bootstrap.min.css'); ?>
@@ -84,6 +86,12 @@ Website: http://www.mosaddek.com
 				var createdgmexist = false;
 			</script>
 		</head>
+		<style type="text/css">
+			.show-spinner{
+				color: black !important;
+			}
+		</style>
+		
 		<!-- BEGIN BODY -->
 		<?php if(!in_array($current_action, array('login', 'register', 'forgot_password', 'resetpassword', 'page_not_found'))): ?>
 			<body id="app-container" class="menu-default show-spinner">

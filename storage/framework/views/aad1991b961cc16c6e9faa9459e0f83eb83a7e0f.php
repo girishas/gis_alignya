@@ -12,6 +12,7 @@
 <script src="https://www.amcharts.com/lib/4/core.js"></script>
 <script src="https://www.amcharts.com/lib/4/charts.js"></script>
 <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
 <?php echo $__env->make('Element/objective/view_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('Element/objective/add_objective', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <?php echo $__env->make('Element/objective/scorecards', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
@@ -375,7 +376,7 @@ $(document).ready(function(){
                     }
                     $("#ownership_update").val(response.owner_user_id);
                 }
-                $("#scorecardsliupdate").html("");
+                //$("#scorecardsliupdate").html("");
                 var selectedscorecard = response.scorecard_id;
                 $("#objective_scorecard_update").val(selectedscorecard);
                 $.ajax({
@@ -384,14 +385,20 @@ $(document).ready(function(){
                     data:'_token='+token+'&company_id='+company_id,
                     dataType:'JSON',
                     success: function (scorecards) {
-					alert(scorecards);
-                        for (var scs in scorecards) {
-                          if (scorecards.hasOwnProperty(scs)) {
+					    for (var scs in scorecards) {
+                          console.log(scorecards);
+                    
+					if (scorecards.hasOwnProperty(scs)) {
                             var vals = scorecards[scs];
                             if(selectedscorecard && selectedscorecard.indexOf(scs) != -1){
-                                $("#scorecardsliupdate").append('<option value = "'+scs+'" selected="selected">'+vals+'</option>');
+								var newOption = new Option(vals, scs, true, false);
+								$('#scorecardsliupdate').append(newOption).trigger('change');
+                                //$("#scorecardsliupdate").append('<option value = "'+scs+'" selected="selected">'+vals+'</option>');
                             }else{
-                                $("#scorecardsliupdate").append('<option value = "'+scs+'">'+vals+'</option>');
+                                var newOption = new Option(vals, scs, false, false);
+								$('#scorecardsliupdate').append(newOption).trigger('change');
+								//$("#scorecardsliupdate").append('<option value = "'+scs+'">'+vals+'</option>');
+								
                             }
                           }
                         }
@@ -477,6 +484,7 @@ $(document).ready(function(){
           dataType:'JSON',
           success: function (response) {
               measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
+              $("#viewLargePlotObj").html('<a href="javascript:void(0);" onclick="viewLargeGraph('+measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data)+')"><i class="iconsminds-maximize heading-icon"></i></a>');
             }
       });    
     }
@@ -507,6 +515,7 @@ $(document).ready(function(){
                     var firstmeasure = response.measuresList[0];
                     $('#graphtitleobjmeasure').html('<p class="mb-0 truncate"><i class="'+response.measuresList[0].status_icon+' heading-icon" style="color:'+response.measuresList[0].bg_color+';"></i>'+response.measuresList[0].heading+'</p><p class="text-muted mb-0 text-small" style="margin-left: 35px">FY'+response.measuresList[0].measure_cycle_year+'-'+getQuarter(response.measuresList[0].measure_cycle_quarter)+'</p>');
                         measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
+                         $("#viewLargePlotObj").html('<a href="javascript:void(0);" onclick="viewLargeGraph('+measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data)+')"><i class="iconsminds-maximize heading-icon"></i></a>');
                 }else{
                     $("#thisdivshoworhide").hide();
 
@@ -514,6 +523,7 @@ $(document).ready(function(){
                 var secondpara = 1;
                 $("#objective_name_view").html('<i class="'+response.objectiveinfo.status_icon+' heading-icon" style="color:'+response.objectiveinfo.bg_color+';"></i>'+response.objectiveinfo.heading+' <a href="javascript:void(0);" onclick = "updateObjective('+response.objectiveinfo.id+','+secondpara+')"><i class="simple-icon-pencil heading-icon"></i></a> <p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> '+response.objectiveinfo.cycle_name+'  <i class="simple-icon-people"></i> '+response.objectiveinfo.owner_name );
                 $("#objective_idview").val(id);
+
                 for (var i = 0; i < response.measuresList.length; i++) {
                     $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick = "viewmeasureGraph('+response.measuresList[i].id+')"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.measuresList[i].percentage)>100?100:Math.round(response.measuresList[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.measuresList[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewMeasure('+response.measuresList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = updateMeasure('+response.measuresList[i].id+')><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }

@@ -838,7 +838,8 @@ button {
     opacity: 0; }
   .btn-multiple-state.show-spinner .spinner {
     opacity: 1;
-    visibility: visible; }
+    visibility: visible;
+    color:black; }
   .btn-multiple-state.show-success .label {
     opacity: 0; }
   .btn-multiple-state.show-success .icon.success {

@@ -34,6 +34,7 @@ Website: http://www.mosaddek.com
 			{!! HTML::style('public/css/vendor/bootstrap-float-label.min.css') !!}
 			{!! HTML::style('public/css/vendor/fullcalendar.min.css') !!}
 			{!! HTML::style('public/css/vendor/dataTables.bootstrap4.min.css') !!}
+			{!! HTML::style('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tagsinput/0.8.0/bootstrap-tagsinput-typeahead.css') !!}
 			{!! HTML::style('public/css/vendor/select2.min.css') !!}
 			{!! HTML::style('public/css/vendor/select2-bootstrap.min.css') !!}
 			{!! HTML::style('public/css/vendor/perfect-scrollbar.css') !!}
@@ -60,6 +61,12 @@ Website: http://www.mosaddek.com
 				var createdgmexist = false;
 			</script>
 		</head>
+		<style type="text/css">
+			.show-spinner{
+				color: black !important;
+			}
+		</style>
+		
 		<!-- BEGIN BODY -->
 		@if(!in_array($current_action, array('login', 'register', 'forgot_password', 'resetpassword', 'page_not_found')))
 			<body id="app-container" class="menu-default show-spinner">

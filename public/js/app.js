@@ -83,7 +83,7 @@ $("body").on('click', ".steamerst_link", function(e) {
 	$('html,body').animate({
 		scrollTop: $("html").offset().top
 	}, 'fast');
-	//$(this).removeClass("show-spinner");
+	$(this).removeClass("show-spinner");
 });
 
 $("body").on('click', ".steamerst_status", function(e) {

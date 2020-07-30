@@ -66,6 +66,8 @@
                                                                                 </div>
                                                                             </div>
                                                                         </div>
+                                                                        <div style="position: absolute;top: 10px;right: 10px" id="viewLargePlotObj"></div>
+                    
                                                                         <div class="dashboard-line-chart">
                                                                             <canvas id="linechartformeasureobj"></canvas>
                                                                         </div>

@@ -86,7 +86,7 @@ class InitiativeController extends Controller
 			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
 		}
 		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->pluck('cycle_name','id');
-		$contributers = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$contributers = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," ")," ( ",al_users_role.role," )") as first_name'), 'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',Auth::User()->company_id)->pluck('first_name','users.id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$status = Status::where('is_obj',1)->pluck('name','id')->toArray();
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
@@ -350,7 +350,7 @@ class InitiativeController extends Controller
 			$tasklist = $tasklist->toArray();
 			foreach ($tasklist as $key => $value) {
 				$owners = explode(',',$value['owners']);
-				$list = User::whereIn('id',$owners)->pluck('first_name')->toArray();
+				$list = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," "), " ( ", al_users_role.role, " )")'))->leftjoin('al_users_role','al_users_role.id','users.role_id')->whereIn('users.id',$owners)->pluck('users.first_name')->toArray();
 				$tasklist[$key]['owners'] = implode(',', $list);
 			}
 		}else{
@@ -363,7 +363,7 @@ class InitiativeController extends Controller
 		}
 		$data['departments'] = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$data['teams'] = Teams::where('company_id',Auth::User()->company_id)->pluck('team_name','id');
-		$data['members'] = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$data['members'] = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," ")," ( ",al_users_role.role," )") as first_name'), 'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',Auth::User()->company_id)->pluck('first_name','users.id');
 		$data['milestones'] = $milestones;
 		$data['tasklist'] = $tasklist;
 		return json_encode($data);
