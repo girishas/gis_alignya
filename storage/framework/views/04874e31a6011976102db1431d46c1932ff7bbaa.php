@@ -1,8 +1,8 @@
-@extends('frontend/layouts/default')
 <?php use App\Traits\SortableTrait;  ?>
 
-@section('content')
-{!! HTML::script('public/balkangraph/orgchart.js') !!}
+<?php $__env->startSection('content'); ?>
+<?php echo HTML::script('public/balkangraph/OrgChart.js'); ?>
+
  
  <main>
 <div id="tree"></div>
@@ -96,4 +96,5 @@ window.onload = function () {
 
     </script>
     </main>
-@stop
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('frontend/layouts/default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

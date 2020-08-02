@@ -8,7 +8,7 @@
             </button>
         </div>
 
-        {!! Form::open(array('url' => array($route_prefix.'/addobjective'), 'class' =>'alignya_form needs-validation tooltip-label-right updateobjectiveform', 'name'=>'', 'files'=>true)) !!}
+        {!! Form::open(array('url' => array($route_prefix.'/addobjective'), 'class' =>'alignya_form needs-validation tooltip-label-right updateobjectiveform', 'id'=>'myForm', 'name'=>'', 'files'=>true)) !!}
         <div class="modal-body">
         		<div class="container-fluid">
             	<div class="row">
@@ -79,6 +79,7 @@
                        </select>                    
                       
                     </div>
+                    
                 <button type="submit" class="btn btn-primary">Submit</button>
             
                 </div>

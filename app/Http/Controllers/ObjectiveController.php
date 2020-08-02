@@ -59,10 +59,12 @@ class ObjectiveController extends Controller
 			$this->request->session()->forget('usearch');
 		}
 		
-		$data  = Objective::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id);/*->where(function($queryW){
-					$queryW->where("al_objectives.owner_user_id", Auth::User()->id)
-					->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_objectives.contributers) > 0'));
-				});*/
+		$data  = Objective::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->leftjoin('al_goal_cycles','al_goal_cycles.id','=','al_objectives.cycle_id')->leftjoin('users','users.id','=','al_objectives.owner_user_id')->leftjoin('al_objectives as o','o.id','=','al_objectives.objective_id')->where('al_objectives.company_id',Auth::User()->company_id);
+		$data = $data->where(function($queryW){
+			$queryW->where("al_objectives.owner_user_id", Auth::User()->id)
+			->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_objectives.contributers) > 0'))
+			->orWhere('al_objectives.user_id',Auth::User()->id);
+		});
 			
 		
 		if(! empty($_POST)){

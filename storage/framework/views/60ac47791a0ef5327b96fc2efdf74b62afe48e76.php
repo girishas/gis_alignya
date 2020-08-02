@@ -5,12 +5,7 @@
 
 <?php if(empty($_POST)): ?>
 <?php $__env->startSection('content'); ?>
-	<?php echo HTML::style('public/slimcropper/css/slim.css'); ?>
-
-	<?php echo HTML::style('public/slimcropper/css/style.css'); ?>
-
-	<?php echo HTML::script('public/slimcropper/js/slim.kickstart.min.js'); ?>
-
+	
 	
   <main>
   <?php endif; ?>
@@ -20,7 +15,7 @@
                     <div class="mb-2">
                         <h1>Ideas</h1>
                         <div class="top-right-button-container">
-                            <button type="button" class="btn btn-outline-primary btn-lg top-right-button  mr-1"
+                            <button type="button" class="btn btn-outline-primary btn-sm top-right-button  mr-1"
                                 data-toggle="modal" data-backdrop="static" data-target="#exampleModal">ADD A NEW IDEA</button>
                             <div class="modal fade modal-right" id="exampleModal" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -32,54 +27,47 @@
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
+                                         <?php echo Form::open(array('url' => array($route_prefix.'/addidea'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'files'=>true)); ?>
+
                                         <div class="modal-body">
-
-                                            <form>
-                                                <div class="form-group">
+                                                <div class="form-group position-relative error-l-100">
                                                     <label>Title</label>
-                                                    <input type="text" class="form-control" placeholder="">
+                                                    <?php echo Form::text('title',null,array('class'=>'form-control')); ?>
+
+                                                    <div class="invalid-tooltip"></div>
                                                 </div>
-                                                <div class="form-group">
-                                                    <label>Details</label>
-                                                    <textarea class="form-control" rows="2"></textarea>
+                                                <div class="form-group ">
+                                                    <label>Description</label>
+                                                     <?php echo Form::textarea('description', null, array('rows' => 2, 'class' => 'form-control')); ?>
+
                                                 </div>
 
-                                                <div class="form-group">
-                                                    <label>Category</label>
-                                                    <select class="form-control select2-single" data-width="100%">
-                                                        <option label="&nbsp;">&nbsp;</option>
-                                                        <option value="Flexbox">Flexbox</option>
-                                                        <option value="Sass">Sass</option>
-                                                        <option value="React">React</option>
-                                                    </select>
-                                                </div>
+                                                <div class="form-group position-relative error-l-100">
+                                                    <label>Department</label>
+                                                    <?php echo Form::select('department_id',array(''=>'Please Select Department')+$departments, null, array('class'=>'form-control')); ?>
 
-                                                <div class="form-group">
-                                                    <label>Labels</label>
-                                                    <select class="form-control select2-multiple" multiple="multiple" data-width="100%">
-                                                        <option value="New Framework">New Framework</option>
-                                                        <option value="Education">Education</option>
-                                                        <option value="Personal">Personal</option>
-                                                    </select>
+                                                   <div class="invalid-tooltip"></div>
                                                 </div>
 
 
                                                 <div class="form-group">
-                                                    <label>Status</label>
+                                                    <label></label>
                                                     <div class="custom-control custom-checkbox">
                                                         <input type="checkbox" class="custom-control-input"
-                                                            id="customCheck1">
+                                                            id="customCheck1" name="is_popular">
                                                         <label class="custom-control-label"
-                                                            for="customCheck1">Completed</label>
+                                                            for="customCheck1">Is Popular</label>
                                                     </div>
                                                 </div>
-                                            </form>
+                                            
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-outline-primary"
                                                 data-dismiss="modal">Cancel</button>
-                                            <button type="button" class="btn btn-primary">Submit</button>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
                                         </div>
+                                        <?php echo Form::close(); ?>
+
                                     </div>
                                 </div>
                             </div>
@@ -178,80 +166,18 @@
 <div class="app-menu">
             <div class="p-4 h-100">
                 <div class="scroll">
-                    <ul class="list-unstyled mb-5">
-                        <li class="active">
-                            <a href="#">
-                                <i class="simple-icon-bulb"></i>
-                                My Ideas
-                                <span class="float-right">12</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="simple-icon-like"></i>
-                                My Votes
-                                <span class="float-right">24</span>
-                            </a>
-                        </li>
-                    </ul>
-
-                    <p class="text-muted text-small">Filter By Categories</p>
-                    <ul class="list-unstyled mb-5">
-                        <li>
-                            <div class="custom-control custom-checkbox mb-2">
-                                <input type="checkbox" class="custom-control-input" id="category1">
-                                <label class="custom-control-label" for="category1">Map</label>
-                                <span class="float-right">52</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="custom-control custom-checkbox mb-2">
-                                <input type="checkbox" class="custom-control-input" id="category2">
-                                <label class="custom-control-label" for="category2">Profile</label>
-                                <span class="float-right">28</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="custom-control custom-checkbox ">
-                                <input type="checkbox" class="custom-control-input" id="category3">
-                                <label class="custom-control-label" for="category3">Social</label>
-                                <span class="float-right">37</span>
-                            </div>
-                        </li>
-                    </ul>
                     <p class="text-muted text-small">Filter By Status</p>
                     <ul class="list-unstyled mb-5">
+                        <?php $__currentLoopData = $status; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key =>$value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <li>
                             <div class="custom-control custom-checkbox mb-2">
-                                <input type="checkbox" class="custom-control-input" id="category1">
-                                <label class="custom-control-label" for="category1">Already Exist</label>
-                                <span class="float-right">48</span>
+                                <input type="checkbox" class="custom-control-input" id="status<?php echo $key; ?>">
+                                <label class="custom-control-label" for="status<?php echo $key; ?>"><?php echo $value; ?></label>
+                                
                             </div>
                         </li>
-                        <li>
-                            <div class="custom-control custom-checkbox mb-2">
-                                <input type="checkbox" class="custom-control-input" id="category2">
-                                <label class="custom-control-label" for="category2">Will Not Implement</label>
-                                <span class="float-right">17</span>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="custom-control custom-checkbox ">
-                                <input type="checkbox" class="custom-control-input" id="category3">
-                                <label class="custom-control-label" for="category3">Planned</label>
-                                <span class="float-right">114</span>
-                            </div>
-                        </li>
-
-                        <li>
-                            <div class="custom-control custom-checkbox ">
-                                <input type="checkbox" class="custom-control-input" id="category3">
-                                <label class="custom-control-label" for="category3">Shipped</label>
-                                <span class="float-right">200</span>
-                            </div>
-                        </li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </ul>
-
                 </div>
             </div>
             <a class="app-menu-button d-inline-block d-xl-none" href="#">
@@ -262,9 +188,100 @@
    </div>
             </div>
         </div>
-  
+<script type="text/javascript">
+    $("body").on('submit', ".alignya_form", function(e) {
+        $("div.invalid-tooltip").css("display",'none');
+    e.preventDefault();
+    
+    var form_action = $(this).attr('action');
+    data = $(this).serialize();
+    
+   
+    $.ajax({
+        type:"POST",
+        url: form_action,
+        data:data,
+        beforeSend: function(){
+            $('body').addClass('show-spinner');
+        },
+        success: function (response) {
+            if(response.type == 'error'){
+                errors = response.error;
+                $.each(errors, function(key,value) {
+                    $('input[name="'+key+'"]').next('div.invalid-tooltip').css('display', 'block');
+                    $('input[name="'+key+'"]').next('div.invalid-tooltip').html(value[0]);
+                    $('select[name="'+key+'"]').next('div.invalid-tooltip').css('display', 'block');
+                    $('select[name="'+key+'"]').next('div.invalid-tooltip').html(value[0]);
+                    $('.summernote_'+key).css('display', 'block');
+                    $('.summernote_'+key).html(value[0]);
+                    $('textarea[name="'+key+'"]').next('div.invalid-tooltip').css('display', 'block');
+                    $('textarea[name="'+key+'"]').next('div.invalid-tooltip').html(value[0]);
+                });
+                showNotificationApp('top', 'right', 'danger', 'Error', response.message);
+            }else if(response.type == 'success'){
+                pageUrl = response.url;
+                var lastslashindex = pageUrl.lastIndexOf('/');
+                var resultName= pageUrl.substring(lastslashindex  + 1);
+                $('#myModalAddObjective').modal('hide');
+                $('#updateobjectivemodal').modal('hide');
+                $('#myModalAddMeasure').modal('hide');
+                $('#myModalUpdateMeasure').modal('hide');
+                $('#myModalAddInitiative').modal('hide');
+                $('#myModalAddKPI').modal('hide');
+                $('#myModalUpdateKPI').modal('hide');
+                $('#myModalUpdateInitiative').modal('hide');
+                $('#updateMilestoneMeasureView').modal('hide');
+                $('#myModalAddTask').modal('hide');
+                $('#myModalUpdateTask').modal('hide');
+                $('#updatemilestoneini').modal('hide');
+                $('#addMilestoneMeasureView').modal('hide');
+                $('#myModal2').modal('hide');
+                
+                $("form").trigger("reset");
+                if(pageUrl == "close_modal"){
+                    if(response.popup_name == "objective"){
+                       // $("form.alignya_form .select2-multiple").val(null).trigger('change');
+                        viewobjective(localStorage.getItem('popup_id'));
+                    }else if(response.popup_name == "measures"){
+                        if(window.location.href.indexOf('objectives') !== -1){
+                      viewobjective(localStorage.getItem('popup_id'));
+                      }else if(window.location.href.indexOf('measures') !== -1){
+                          viewMeasure(localStorage.getItem('popup_id'));
+                      }else if(window.location.href.indexOf('initiatives') !== -1){
+                          view_initiativepop(localStorage.getItem('popup_id'));
+                      }
+                    }else if(response.popup_name == "initiative"){
+                        view_initiativepop(localStorage.getItem('popup_id'));
+                    }
+
+                    return false;
+                }else{
+                    window.location.reload();
+                }
+                
+                $.cergis.loadContent();
+                e.preventDefault();
+                if(response.message){
+                    showNotificationApp('top', 'right', 'primary', 'Success', response.message);
+                }
+                $('.slim-popover').remove();
+                
+                $('html,body').animate({
+                    scrollTop: $("html").offset().top
+                }, 'fast');
+            }
+            $('body').removeClass("show-spinner");
+            
+        },
+         error: function(xhr, ajaxOptions, thrownError) {
+          alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+        }
+    });
+});
+</script>
 	<?php if(empty($_POST)): ?>
     </main>
 <?php $__env->stopSection(); ?>
 <?php endif; ?>
+
 <?php echo $__env->make('frontend/layouts/default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

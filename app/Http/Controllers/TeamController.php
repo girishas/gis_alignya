@@ -61,8 +61,8 @@ class TeamController extends Controller
 		}
 		
 		$team_members_pluck = TeamsMembers::select(DB::raw('CONCAT(IFNULL(users.first_name," ")," ",IFNULL(users.last_name," ")," (",al_users_role.role,")")) as first_name'),'users.id')->leftjoin('users','users.id','=','al_teams_members.member_id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('al_teams_members.team_id',isset($team_detail->id) ? $team_detail->id:$id)->where('is_head',0)->select('users.id','users.photo','users.first_name','users.last_name','users.designation')->pluck('users.id','first_name');
-		$teamleads = User::select(DB::raw('CONCAT(IFNULL(users.first_name," ")," ",IFNULL(users.last_name," ")," ( ",al_users_role.role," )") as first_name'),'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->whereIn('users.role_id',array(4,2))->where('users.company_id',Auth::User()->company_id)->pluck('users.first_name','users.id');
-		$all_members = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name,"")," ( ",al_users_role.role," )") as full_name'),'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',Auth::User()->company_id)->whereIn('users.role_id',array(5,2))->pluck('full_name','users.id');
+		$teamleads = User::select(DB::raw('CONCAT(IFNULL(users.first_name," ")," ",IFNULL(users.last_name," ")," ( ",al_users_role.role," )") as first_name'),'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',Auth::User()->company_id)->pluck('users.first_name','users.id');
+		$all_members = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name,"")," ( ",al_users_role.role," )") as full_name'),'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',Auth::User()->company_id)->pluck('full_name','users.id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$page_title  = getLabels("Teams");
 
@@ -117,6 +117,8 @@ class TeamController extends Controller
 					$teammembers['member_id'] = $this->request->get('team_head');
 					if($id){
 						$teammembers['team_id'] = $id;
+						Objective::where('team_id',$id)->update(array('owner_user_id'=>$this->request->get('team_head')));
+						Measure::where('measure_team_id',$id)->update(array('owner_user_id'=>$this->request->get('team_head')));
 					}else{
 						$teammembers['team_id'] = $addteam->id;
 					}

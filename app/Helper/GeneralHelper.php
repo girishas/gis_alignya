@@ -673,8 +673,19 @@
 		return $date;
 	}
 
-	function getEmpLimit($plan_id=null){
-		$plandetail  = Plans::where('id',$plan_id)->first();
-		return $plandetail;
+	function getEmpLimit($company_id=null){
+		$company_owner = User::where('company_id',$company_id)->where('role_id',2)->first();
+		if($company_owner){
+			$plandetail  = Plans::where('id',$company_owner->current_membership_plan)->first();
+		}else{
+		$plandetail  = Plans::first();
+		}
+		
+		if($plandetail){
+			return $plandetail->emp_limit;
+		}else{
+			return 1;
+		}
+		
 	}
 	?>

@@ -98,6 +98,7 @@ $("body").on('click', ".steamerst_status", function(e) {
 			$('body').addClass('show-spinner');
 		},
         success: function (data) {
+        	window.location.reload(true);
 			pageUrl = data.url;
 			if(pageUrl == 'comment_remove'){
 				if(data.type == 'error') return false;

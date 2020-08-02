@@ -1,4 +1,7 @@
 <script>
+  $(document).ready(function(){
+    
+  
 $("body").on('submit', ".alignya_form", function(e) {
         $("div.invalid-tooltip").css("display",'none');
     e.preventDefault();
@@ -50,7 +53,7 @@ $("body").on('submit', ".alignya_form", function(e) {
                 $("form").trigger("reset");
                 if(pageUrl == "close_modal"){
                     if(response.popup_name == "objective"){
-                        $("form.alignya_form .select2-multiple").val(null).trigger('change');
+                       // $("form.alignya_form .select2-multiple").val(null).trigger('change');
                         viewobjective(localStorage.getItem('popup_id'));
                     }else if(response.popup_name == "measures"){
                         if(window.location.href.indexOf('objectives') !== -1){
@@ -88,7 +91,7 @@ $("body").on('submit', ".alignya_form", function(e) {
         }
     });
 });
-
+})
 
 function getContributers(){
     var token = "{!!csrf_token()!!}";
@@ -420,7 +423,7 @@ function updateMeasure(id){
                         for (var contri in contributers) {
                           if (contributers.hasOwnProperty(contri)) {
                             var con = contributers[contri];
-                            if(selectedcontributers.indexOf(contri) != -1){
+                            if(selectedcontributers && selectedcontributers.indexOf(contri) != -1){
                                 $("#contributersupdatemeasure").append('<option value = "'+contri+'" selected="selected">'+con+'</option>');
                             }else{
                                 $("#contributersupdatemeasure").append('<option value = "'+contri+'">'+con+'</option>');
@@ -594,7 +597,7 @@ function updateMeasure(id){
                         for (var contri in contributers) {
                           if (contributers.hasOwnProperty(contri)) {
                             var con = contributers[contri];
-                            if(selectedcontributers.indexOf(contri) != -1){
+                            if(selectedcontributers && selectedcontributers.indexOf(contri) != -1){
                                 $("#contriiniupdate").append('<option value = "'+contri+'" selected="selected">'+con+'</option>');
                             }else{
                                 $("#contriiniupdate").append('<option value = "'+contri+'">'+con+'</option>');

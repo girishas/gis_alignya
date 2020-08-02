@@ -285,12 +285,15 @@
 								{!! getLabels('Members') !!}
 							</a>
 						</li><?php
+						if(Auth::check() and Auth::User()->role_id != 4 and  Auth::User()->role_id != 5){
 						$class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['subscription_list']))?"active":""; ?>
 							
 						<li class="{!! $class_subnav !!}">
 							<a class="" href="javascript:void(0);" onclick="onFunc('department')"  data-main-link="st_members"><i class="iconsminds-embassy"></i>{!! getLabels('Departments') !!}
 							</a>
-						</li><?php
+						</li><?php }
+						if(Auth::check() and Auth::User()->role_id != 4 and  Auth::User()->role_id != 5){
+						
 						$class_subnav  = ($controller == "SubscriptionController" && in_array($current_action, ['subscription_plans', 'admin_subscriptionlevel', 'admin_edit_subscriptionlevel']))?"active":""; ?>
 							
 						<li class="{!! $class_subnav !!}">
@@ -299,7 +302,7 @@
 								{!! getLabels('Teams') !!}
 							</a>
 						</li>
-					
+						<?php } ?>
 					
                 </ul>
             </div>

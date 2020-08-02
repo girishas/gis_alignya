@@ -100,7 +100,7 @@
                                             </li>
                                         </ul>
                                         <div class="text-center">
-                                            <?php if(Auth::User()->current_membership_plan == $value->id): ?>
+                                            <?php if(Auth::User()->current_membership_plan == $value->id && Auth::User()->enable_subscription == 1): ?>
                                             <button class="btn btn-success">
                                                 Current
                                             </button>

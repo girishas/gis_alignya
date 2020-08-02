@@ -3,7 +3,7 @@
 
 @section('content')
     
-{!! HTML::script('public/balkangraph/OrgChart.js') !!}
+{!! HTML::script('public/balkangraph/orgchart.js') !!}
   <main>
 
 <div id="tree"></div>

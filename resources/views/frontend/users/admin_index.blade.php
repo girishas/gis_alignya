@@ -8,7 +8,7 @@
                 <div class="col-12">
                     <h1>{!! getLabels('Members') !!}</h1>
                      <div class="float-md-right">
-                     		@if($data->total() < getEmpLimit(Auth::User()->current_membership_plan)->emp_limit)
+                     		@if($data->total() < getEmpLimit(Auth::User()->company_id))
 							<button type="button" class="btn btn-outline-primary mb-1" onclick="addMember()">Add Member</button>
 							<button type="button" class="btn btn-outline-primary mb-1" onclick="importcsv()">Import Members</button>
 							@endif

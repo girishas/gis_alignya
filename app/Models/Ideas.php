@@ -24,4 +24,18 @@ class Ideas extends Model
 'status'
 ];
 
+
+	public static function validate($input, $id = null){
+		$rules = array(
+			'title'         	=> 'required',
+			'department_id'		=> 'required'
+		);
+		
+		$messages = array(
+			'title.required' 			=> 'Title is required.',
+			'department_id.required' 			=> 'Department is required.',
+		);
+		return validator($input, $rules, $messages);
+	}
+
 }
