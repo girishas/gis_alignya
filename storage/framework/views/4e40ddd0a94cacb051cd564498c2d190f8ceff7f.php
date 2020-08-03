@@ -1,14 +1,14 @@
-@if(empty($_POST))
-@extends('frontend/layouts/default')
-@endif
+<?php if(empty($_POST)): ?>
+
+<?php endif; ?>
 
 
-@if(empty($_POST))
-@section('content')
+<?php if(empty($_POST)): ?>
+<?php $__env->startSection('content'); ?>
 
 	
   <main>
-  @endif
+  <?php endif; ?>
 
  
       <div class="container-fluid">
@@ -34,11 +34,11 @@
                                Choose Objectives
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(874px, 43px, 0px);">
-                                @if(!empty($objectives))
-                                    @foreach($objectives as $key => $value)
-                                        <a class="dropdown-item" href="{!!url('reports/'.$key)!!}">{!!$value!!}</a>
-                                    @endforeach
-                                @endif
+                                <?php if(!empty($objectives)): ?>
+                                    <?php $__currentLoopData = $objectives; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <a class="dropdown-item" href="<?php echo url('reports/'.$key); ?>"><?php echo $value; ?></a>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <div class="separator mb-5"></div>
@@ -53,9 +53,9 @@
                 <div class="col-12"> 
                     <div class="card mb-4"> 
 					<div class="card-body"> 
-                            <h5 class="mb-4">{!!isset($single_objective)?$single_objective->heading:""!!} <p class="d-sm-inline-block mb-2 ml-3">
+                            <h5 class="mb-4"><?php echo isset($single_objective)?$single_objective->heading:""; ?> <p class="d-sm-inline-block mb-2 ml-3">
                                                     <a href="#">
-                                                        <span class="badge badge-pill badge-outline-theme-3 mb-1" style="color:white;background-color: {!!isset($single_objective)?$single_objective->bg_color:""!!}">{!!isset($single_objective)?$single_objective->status_name:""!!}</span>
+                                                        <span class="badge badge-pill badge-outline-theme-3 mb-1" style="color:white;background-color: <?php echo isset($single_objective)?$single_objective->bg_color:""; ?>"><?php echo isset($single_objective)?$single_objective->status_name:""; ?></span>
                                                     </a>
                                                 </p> 
 												
@@ -194,14 +194,14 @@
                             
 								</div>
                              -->
-                             @if(!empty($measures))
-                                    @foreach($measures as $key  => $value)
+                             <?php if(!empty($measures)): ?>
+                                    <?php $__currentLoopData = $measures; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key  => $value): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
 
                                    
                              <div class="col-lg-8 mb-5">
-                                    <h6 class="mb-4">{!!$value['heading']!!}</h6>
+                                    <h6 class="mb-4"><?php echo $value['heading']; ?></h6>
                                     <div class="chart-container chart">
-                                        <canvas id="salesChart{!!$key!!}"></canvas>
+                                        <canvas id="salesChart<?php echo $key; ?>"></canvas>
                                     </div>
                                 </div>
                                 <div class="col-lg-4 mb-5">
@@ -209,10 +209,10 @@
                                     <div class="chart-container chart">
                                         <div class="mb-4">
                                                 <p class="mb-2">Overall Progress
-                                                    <span class="float-right text-muted">{!!round($value['percent_complete'],0)!!}%</span>
+                                                    <span class="float-right text-muted"><?php echo round($value['percent_complete'],0); ?>%</span>
                                                 </p>
                                                 <div class="progress mb-3">
-                                                    <div class="progress-bar" role="progressbar" aria-valuenow="{!!$value['percent_complete']!!}" aria-valuemin="0" aria-valuemax="100" style="width: {!!$value['percent_complete']!!}%;"></div>
+                                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $value['percent_complete']; ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $value['percent_complete']; ?>%;"></div>
                                                     
                                                 </div>
 
@@ -223,7 +223,7 @@
                                                                 <span class="log-indicator border-theme-1 align-middle"></span>
                                                             </td>
                                                             <td class="p-0 pb-1">
-                                                                <span class="font-weight-medium text-muted text-small">{!!$value['total_milestone']!!} {!!config('constants.FREQUENCY.'.$value['check_in_frequency'])!!} Milestones
+                                                                <span class="font-weight-medium text-muted text-small"><?php echo $value['total_milestone']; ?> <?php echo config('constants.FREQUENCY.'.$value['check_in_frequency']); ?> Milestones
                                                                  </span>
                                                             </td>
                                                         </tr>
@@ -233,16 +233,18 @@
 												
 												
 											<p class="text-muted text-small mb-2">Strategic Theme</p>
-                                            <p class="mb-3">{!!isset($single_objective)?$single_objective->theme_name:""!!} </p>
+                                            <p class="mb-3"><?php echo isset($single_objective)?$single_objective->theme_name:""; ?> </p>
 											 
 											<p class="text-muted text-small mb-2">Measure Actual - Target</p>
                                             <p class="mb-3">
-                                                {!!$value['measure_actual']!!} {!!$value['measure_unit']!!} - {!!$value['measure_target']!!} {!!$value['measure_unit']!!}
+                                                <?php echo $value['measure_actual']; ?> <?php echo $value['measure_unit']; ?> - <?php echo $value['measure_target']; ?> <?php echo $value['measure_unit']; ?>
+
                                             </p>
 											
                                             <p class="text-muted text-small mb-2">Assigned To</p>
                                             <div class="mb-3">
-                                               {!!$value['owner_name']!!}
+                                               <?php echo $value['owner_name']; ?>
+
                                             </div>
                                              
 											
@@ -250,10 +252,10 @@
                                     </div>
                                 
 								</div>
-                                 @endforeach
-                                 @else
+                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                 <?php else: ?>
                                  <p style="text-align: center;width: 100%">No Record Found</p>
-                                @endif
+                                <?php endif; ?>
                             <!-- <div class="col-lg-8 mb-5">
                                     <h6 class="mb-4">Sales Objective Measure 1</h6>
                                     <div class="chart-container chart">
@@ -510,7 +512,7 @@
   <script>
     <?php if($id){ ?>
     $(document).ready(function(){
-        var id = "{!!$id!!}";
+        var id = "<?php echo $id; ?>";
         if(id != ""){
             var measures = <?php echo json_encode($measures); ?>;
             for (var i = 0; i < measures.length; i++) {
@@ -619,9 +621,11 @@
   }
 }
 </script> 
-	@if(empty($_POST))
+	<?php if(empty($_POST)): ?>
     </main>
 
-@stop
-@endif
+<?php $__env->stopSection(); ?>
+<?php endif; ?>
 
+
+<?php echo $__env->make('frontend/layouts/default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -77,7 +77,7 @@
                          <div class="row">
                              <div class="col-md-6">
                                  <div class="form-group">
-                                      <label class="measure_target_updatehtml">Measure Target : $</label>
+                                      <label class="measure_target_updatehtml">Measure Target : </label>
                                        <div class="custom-control custom-checkbox "><input type="checkbox" class="custom-control-input upgradetargetcl" id="upgradetarget" onclick="showhidenewtarget()" name="is_updated_target"> <label class="custom-control-label" for="upgradetarget">Do you want to upgrade target ?</label></div>
                                  </div>
                              </div>

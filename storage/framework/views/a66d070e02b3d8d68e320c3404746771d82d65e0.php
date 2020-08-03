@@ -90,7 +90,12 @@
 												<div class="row" style="justify-content: center;">
 												<?php endif; ?>
 												
-													<div class="col-lg-2"><div style="border-radius: 50%;background: <?php echo $value->bg_color; ?>;height: 100px;text-align: center;padding-top: 35px;"><b><?php echo $value->heading; ?></b></div></div> 
+													<div class="col-lg-2"><div style="border-radius: 50%;background: <?php echo $value->bg_color; ?>;height: 100px;text-align: center;padding-top: 35px;"><b><?php if(strlen($value->heading)>40): ?>
+                                                    <?php echo substr($value->heading,0,40); ?>...
+                                                    <?php else: ?>
+                                                    <?php echo $value->heading; ?>
+
+                                                    <?php endif; ?></b></div></div> 
 												<?php if(count($svalue)-1 == $key): ?>
 												</div>	
 												</div>	

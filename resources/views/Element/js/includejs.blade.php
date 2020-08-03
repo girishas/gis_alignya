@@ -360,7 +360,7 @@ function updateMeasure(id){
                 $("#measure_title_update").val(all_response.heading);
                 $("#objectiveIdupdatemeasure").val(all_response.objective_id);
                 $("#measure_team_type_update").val(all_response.measure_team_type);
-                $(".measure_target_updatehtml").html("Measure Target : $"+all_response.measure_target);
+                $(".measure_target_updatehtml").html("Measure Target : "+all_response.measure_target+all_response.measure_unit);
                 $(".measure_target_updateval").val(all_response.measure_target);
                         $('#measure_actual').val(all_response.measure_actual);
                         $('#calculation_type').val(all_response.calculation_type);

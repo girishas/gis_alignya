@@ -84,7 +84,11 @@
 												<div class="row" style="justify-content: center;">
 												@endif
 												
-													<div class="col-lg-2"><div style="border-radius: 50%;background: {!!$value->bg_color!!};height: 100px;text-align: center;padding-top: 35px;"><b>{!!$value->heading!!}</b></div></div> 
+													<div class="col-lg-2"><div style="border-radius: 50%;background: {!!$value->bg_color!!};height: 100px;text-align: center;padding-top: 35px;"><b>@if(strlen($value->heading)>40)
+                                                    {!!substr($value->heading,0,40)!!}...
+                                                    @else
+                                                    {!!$value->heading!!}
+                                                    @endif</b></div></div> 
 												@if(count($svalue)-1 == $key)
 												</div>	
 												</div>	
