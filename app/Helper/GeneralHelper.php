@@ -10,6 +10,8 @@
 	use App\Models\GroupMember;
 	use App\Models\SubscriptionPlan;
 	use App\Models\Milestones;
+	use App\Models\IdeaLikes;
+	use App\Models\IdeaComments;
 	use App\Models\Subscription;
 	use App\Models\Notification;
 	use App\Models\Post;
@@ -687,5 +689,14 @@
 			return 1;
 		}
 		
+	}
+
+	function idealikescount($idea_id=null){
+		$idealikes = IdeaLikes::where('idea_id',$idea_id)->count();
+		return $idealikes;
+	}
+	function ideacommentscount($idea_id=null){
+		$ideacomments = IdeaComments::where('idea_id',$idea_id)->count();
+		return $ideacomments;
 	}
 	?>

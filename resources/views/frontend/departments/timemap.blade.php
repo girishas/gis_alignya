@@ -2,8 +2,39 @@
 <?php use App\Traits\SortableTrait;  ?>
 
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+#chartdiv {
+  width: 100%;
+  height: 250px;
+}
 
+</style>
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+@include('Element/objective/view_objective')
+@include('Element/objective/add_objective')
+@include('Element/objective/scorecards')
+@include('Element/objective/add_scorecard')
+@include('Element/objective/themes')
+@include('Element/objective/add_theme')
+@include('Element/objective/add_cycle')
+@include('Element/objective/update_objective')
+@include('Element/measure/view_measure')
+@include('Element/measure/add_measure')       
+@include('frontend/objectives/filter')
+@include('Element/initiative/add_initiative')
+@include('Element/initiative/view_initiative') 
+@include('Element/measure/update_task')
+@include('Element/measure/update_milestone')
+@include('Element/measure/update_measure')
+@include('Element/initiative/update_initiative')
+@include('Element/measure/add_milestone')
+@include('Element/initiative/add_milestone')
+@include('Element/initiative/update_milestone')
+@include('Element/measure/task')
   <main>
         <div class="container-fluid">
             <div class="row">
@@ -92,24 +123,24 @@
 												@else
 												<th scope="row"></th>
 												@endif
-												<td><i class="{!!$value->icons !!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}</td>
+												<td><a href="javascript:void(0);" onclick="viewobjective('{!!$value->id!!}')"><i class="{!!$value->icons !!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}</a></td>
 												<td></td>
 												<td></td>
 											</tr>
 											@foreach($value->getMeasures as $mKey=>$mValue)
 											<tr>
 												<th scope="row"></th>
-												<td><i class="{!!$value->icons !!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}</td>
-												<td><i class="{!!$mValue->icons !!} heading-icon" style="color:{!!$mValue->bg_color!!}"></i> {!!$mValue->heading!!}</td>
+												<td><a href="javascript:void(0);" onclick="viewobjective('{!!$value->id!!}')"><i class="{!!$value->icons !!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}</a></td>
+												<td><a href="javascript:void(0);" onclick="viewMeasure('{!!$mValue->id!!}')"><i class="{!!$mValue->icons !!} heading-icon" style="color:{!!$mValue->bg_color!!}"></i> {!!$mValue->heading!!}</a></td>
 												<td></td>
 											</tr>
 											@endforeach
 											@foreach($value->getInitiatives as $iKey=>$iValue)
 											<tr>
 												<th scope="row"></th>
-												<td><i class="{!!$value->icons !!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}</td>
+												<td><a href="javascript:void(0);" onclick="viewobjective('{!!$value->id!!}')"><i class="{!!$value->icons !!} heading-icon" style="color:{!!$value->bg_color!!}"></i> {!!$value->heading!!}</a></td>
 												<td></td>
-												<td><i class="{!!$iValue->icons !!} heading-icon" style="color:{!!$iValue->bg_color!!}"></i> {!!$iValue->heading!!}</td>
+												<td><a href="javascript:void(0);" onclick="view_initiativepop('{!!$iValue->id!!}')"><i class="{!!$iValue->icons !!} heading-icon" style="color:{!!$iValue->bg_color!!}"></i> {!!$iValue->heading!!}</a></td>
 											</tr>
 											@endforeach
 										@endforeach
@@ -127,4 +158,5 @@
         </div>
 
     </main>
+    @include('Element/js/includejs')
 @stop

@@ -870,7 +870,15 @@ class MeasureController extends Controller
 		if($this->request->get('owners')){
 			$inputs['owners'] = implode(',', $this->request->get('owners'));
 		}
-		//pr($inputs);
+		$inputs['type'] = isset($inputs['type'])?$inputs['type']:0;
+		if($inputs['type'] == 0){
+			$popup_name = "objective";
+		}else if($inputs['type'] == 1){
+			$popup_name = "measures";
+		}else if($inputs['type'] == 2){
+			$popup_name = "initiative";
+		}
+		
 		if(isset($inputs['task_id'])){
 			$update = $data->update($inputs);
 		}else{
@@ -878,7 +886,7 @@ class MeasureController extends Controller
 		}
 		if($this->request->get('is_popup')){
 
-			return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => 'measures'));
+			return response()->json(array("type" => "success", "url" => 'close_modal', "popup_name" => $popup_name));
 		}else{
 
 			return response()->json(array("type" => "success", "url" => url('measures'), "message" => getLabels('measure_update_successfully')));

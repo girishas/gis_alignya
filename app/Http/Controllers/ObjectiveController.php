@@ -97,7 +97,8 @@ class ObjectiveController extends Controller
 		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id');
 		$perspectives = Perspective::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('name','id');
 
-		$contributers = User::select(DB::raw('CONCAT(first_name," ",last_name," (",role_id,")")'))->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$contributers = User::select(DB::raw('CONCAT(first_name," ",IFNULL(last_name," ")," (",role_id,")") as first_name'),'id')->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		//pr($contributers);
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$page_title  = getLabels("Objectives");
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');

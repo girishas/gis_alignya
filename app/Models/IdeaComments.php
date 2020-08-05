@@ -20,4 +20,16 @@ class IdeaComments extends Model
 'comments'
 ];
 
+	public $timmestamps = false;
+	public static function validate($input, $id = null){
+		$rules = array(
+			'comments'         	=> 'required',
+		);
+		
+		$messages = array(
+			'comments.required' 			=> 'comments is required.',
+		);
+		return validator($input, $rules, $messages);
+	}
+
 }

@@ -12,7 +12,9 @@ use App\Models\GoalCycles;
 use App\Models\Objective;
 use App\Models\Plans;
 use App\Models\Theme;
+use App\Models\Status;
 use App\Models\Perspective;
+use App\Models\IdeaCategory;
 use App\Models\DepartmentMember;
 use App\Models\Follower;
 use App\Models\Post;
@@ -1092,8 +1094,15 @@ class DepartmentController extends Controller
 			$timemap_data[] = $data->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.bg_color','al_master_status.icons','al_master_status.name as status_name','al_goal_cycles.cycle_name')->get();
 		
 		}
-		
-		return view("/frontend/departments/timemap",compact('page_title','timemap_data','al_goal_cycles','all_perspective','al_themes','all_department','all_users'));
+		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id');
+		$perspectives = Perspective::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('name','id');
+
+		$contributers = User::select(DB::raw('CONCAT(first_name," ",IFNULL(last_name," ")," (",role_id,")") as first_name'),'id')->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		//pr($contributers);
+		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
+		$status = Status::where('is_obj',1)->pluck('name','id');
+		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
+		return view("/frontend/departments/timemap",compact('page_title','timemap_data','al_goal_cycles','all_perspective','al_themes','all_department','all_users','goal_cycles','perspectives','contributers','departments','status','objectives'));
 	}
 	public function departmental(){
 		$page_title = "Departmental View";
@@ -1299,6 +1308,42 @@ class DepartmentController extends Controller
 		}
 		return view('frontend/departments/scorecardlist',compact('page_title','data'));
 	}
+
+	public function idea_categories(){
+		$page_title = "Idea Category";
+		$data  = IdeaCategory::sortable();
+		
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		
+		if(! empty($_POST)){
+			if(isset($_POST['name']) and $_POST['name'] !=''){
+				$name = $_POST['name'];
+				$this->request->session()->put('usearch.name', $name);
+				$data = $data->whereRaw('al_idea_categories.name like ?', "%{$name}%");
+			}
+			
+			if(isset($_POST['status']) and $_POST['status'] !=''){
+				$status = $_POST['status'];
+				$this->request->session()->put('usearch.status', $status);
+				$data = $data->where('al_idea_categories.status', $status);
+			}
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		
+		$data  = $data->orderBy('id', 'desc')->paginate(config('constants.PAGINATION'));
+		
+		if(isset($_GET['s']) and $_GET['s']){
+			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
+		}
+		return view('frontend/departments/idea_categories',compact('page_title','data'));
+	}
 	
 	public function remove_scorecard($id = null){
 		$data = Scorecard::destroy($id);
@@ -1338,6 +1383,17 @@ class DepartmentController extends Controller
 		}
 		 return json_encode($results);
 	}
+
+	public function remove_idea_categories($id = null){
+		$data = IdeaCategory::destroy($id);
+		if($data){
+			$results = array("type" => "success", "url" => url('idea-categories'), "message" => getLabels('idea_category_removed'));
+		}else{
+			$results = array("type" => "error", "url" => url('idea-categories'), "message" => getLabels('idea_category_not_removed'));
+			
+		}
+		 return json_encode($results);
+	}
 	
 
 	public function scorecardadd(){
@@ -1363,9 +1419,36 @@ class DepartmentController extends Controller
 		}
 	}
 
+	public function idea_categories_add(){
+		$validator = IdeaCategory::validateadd($this->request->all());
+		
+		if ( $validator->fails() ) {
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+		} else {
+			$formData              	= $this->request->except('_token');
+			if(isset($formData['id']) && !empty($formData['id'])){
+				$scorecard = IdeaCategory::where('id',$formData['id'])->update($formData);
+				$message  = getLabels('update_idea_category_successfully');
+			}else{
+				$scorecard  = IdeaCategory::create($formData);
+				$message  = getLabels('add_idea_category_successfully');
+			}
+			if($scorecard){
+				return response()->json(['type' => 'success', 'url'=> url('idea-categories'), 'message' => $message]);
+			}else{
+				return response()->json(['type' => 'error', 'url'=> url('idea-categories'), 'message' => getLabels('something_wrong_try_again')]);
+			}
+		}
+	}
+
 	public function singlescorecard($id){
 		$singlescorecard = Scorecard::where('id',$id)->first();
 		return json_encode($singlescorecard);
+	}
+
+	public function single_idea_categories($id){
+		$singleideacategory = IdeaCategory::where('id',$id)->first();
+		return json_encode($singleideacategory);
 	}
 
 	public function themelist(){

@@ -307,7 +307,7 @@ class InitiativeController extends Controller
 					$input['quarter_start_month'] = 1;
 				}
 			}
-			// pr($input);
+			
 			if($id){
 				$measure = $data->update($input);
 			}

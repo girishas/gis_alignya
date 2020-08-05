@@ -31,21 +31,7 @@
         <div class="col-lg-8 col-12 mb-4">
          <div class="card mb-8">
                 <div class="card-body">
-                    <div>
-                     <button class="btn btn-outline-primary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="float: right;">
-                        {!! getLabels('filter') !!}
-                    </button>
-                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(0px, 25px, 0px);">
-                        <a class="dropdown-item" href="javascript:void(0);">{!! getLabels('this_week') !!}</a>
-                      
-                        <a class="dropdown-item" href="javascript:void(0);">{!! getLabels('this_month') !!}</a>
-                      <a class="dropdown-item" href="javascript:void(0);">{!! getLabels('this_quater') !!}</a>
-                      <a class="dropdown-item" href="javascript:void(0);">{!! getLabels('this_year') !!}</a>
-                      <a class="dropdown-item" href="javascript:void(0);">{!! getLabels('all') !!}</a>
-                                                                                  </div>
-                     <br><br> 
-                </div>
-                                                            
+                                                    
                 <table class="table table-borderless">
                     <thead>
                         <tr>

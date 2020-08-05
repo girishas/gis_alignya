@@ -18,6 +18,7 @@ class Ideas extends Model
 'user_id',
 'company_id',
 'department_id',
+'category_id',
 'title',
 'description',
 'is_popular',
@@ -28,12 +29,14 @@ class Ideas extends Model
 	public static function validate($input, $id = null){
 		$rules = array(
 			'title'         	=> 'required',
-			'department_id'		=> 'required'
+			'department_id'		=> 'required',
+			'category_id'		=> 'required',
 		);
 		
 		$messages = array(
 			'title.required' 			=> 'Title is required.',
 			'department_id.required' 			=> 'Department is required.',
+			'category_id.required' 			=> 'Category is required.',
 		);
 		return validator($input, $rules, $messages);
 	}

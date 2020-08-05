@@ -55,7 +55,14 @@ Route::any('getmilestonedetails', array('as'=>'users.getmilestonedetails', 'uses
 Route::any('updatemilestonemeasure', array('as'=>'users.updatemilestonemeasure', 'uses'=>'MeasureController@updatemilestonemeasure'));
 
 Route::any('ideas', array('as'=>'users.ideas', 'uses'=>'TeamController@ideas'));
+
+Route::any('idea-categories', array('as'=>'users.idea_categories', 'uses'=>'DepartmentController@idea_categories'));
+Route::any('idea-categories/new', array('as'=>'users.idea_categories_add', 'uses'=>'DepartmentController@idea_categories_add'));
+Route::any('idea-categories/remove/{id?}', array('as'=>'users.remove_idea_categories', 'uses'=>'DepartmentController@remove_idea_categories')) ;
+Route::any('single-idea-categories-details/{id?}', array('as'=>'users.single_idea_categories', 'uses'=>'DepartmentController@single_idea_categories'));
+
 Route::any('addidea', array('as'=>'users.addidea', 'uses'=>'TeamController@addidea'));
+Route::any('idea-details/{id?}', array('as'=>'users.idea_details', 'uses'=>'TeamController@idea_details'));
 Route::any('department/{id?}', array('as'=>'users.admin_index', 'uses'=>'DepartmentController@admin_index'));
 Route::any('profile', array('as'=>'users.profile', 'uses'=>'UserController@profile'));
 Route::any('addDepartmentForm', array('as'=>'users.addDepartmentForm', 'uses'=>'DepartmentController@addDepartmentForm'));

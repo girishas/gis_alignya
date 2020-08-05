@@ -3,15 +3,21 @@
 @endif
 
 
-@if(empty($_POST))
 @section('content')
 	
-	
+	<style type="text/css">
+     .r-is{
+        border: 1px solid #8f8f8f;
+    border-radius: 15px;
+    color: #3a3a3a;
+}
+
+    </style>
   <main>
-  @endif
+
   <div class="container-fluid">
-            <div class="row app-row">
-                <div class="col-12">
+            <div class="row">
+                <div class="col-9">
                     <div class="mb-2">
                         <h1>Ideas</h1>
                         <div class="top-right-button-container">
@@ -34,27 +40,28 @@
                                                     {!!Form::text('title',null,array('class'=>'form-control'))!!}
                                                     <div class="invalid-tooltip"></div>
                                                 </div>
+                                                 <div class="form-group position-relative error-l-100">
+                                                    <label>Category</label>
+                                                    {!!Form::select('category_id',array(''=>'Please Select Category')+$categories, null, array('class'=>'form-control'))!!}
+                                                   <div class="invalid-tooltip"></div>
+                                                </div>
+                                               
+                                                <div class="form-group position-relative error-l-100">
+                                                    <label>Department</label>
+                                                    {!!Form::select('department_id',array('0'=>'All Departments')+$departments, null, array('class'=>'form-control'))!!}
+                                                   <div class="invalid-tooltip"></div>
+                                                </div>
                                                 <div class="form-group ">
                                                     <label>Description</label>
                                                      {!! Form::textarea('description', null, array('rows' => 2, 'class' => 'form-control'))!!}
                                                 </div>
-
-                                                <div class="form-group position-relative error-l-100">
-                                                    <label>Department</label>
-                                                    {!!Form::select('department_id',array(''=>'Please Select Department')+$departments, null, array('class'=>'form-control'))!!}
+                                                 <div class="form-group position-relative error-l-100">
+                                                    <label>Status</label>
+                                                    {!!Form::select('status',array('0'=>'Select Status')+$status, null, array('class'=>'form-control'))!!}
                                                    <div class="invalid-tooltip"></div>
                                                 </div>
 
-
-                                                <div class="form-group">
-                                                    <label></label>
-                                                    <div class="custom-control custom-checkbox">
-                                                        <input type="checkbox" class="custom-control-input"
-                                                            id="customCheck1" name="is_popular">
-                                                        <label class="custom-control-label"
-                                                            for="customCheck1">Is Popular</label>
-                                                    </div>
-                                                </div>
+                                                
                                             
                                         </div>
                                         <div class="modal-footer">
@@ -69,110 +76,79 @@
                             
                         </div>
                     </div>
-
                     <div class="mb-2">
-                        <a class="btn pt-0 pl-0 d-inline-block d-md-none" data-toggle="collapse" href="#displayOptions"
-                            role="button" aria-expanded="true" aria-controls="displayOptions">
-                            Display Options
-                            <i class="simple-icon-arrow-down align-middle"></i>
-                        </a>
-                        <div class="collapse d-md-block" id="displayOptions">
-                            <div class="d-block d-md-inline-block">
-                                <div class="btn-group float-md-left mr-1 mb-1">
-                                    <button class="btn btn-outline-dark btn-xs dropdown-toggle" type="button"
-                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Order By
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#">Action</a>
-                                        <a class="dropdown-item" href="#">Another action</a>
-                                    </div>
-                                </div>
-                                <div class="search-sm d-inline-block float-md-left mr-1 mb-1 align-top">
-                                    <input placeholder="Search Ideas...">
-                                </div>
-                            </div>
+                            
                         </div>
-                    </div>
-
                     <div class="separator mb-5"></div>
-
+                    
                     <div class="list disable-text-selection" data-check-all="checkAll">
+
+@if(count($ideas->toArray())>0)
+                                @foreach($ideas as $key => $value)
                         <div class="card d-flex flex-row mb-3">
                             <div class="d-flex flex-grow-1 min-width-zero">
+                                
                                 <div
                                     class="card-body align-self-center d-flex flex-column flex-md-row justify-content-between min-width-zero align-items-md-center">
                                       
-                                        <span class="align-middle d-inline-block w-15">France Launch</span>
+                                        <span class="align-middle d-inline-block w-30"><a href="{!!url('idea-details/'.$value->id)!!}">{!!$value->title!!}</a></span>
                                     
-                                    <p class="mb-0 text-muted text-small w-15 w-xs-100">As part of informationalization</p>
-                                    <p class="mb-0 text-muted text-small w-15 w-xs-100">Created 2 days ago By Brayan</p>
+                                    <p class="mb-0 text-muted text-small  w-xs-100"></p>
+                                    <p class="mb-0 text-muted text-small w-15 w-xs-100">Created By {!!$value->created_by!!}</p>
                                     <div class="w-15 w-xs-100">
-                                       <i class="simple-icon-bubbles"></i> 23
+                                       {!!$value->status_name!!}
                                     </div> <div class="w-15 w-xs-100">
-                                       <i class="simple-icon-like"></i> 16
+                                      <i class="simple-icon-bubbles"></i> {!!ideacommentscount($value->id)!!} &nbsp; <i class="simple-icon-like"></i> {!!idealikescount($value->id)!!}
                                     </div>
                                 </div>
-                               
                             </div>
                         </div>
-
-                        <div class="card d-flex flex-row mb-3">
-                            <div class="d-flex flex-grow-1 min-width-zero">
+                                @endforeach
+                                @else
                                <div
-                                    class="card-body align-self-center d-flex flex-column flex-md-row justify-content-between min-width-zero align-items-md-center">
+                                    class="card-body align-self-center d-flex flex-column flex-md-row justify-content-between min-width-zero align-items-md-center" style="height: 50px">
+                                      <span class="align-middle d-inline-block w-50"><a href="{!!url('idea-details/')!!}"></a></span>
                                       
-                                        <span class="align-middle d-inline-block w-15">Maxico Launch</span>
                                     
-                                    <p class="mb-0 text-muted text-small w-15 w-xs-100">As part of informationalization </p>
-                                    <p class="mb-0 text-muted text-small w-15 w-xs-100">Created 2 days ago By Brayan</p>
-                                    <div class="w-15 w-xs-100">
-                                       <i class="simple-icon-bubbles"></i> 23
-                                    </div> <div class="w-15 w-xs-100">
-                                       <i class="simple-icon-like"></i> 16
+                                    <p class="mb-0 text-muted text-small w-50">No Record Found</p>
+                                    
                                     </div>
                                 </div>
-                               
+                               @endif
                             </div>
                         </div>
-
-                        <div class="card d-flex flex-row mb-3">
-                            <div class="d-flex flex-grow-1 min-width-zero">
-                               <div
-                                    class="card-body align-self-center d-flex flex-column flex-md-row justify-content-between min-width-zero align-items-md-center">
-                                      
-                                        <span class="align-middle d-inline-block w-15">Self Service Mentor Application</span>
-                                    
-                                    <p class="mb-0 text-muted text-small w-15 w-xs-100">As part of informationalization</p>
-                                    <p class="mb-0 text-muted text-small w-15 w-xs-100">Created 2 days ago By Brayan</p>
-                                    <div class="w-15 w-xs-100">
-                                       <i class="simple-icon-bubbles"></i> 23
-                                    </div> <div class="w-15 w-xs-100">
-                                       <i class="simple-icon-like"></i> 16
-                                    </div>
-                                </div>
-                               
-                            </div>
-                        </div>
-                    </div>
+                    </div> 
+                
                 </div>
             </div>
         </div>
 <div class="app-menu">
             <div class="p-4 h-100">
                 <div class="scroll">
-                    <p class="text-muted text-small">Filter By Status</p>
-                    <ul class="list-unstyled mb-5">
-                        @foreach($status as $key =>$value)
-                        <li>
-                            <div class="custom-control custom-checkbox mb-2">
-                                <input type="checkbox" class="custom-control-input" id="status{!!$key!!}">
-                                <label class="custom-control-label" for="status{!!$key!!}">{!!$value!!}</label>
+                    <p class="text-muted text-small">Search</p>
+                    {!! Form::open(array('url' => array($route_prefix.'/ideas'), 'class' =>'steamerstudio_searchform', 'name'=>'Search')) !!}
+
+                            <div class="collapse d-md-block" id="displayOptions">
+                            <div class="d-block d-md-inline-block">
                                 
+                                <div class="form-group">
+                                    {!! Form::text('title', isset($_POST['title'])?trim($_POST['title']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_name')))!!}
+                                </div>
+                                 <div class="form-group">
+                                   {!! Form::select('status', array('' => getLabels('all_status')) + $status, isset($_POST['status'])?$_POST['status']:null, array('class'=>'form-control'))!!}
+                                </div>
+                                <br>
+                                <br>
+                                 <div class="form-group">
+                                  
+                                   <button class="btn btn-outline-dark  mb-1" type="submit">{!! getLabels('Search') !!}</button>
+                                   <a href="{!!url('ideas')!!}"><button class="btn btn-dark  mb-1" type="button">{!! getLabels('show_all') !!}</button></a>
+                                </div>
+
                             </div>
-                        </li>
-                        @endforeach
-                    </ul>
+                        </div>
+                               
+                            {!!Form::close()!!}
                 </div>
             </div>
             <a class="app-menu-button d-inline-block d-xl-none" href="#">
@@ -274,7 +250,7 @@
     });
 });
 </script>
-	@if(empty($_POST))
+
     </main>
 @stop
-@endif
+

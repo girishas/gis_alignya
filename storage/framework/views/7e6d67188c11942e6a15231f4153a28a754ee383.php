@@ -75,13 +75,12 @@ Website: http://www.mosaddek.com
 
 			<?php echo HTML::script('public/js/vendor/jquery-3.3.1.min.js'); ?>
 
-			<?php echo HTML::script('chatting/js/socket.io.js'); ?>
-
+			<!--<?php echo HTML::script('chatting/js/socket.io.js'); ?>-->
 			<script type="text/javascript">
 				var SITE_URL = "<?php echo config('constants.SITE_URL').$url_prefix; ?>";
 				var SITE_URL_BASE = "<?php echo config('constants.SITE_URL'); ?>";
 				var server = "https://streamer.studio:4200";
-				var io = io(server);
+				//var io = io(server);
 				var updatedgmexist = false;
 				var createdgmexist = false;
 			</script>
@@ -226,10 +225,9 @@ Website: http://www.mosaddek.com
 	 <?php echo HTML::style('public/css/index_custom.css'); ?>
 
 	 
-	<?php echo HTML::script('public/js/index_functions.js'); ?>
+	<!--<?php echo HTML::script('public/js/index_functions.js'); ?>
 
-	<?php echo HTML::script('public/js/ch_functions.js'); ?>
-
+	<?php echo HTML::script('public/js/ch_functions.js'); ?>-->
 			
 			<?php echo HTML::script('public/js/app.js'); ?>
 

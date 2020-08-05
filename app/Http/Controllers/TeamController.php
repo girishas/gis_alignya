@@ -10,8 +10,12 @@ use App\Models\TeamsMembers;
 use App\Models\Objective;
 use App\Models\GoalCycles;
 use App\Models\Measure;
+use App\Models\IdeaCategory;
+use App\Models\IdeaComments;
+use App\Models\Status;
 use App\Models\Milestones;
 use App\Models\Theme;
+use App\Models\Ideas;
 use App\Models\Perspective;
 use App\Models\Post;
 use App\Models\Notification;
@@ -376,8 +380,50 @@ class TeamController extends Controller
 		return view('frontend/teams/reports',compact('page_title','objectives','measures','id','single_objective'));
 	}
 	public function ideas(){
-		$page_title = "Ideas";
-		return view('frontend/teams/ideas',compact('page_title'));
+		$page_title = 'Ideas';
+		$ideas = Ideas::select('al_ideas.*','al_master_status.name as status_name',DB::raw('CONCAT(users.first_name,IFNULL(users.last_name," ")) as created_by'))->leftjoin('al_master_status','al_master_status.id','=','al_ideas.status')->leftjoin('users','users.id','=','al_ideas.user_id')->where('al_ideas.company_id',Auth::User()->company_id);
+		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
+			$_POST = $this->request->session()->get('usearch');
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		
+		
+		if(! empty($_POST)){
+			if(isset($_POST['title']) and $_POST['title'] !=''){
+				$title = $_POST['title'];
+				$this->request->session()->put('usearch.title', $title);
+				$ideas = $ideas->whereRaw('al_ideas.title like ?', "%{$title}%");
+			}
+			if(isset($_POST['status']) and $_POST['status'] !=''){
+				$status = $_POST['status'];
+				$this->request->session()->put('usearch.status', $status);
+				$ideas = $ideas->where('al_ideas.status', $status);
+			}
+		}else{
+			$this->request->session()->forget('usearch');
+		}
+		$ideas = $ideas->orderBy('id','desc')->get();
+		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
+		$status = Status::where('is_idea',1)->where('status',1)->pluck('name','id');
+		if(!empty($status)){
+			$status = $status->toArray();
+		}else{
+			$status = array();
+		}
+		$categories = IdeaCategory::pluck('name','id');
+		if(!empty($categories)){
+			$categories = $categories->toArray();
+		}else{
+			$categories = array();
+		}
+		if(!empty($departments))
+		{
+			$departments = $departments->toArray();
+		}else{
+			$departments = array();
+		}
+		return view('frontend/teams/ideas',compact('page_title','departments','categories','status','ideas'));
 	}
 	
 	public function scorecard(){
@@ -523,7 +569,15 @@ class TeamController extends Controller
 			$strategic_data[] = $data->where('al_objectives.company_id',Auth::User()->company_id)->select('al_objectives.*','al_master_status.bg_color','al_master_status.icons','al_master_status.name as status_name','al_perspectives.name as perspective_name')->get();
 		
 		}
-		return view('frontend/teams/strategic_map',compact('page_title','perspective_data','strategic_data','al_goal_cycles','all_perspective','al_themes','all_department','all_users'));
+		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id');
+		$perspectives = Perspective::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('name','id');
+
+		$contributers = User::select(DB::raw('CONCAT(first_name," ",IFNULL(last_name," ")," (",role_id,")") as first_name'),'id')->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		//pr($contributers);
+		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
+		$status = Status::where('is_obj',1)->pluck('name','id');
+		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
+		return view('frontend/teams/strategic_map',compact('page_title','perspective_data','strategic_data','al_goal_cycles','all_perspective','al_themes','all_department','all_users','goal_cycles','perspectives','contributers','departments','status','objectives'));
 	}
 
 	public function add_teampopup(){
@@ -558,4 +612,50 @@ class TeamController extends Controller
 		return json_encode($result);
 		//return view('Element/team/projectinsightobjective',compact('objectives'));
 	}
+
+	public function addidea(){
+		$validator = Ideas::validate($this->request->all());
+		
+		if ( $validator->fails() ) {
+			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+		} else {
+			$formData              	= $this->request->except('_token');
+			$formData['company_id']	= Auth::User()->company_id;
+			$formData['user_id']	= Auth::User()->id;
+			if(isset($formData['id']) && !empty($formData['id'])){
+				$theme = Ideas::where('id',$formData['id'])->update($formData);
+				$message  = getLabels('idea_updated_successfully');
+			}else{
+				$theme  = Ideas::create($formData);
+				$message  = getLabels('idea_add_successfully');
+			}
+			if($theme){
+				return response()->json(['type' => 'success', 'url'=> url('ideas'), 'message' => $message]);
+			}else{
+				return response()->json(['type' => 'error', 'url'=> url('ideas'), 'message' => getLabels('something_wrong_try_again')]);
+			}
+		}
+	}
+
+	public function idea_details($id=null){
+		if($this->request->isMethod('post')){
+			$validator = IdeaComments::validate($this->request->all());
+			if($validator->fails()){
+				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);	
+			}else{
+				$addcomment = array();
+				$addcomment['idea_id'] = $id;
+				$addcomment['comments'] = $this->request->get('comments');
+				$addcomment['user_id'] = Auth::User()->id;
+				$add = IdeaComments::create($addcomment);
+				return response()->json(array("type" => "success", "url" => url('idea-details/'.$id), "message" => getLabels('comment_saved_successfully')));
+			}
+		}
+		$page_title = "Idea Detail";
+		$idea_details = Ideas::select('al_ideas.*','al_idea_categories.name as category_name','al_comp_departments.department_name','al_master_status.name as status_name',DB::raw('CONCAT(users.first_name, " ", IFNULL(users.last_name," ")) as created_by'))->leftjoin('users','users.id','=','al_ideas.user_id')->leftjoin('al_idea_categories','al_idea_categories.id','=','al_ideas.category_id')->leftjoin('al_comp_departments','al_comp_departments.id','=','al_ideas.department_id')->leftjoin('al_master_status','al_master_status.id','=','al_ideas.status')->where('al_ideas.id',$id)->first();
+		$comments = IdeaComments::select('al_idea_comments.*',DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name, " ")) as commented_by'))->leftjoin('users','users.id','=','al_idea_comments.user_id')->where('idea_id',$id)->get();
+		$popular_ideas = Ideas::where('company_id',Auth::User()->company_id)->where('is_popular',1)->get();
+		return view('frontend/teams/ideas_details',compact('page_title','idea_details','comments','id','popular_ideas'));
+	}
+
 }

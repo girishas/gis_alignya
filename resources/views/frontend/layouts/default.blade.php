@@ -51,12 +51,12 @@ Website: http://www.mosaddek.com
 			
 			{!! HTML::style('public/summernote/summernote.css') !!}
 			{!! HTML::script('public/js/vendor/jquery-3.3.1.min.js') !!}
-			{!! HTML::script('chatting/js/socket.io.js') !!}
+			<!--{!! HTML::script('chatting/js/socket.io.js') !!}-->
 			<script type="text/javascript">
 				var SITE_URL = "{!! config('constants.SITE_URL').$url_prefix !!}";
 				var SITE_URL_BASE = "{!! config('constants.SITE_URL') !!}";
 				var server = "https://streamer.studio:4200";
-				var io = io(server);
+				//var io = io(server);
 				var updatedgmexist = false;
 				var createdgmexist = false;
 			</script>
@@ -173,8 +173,8 @@ Website: http://www.mosaddek.com
 	 {!! HTML::script('public/js/jquery.scrollTo.min.js') !!}
 	 {!! HTML::style('public/css/index_custom.css') !!}
 	 
-	{!! HTML::script('public/js/index_functions.js') !!}
-	{!! HTML::script('public/js/ch_functions.js') !!}
+	<!--{!! HTML::script('public/js/index_functions.js') !!}
+	{!! HTML::script('public/js/ch_functions.js') !!}-->
 			
 			{!! HTML::script('public/js/app.js') !!}
 			{!! HTML::script('public/hierarchy/hierarchy-select.min.js') !!}

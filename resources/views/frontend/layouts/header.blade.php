@@ -22,14 +22,7 @@
 						<rect x="0.5" y="15.5" width="25" height="1" />
 					</svg>
 				</a>
-				@if(Auth::User()->role_id != 1)
-			   <div class="search" data-search-path="{!! url($route_prefix.'/search') !!}?q=" style="width:100%;">
-					<input placeholder="{!! getLabels('Search') !!}..." class="typehead">
-					<span class="search-icon">
-						<i class="simple-icon-magnifier"></i>
-					</span>
-				</div>
-				@endif
+				
 			@endif
         </div>
 

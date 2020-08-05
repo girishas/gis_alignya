@@ -2,7 +2,39 @@
 <?php use App\Traits\SortableTrait;  ?>
 
 @section('content')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+#chartdiv {
+  width: 100%;
+  height: 250px;
+}
+
+</style>
+<!-- Resources -->
+<script src="https://www.amcharts.com/lib/4/core.js"></script>
+<script src="https://www.amcharts.com/lib/4/charts.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+@include('Element/objective/view_objective')
+@include('Element/objective/add_objective')
+@include('Element/objective/scorecards')
+@include('Element/objective/add_scorecard')
+@include('Element/objective/themes')
+@include('Element/objective/add_theme')
+@include('Element/objective/add_cycle')
+@include('Element/objective/update_objective')
+@include('Element/measure/view_measure')
+@include('Element/measure/add_measure')       
+@include('frontend/objectives/filter')
+@include('Element/initiative/add_initiative')
+@include('Element/initiative/view_initiative') 
+@include('Element/measure/update_task')
+@include('Element/measure/update_milestone')
+@include('Element/measure/update_measure')
+@include('Element/initiative/update_initiative')
+@include('Element/measure/add_milestone')
+@include('Element/initiative/add_milestone')
+@include('Element/initiative/update_milestone')
+@include('Element/measure/task')
 
   <main>
         <div class="container-fluid">
@@ -84,11 +116,14 @@
 												<div class="row" style="justify-content: center;">
 												@endif
 												
-													<div class="col-lg-2"><div style="border-radius: 50%;background: {!!$value->bg_color!!};height: 100px;text-align: center;padding-top: 35px;"><b>@if(strlen($value->heading)>40)
+													<div class="col-lg-2">
+                                                        <a href="javascript:void(0);" onclick="viewobjective('{!!$value->id!!}')"><div style="border-radius: 50%;background: {!!$value->bg_color!!};height: 100px;text-align: center;padding-top: 35px;"><b>@if(strlen($value->heading)>40)
                                                     {!!substr($value->heading,0,40)!!}...
                                                     @else
                                                     {!!$value->heading!!}
-                                                    @endif</b></div></div> 
+                                                    @endif</b></div>
+                                                 </a> </div>
+                                                   
 												@if(count($svalue)-1 == $key)
 												</div>	
 												</div>	
@@ -108,4 +143,5 @@
         </div>
 
     </main>
+    @include('Element/js/includejs')
 @stop

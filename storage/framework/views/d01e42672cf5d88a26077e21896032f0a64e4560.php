@@ -154,6 +154,14 @@
                             <i class="simple-icon-cursor"></i> <span class="d-inline-block"><?php echo getLabels('perspectives'); ?></span>
                         </a>
                     </li>
+                    <?php
+					$class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['idea_categories']))?"active":""; ?>
+						
+                    <li class="<?php echo $class_subnav; ?>">
+                         <a href="<?php echo url($route_prefix, 'idea-categories'); ?>" class="steamerst_link" data-main-link="st_settings">
+                            <i class="simple-icon-cursor"></i> <span class="d-inline-block"><?php echo getLabels('idea_categories'); ?></span>
+                        </a>
+                    </li>
                 </ul>
                 <ul class="list-unstyled" data-link="roadmap_manager"><?php
 					$class_subnav  = ($controller == "DepartmentController
@@ -204,7 +212,7 @@
 						$class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['timemap']))?"active":""; ?>
 						<li class="<?php echo $class_subnav; ?>">
 							<a class="" href="javascript:void(0);" onclick="onFunc('timemap')" data-main-link="st_analytics">
-								<i class="iconsminds-clock"></i>
+								<i class="simple-icon-cursor"></i>
 								<?php echo getLabels('TimeMap'); ?>
 
 							</a>

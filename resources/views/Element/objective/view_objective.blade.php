@@ -4,9 +4,9 @@
                           <div class="modal-content view_objective_background_popup">
                               <div class="modal-header">
                                   <h5 class="modal-title" id="objective_name_view"></h5>
-                                  <a class= "steamerst_link" href="{!!url('objectives')!!}"><button type="button" class="close" id="popup1hide" aria-label="Close">
+                                 <button type="button" class="close" id="popup1hide" aria-label="Close">
                                       <span aria-hidden="true">&times;</span>
-                                  </button></a>
+                                  </button>
                               </div>
                               <div class="modal-body">
                                   
@@ -252,4 +252,9 @@
       $("#myModalAddTask").modal('show');
 
     }
+    $(document).ready(function(){
+      $("#popup1hide").click(function(){
+        window.location.reload();
+      });
+    });
 </script>

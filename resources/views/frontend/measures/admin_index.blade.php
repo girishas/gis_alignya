@@ -198,6 +198,7 @@
 
 
     $(document).ready(function(){
+        
         var adderrormessage = "{!!session('adderrormessage')?session('adderrormessage'):''!!}";
             if(adderrormessage != ''){
                 $("#myModalAddMeasure").show();
@@ -232,9 +233,7 @@ $("#filterBtn").click(function(){
     $("#addMilestoneMeasureViewHide").click(function(){
     $("#addMilestoneMeasureView").modal('hide');
     });
-    $("#popupaddhideMeasure").click(function(){
-    $("#myModalAddMeasure").modal('hide');
-    });
+    
     
     $("#updateMilestoneMeasureViewHide").click(function(){
         $("#updateMilestoneMeasureView").modal("hide");
@@ -242,9 +241,7 @@ $("#filterBtn").click(function(){
     $("#popupaddhideTask").click(function(){
         $("#myModalAddTask").hide();
     });
-    $("#view_measuremodal_hide").click(function(){
-    $("#viewmeasuremodal").modal("hide");
-});
+    
     });
     </script>
 <script type="text/javascript">
@@ -272,7 +269,7 @@ $("#filterBtn").click(function(){
     
     
     
-    $("#popupaddhideUpdateMeasure").modal("hide");
+    
 
 
     
