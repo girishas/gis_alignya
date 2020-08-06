@@ -61,11 +61,13 @@ class InitiativeController extends Controller
 		}
 		
 		$data  = Measure::sortable()->leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->leftjoin('al_objectives','al_objectives.id','=','al_measures.objective_id')->where('al_measures.company_id',Auth::User()->company_id)->where('al_measures.category_type',2);
-		$data = $data->where(function($queryW){
-			$queryW->where("al_measures.owner_user_id", Auth::User()->id)
-			->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_measures.contributers) > 0'))
-			->orWhere('al_measures.user_id',Auth::User()->id);
-		});
+		if(Auth::User()->role_id != 2){
+			$data = $data->where(function($queryW){
+				$queryW->where("al_measures.owner_user_id", Auth::User()->id)
+				->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_measures.contributers) > 0'))
+				->orWhere('al_measures.user_id',Auth::User()->id);
+			});
+		}
 		if(! empty($_POST)){
 			if(isset($_POST['heading']) and $_POST['heading'] !=''){
 				$heading = $_POST['heading'];
@@ -424,10 +426,18 @@ class InitiativeController extends Controller
 	}
 
 	public function remove_tasks($id = null){
+		$type = Tasks::where('id',$id)->value('type');
+		if($type == 0){
+			$popup_name = "objective";
+		}else if($type == 1){
+			$popup_name = "measure";
+		}else if($type == 2){
+			$popup_name = "initiative";
+		}
 		$data = Tasks::destroy($id);
 		
 		if($data){
-			return response()->json(array("type" => "success", "url" => 'comment_remove', "popup_name" => 'initiative'));
+			return response()->json(array("type" => "success", "url" => 'comment_remove', "popup_name" => $popup_name));
 		}else{
 			return response()->json(array("type" => "error", "url" => 'close_modal', "popup_name" => 'initiative'));
 		}

@@ -34,12 +34,13 @@
                                             
                                 <div class="invalid-tooltip"></div>
                             </div>
+                            <?php if(count($departments)>0): ?>
                                 <div class="form-group ">
                                                       <label>Choose Department</label>
                                <?php echo Form::select('department_id', $departments,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>                  
                                 <div class="invalid-tooltip"></div>
                             </div>
-
+                            <?php endif; ?>
                             <div class="form-group ">
                                                       <label>Choose Members</label>
                                <?php echo Form::select('member_ids[]', $all_members,null, array('class' => 'form-control select2-multiple', 'id' => 'inputFirstname',  "multiple" => 'multiple')); ?>                      

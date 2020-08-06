@@ -10,7 +10,10 @@
                     <div class="mb-2">
                         <h1>{!!(!empty($company_details))?$company_details->company_name:""!!}</h1>
                          <div class="text-zero top-right-button-container">
-						<a href="javascript:void(0);"  class="btn btn-primary btn-sm top-right-button mr-1" onclick="updateProfile()">{!! getLabels('update_profile') !!}</a>
+                            @if(Auth::User()->role_id == 2)
+						<a href="javascript:void(0);"  class="btn btn-primary btn-sm top-right-button mr-1" onclick="updateProfile()">{!! getLabels('update_comapny_info') !!}</a>
+                        @endif
+                        <a href="javascript:void(0);"  class="btn btn-primary btn-sm top-right-button mr-1" onclick="updatemember('{!!Auth::User()->id!!}')">{!! getLabels('update_personal_info') !!}</a>
                     </div>
                         <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                             <ol class="breadcrumb pt-0">
@@ -162,7 +165,7 @@
                 </div>
             </div>
         </div>
-
+<div id="modalShow"></div>
 	</main>
 	@extends('Element/users/updateprofile')
 	<script type="text/javascript">
@@ -172,5 +175,18 @@
 		$("#updateprofilehide").click(function(){
 		    $("#updateprofileopen").modal('hide');
 		});
+        function updatemember(id){
+            var token = "{!!csrf_token()!!}";
+            $.ajax({
+                type:"POST",
+                url: "{!!url('/setuserdatasession')!!}",
+                data:'_token='+token+'&id='+id,
+                dataType:'html',
+                success: function (response) {
+                    $("#modalShow").html(response);
+                    $("#updatemember").modal("show");
+                }  
+            });
+        }
 	</script>
 @stop

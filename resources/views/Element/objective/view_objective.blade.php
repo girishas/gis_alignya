@@ -1,5 +1,4 @@
-
-                  <div class="modal modal-right" id="myModal" role="dialog" >
+<div class="modal modal-right" id="myModal" role="dialog" >
                       <div class="modal-dialog" style="max-width: 99.99%;">
                           <div class="modal-content view_objective_background_popup">
                               <div class="modal-header">
@@ -167,59 +166,7 @@
                                     
                                 </div>
                             </div>
-                            <!--<div class="tab-pane fade" id="second" role="tabpanel" aria-labelledby="second-tab">
-                                      <div class="row">
-
-                                    <div class="col-lg-8 col-12 mb-4">
-                                     <div class="card mb-8">
-                                            <div class="card-body">
-                                <table class="table table-borderless">
-                                    
-                                    <tbody id="alignedobjectivelist">
-                                        
-                                    </tbody>
-                                    <tbody>
-                                        <input type="hidden" name="objective_id" id="objective_idview">
-                                                                <tr>
-                                                                    <th scope="row"><a href="javascript:void(0);" onclick="addObjectivepop('sub')"><h6><i class="simple-icon-plus btn-group-icon"></i>
-                                                                            Add Sub Objective</h6></a></th>
-                                                                    <td colspan="2"></td>
-                                                                    <td></td>
-
-                                                                </tr>
-                                                            </tbody>
-                                </table>
-                            
-                                    </div>
-                                    </div>
-                                    </div>
-
-                                    <div class="col-12 col-lg-4">
-                                         <div class="card mb-8">
-                                            <div class="card-body">
-                                       
-                                       <div class="d-flex flex-row mb-2  mb-4">
-                                                    
-                                                    <div class=" d-flex flex-grow-1 min-width-zero">
-                                                        <div
-                                                            class="m-2 pl-0 align-self-center d-flex flex-column flex-lg-row justify-content-between min-width-zero">
-                                                            <div class="min-width-zero">
-                                                                <a href="#">
-                                                                    <p class="mb-0 truncate"><i class="iconsminds-pause heading-icon" style="color:yellow;"></i>Product Sales</p>
-                                                                </a>
-                                                               <p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY2020-Q3</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="dashboard-line-chart">
-                                                    <canvas id="contributionChart3"></canvas>
-                                                </div>
-                                    </div>
-                                    </div>
-                                    </div>
-                                </div>
-                            </div> -->
+                           
 
                         </div>
 

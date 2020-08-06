@@ -1,0 +1,9 @@
+1) Email editable for employee
+2) Import file replace
+3) members - 
+Add - User type dropdown (role self and lower type can add)
+Edit - remove user type (only company can change)
+List - 
+4) Choose department - hide on no record | Report button & photo from Top -> remove
+5) upload CSS - blue.light
+6) 

@@ -66,8 +66,9 @@ Website: http://www.mosaddek.com
 				color: black !important;
 			}
 			.modal-content{
-				height: 500px;
-				overflow: scroll;
+				min-height: 240px;
+    			max-height: 800px;
+				overflow-y: scroll;
 			}
 		</style>
 		

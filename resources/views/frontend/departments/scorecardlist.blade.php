@@ -153,5 +153,11 @@
 	        });
     	}
 
+    	$(document).ready(function(){
+    		$("#addscorecardhide").click(function(){
+    			window.location.reload();
+    		})
+    	})
+
     </script>
 @stop

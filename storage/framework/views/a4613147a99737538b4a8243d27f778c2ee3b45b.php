@@ -28,7 +28,7 @@
 
                          <?php if($errors->first('department_name')): ?><div class="error"><?php echo $errors->first('department_name'); ?></div><?php endif; ?>
                     </div>
-                    <?php if(isset($departments)): ?>
+                    <?php if(isset($departments) && count($departments)>0): ?>
                     <div class="form-group ">
                           <label>Choose Parent Department</label>
                           <?php echo Form::select('parent_department_id', $departments,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>

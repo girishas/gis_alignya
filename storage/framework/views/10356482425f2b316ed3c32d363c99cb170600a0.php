@@ -156,15 +156,15 @@ $(document).ready(function(){
                                             <?php if(!empty($hod)): ?>
                                                <div
                                                 class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <?php if($hod->photo and file_exists('public/upload/users/profile-photo/'. $hod->photo) ): ?>
-                                                     <img src="<?php echo url('public/upload/users/profile-photo/'.$hod->photo); ?>" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />            
-                                                <?php else: ?>
-                                                     <img src="<?php echo url('/img/no_images.png'); ?>" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />  
-                                                <?php endif; ?>
+                                               <?php /* @if ($hod->photo and file_exists('public/upload/users/profile-photo/'. $hod->photo) )
+                                                     <img src="{!!url('public/upload/users/profile-photo/'.$hod->photo)!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />            
+                                                @else
+                                                     <img src="{!!url('/img/no_images.png')!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />  
+                                                @endif */ ?>
                                                 
                                                 
                                                 
-                                                <div class="pl-3 flex-fill">
+                                                <div class=" flex-fill">
                                                         <p class="font-weight-medium mb-0"><?php echo $hod->first_name.' '.$hod->last_name; ?> ( Head of Department )</p>
                                                         <p class="text-muted mb-0 text-small"><?php echo $hod->designation; ?></p>
                                                     
@@ -196,9 +196,7 @@ $(document).ready(function(){
                                                         <p class="text-muted mb-0 text-small"><?php echo $member->designation; ?></p>
                                                     </a>
                                                 </div>
-                                                <div>
-                                                    <a class="btn btn-outline-primary btn-xs" href="javascript:void(0)">Reports</a>
-                                                </div>
+                                               
                                             </div>
                                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </div>

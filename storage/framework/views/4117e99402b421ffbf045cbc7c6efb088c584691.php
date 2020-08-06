@@ -30,7 +30,10 @@
                         </div>
                         <div class="form-group">
                             <label>Owners</label>
-                            <?php echo Form::select('owners[]',$contributers,null,array('class'=>'form-control select2-multiple','multiple'=>'multiple')); ?>
+							<?php $contributers = Contributers();
+//print_r($contributers);
+							?>
+                            <?php echo Form::select('owners[]',$contributers,null,array('class'=>'form-control select2-multiple','multiple'=>'multiple','id'=>'contributer_id')); ?>
 
                             
                         </div>
@@ -117,6 +120,5 @@
              $(".revenuehide").show();
         }
     }
-
-   
+ 
     </script>

@@ -113,7 +113,13 @@
 				@if(Auth::check())
 					<button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false">
+						@if(Auth::User()->role_id != 1)
 						<span class="name">{!! Auth::check()?Auth::User()->first_name." ".Auth::User()->last_name:"" !!}</span>
+						@else
+						<span class="name">{!! Auth::check()?Auth::User()->first_name." ".Auth::User()->last_name:"" !!}</span>
+						@endif
+						
+						
 						<span>
 							@if(Auth::check())
 								{!! showImage(Auth::User()->photo, "", "","", Auth::User()->first_name, 'users/profile-photo') !!}

@@ -8,7 +8,10 @@
                     <div class="mb-2">
                         <h1><?php echo (!empty($company_details))?$company_details->company_name:""; ?></h1>
                          <div class="text-zero top-right-button-container">
-						<a href="javascript:void(0);"  class="btn btn-primary btn-sm top-right-button mr-1" onclick="updateProfile()"><?php echo getLabels('update_profile'); ?></a>
+                            <?php if(Auth::User()->role_id == 2): ?>
+						<a href="javascript:void(0);"  class="btn btn-primary btn-sm top-right-button mr-1" onclick="updateProfile()"><?php echo getLabels('update_comapny_info'); ?></a>
+                        <?php endif; ?>
+                        <a href="javascript:void(0);"  class="btn btn-primary btn-sm top-right-button mr-1" onclick="updatemember('<?php echo Auth::User()->id; ?>')"><?php echo getLabels('update_personal_info'); ?></a>
                     </div>
                         <nav class="breadcrumb-container d-none d-sm-block d-lg-inline-block" aria-label="breadcrumb">
                             <ol class="breadcrumb pt-0">
@@ -160,7 +163,7 @@
                 </div>
             </div>
         </div>
-
+<div id="modalShow"></div>
 	</main>
 	
 	<script type="text/javascript">
@@ -170,6 +173,19 @@
 		$("#updateprofilehide").click(function(){
 		    $("#updateprofileopen").modal('hide');
 		});
+        function updatemember(id){
+            var token = "<?php echo csrf_token(); ?>";
+            $.ajax({
+                type:"POST",
+                url: "<?php echo url('/setuserdatasession'); ?>",
+                data:'_token='+token+'&id='+id,
+                dataType:'html',
+                success: function (response) {
+                    $("#modalShow").html(response);
+                    $("#updatemember").modal("show");
+                }  
+            });
+        }
 	</script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('Element/users/updateprofile', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

@@ -12,7 +12,7 @@
             </div>
             <div class="modal-body">  
                     	
-                 {!! Form::model($data, array('url' => array($route_prefix.'/members/update/'.$data->id), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
+                 {!! Form::model($data, array('url' => array($route_prefix.'/members/update/'.$data->id), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)) !!}
                        
                         <div class="form-row">
                             
@@ -32,7 +32,7 @@
                             <div class="form-group  position-relative error-l-40 col-md-6"><?php
                                 $is_disabled  = !empty($data->email)?'readonly':""; ?>
                                 <label for="inputEmail4">{!! getLabels('email') !!}</label>
-                                {!! Form::text('email', null, array('readonly' => true, 'class' => 'form-control', "id"=>"inputEmail4", 'placeholder'=> ''))!!}
+                                {!! Form::text('email', null, array('class' => 'form-control', "id"=>"inputEmail4", 'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
                             </div>
                             <div class="form-group  position-relative error-l-100 col-md-6">
@@ -48,14 +48,15 @@
                                 {!! Form::text('designation', null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
                             </div>
+                            @if(Auth::User()->role_id == 2)
                             <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputMobile">{!! getLabels('user_type') !!}</label>
                                 {!! Form::select('role_id', config('constants.USER_TYPES'),null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
                             </div>
-                            
+                            @endif
                         </div>
-                         <!-- <div class="form-row">
+                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="">{!! getLabels('profile_picture') !!}</label>
                                 <div class="slim" data-ratio="1:1" data-instant-edit="true" data-will-remove="profileimageWillBeRemoved">
@@ -65,7 +66,7 @@
                                     <input type="file" name="photo"/>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="form-group ">
                         <button type="submit" class="btn btn-primary">{!! getLabels('update') !!}</button>&nbsp;&nbsp;
                         <a href="{!! url($route_prefix, 'users') !!}" class="btn btn-dark steamerst_link">{!! getLabels('back') !!}</a>
@@ -75,6 +76,7 @@
         </div>
     </div>
 </div>
+@include('Element/js/includejs')
 <script type="text/javascript">
     $("#updatememberhide").click(function(){
         $("#updatemember").modal("hide");

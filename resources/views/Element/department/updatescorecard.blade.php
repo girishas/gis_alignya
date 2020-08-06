@@ -25,7 +25,7 @@
                         </div>
                         <div class="form-group  position-relative error-l-100">
                         <button type="submit" class="btn btn-primary">{!! getLabels('Submit') !!}</button>&nbsp;&nbsp;
-                        <a href="{!! url($route_prefix, 'scorecards') !!}" class="btn btn-dark steamerst_link">{!! getLabels('back') !!}</a>
+                        <a href="{!! url($route_prefix, 'scorecards') !!}" class="btn btn-dark ">{!! getLabels('back') !!}</a>
                         </div>
                     {!! Form::close() !!}
             </div>

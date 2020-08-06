@@ -13,6 +13,7 @@
 Route::any('members/new', array('as'=>'users.admin_add', 'uses'=>'UserController@admin_add'));
 Route::any('members/update/{user_id?}', array('as'=>'users.admin_edit', 'uses'=>'UserController@admin_edit'))->where('user_id', '[0-9]+');
 Route::any('members', array('as'=>'users.admin_index', 'uses'=>'UserController@admin_index'));
+Route::any('member/remove/{id?}', array('as'=>'users.remove_member', 'uses'=>'UserController@remove_member'));
 Route::any('teams/new', array('as'=>'users.admin_add', 'uses'=>'TeamController@admin_add'));
 Route::any('teams/update/{id?}', array('as'=>'users.admin_edit', 'uses'=>'TeamController@admin_edit'))->where('id', '[0-9]+');
 Route::any('teams', array('as'=>'admin.users', function(){ 

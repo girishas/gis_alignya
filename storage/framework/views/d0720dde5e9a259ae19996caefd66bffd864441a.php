@@ -88,12 +88,12 @@ $(document).ready(function(){
                                            
                                                <div
                                                 class="d-flex flex-row mb-3 pb-3 border-bottom justify-content-between align-items-center">
-                                                <?php if($team_detail->photo and file_exists('public/upload/users/profile-photo/'. $team_detail->photo) ): ?>
-                                                     <img src="<?php echo url('public/upload/users/profile-photo/'.$team_detail->photo); ?>" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />            
-                                                <?php else: ?>
-                                                     <img src="<?php echo url('/img/no_images.png'); ?>" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />  
-                                                <?php endif; ?>
-                                                <div class="pl-3 flex-fill">
+                                                <?php /* @if ($team_detail->photo and file_exists('public/upload/users/profile-photo/'. $team_detail->photo) )
+                                                     <img src="{!!url('public/upload/users/profile-photo/'.$team_detail->photo)!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />            
+                                                @else
+                                                     <img src="{!!url('/img/no_images.png')!!}" alt="Philip Nelms"class="img-thumbnail border-0 rounded-circle list-thumbnail align-self-center xsmall" />  
+                                                @endif */ ?>
+                                                <div class="flex-fill">
                                                     <a href="#">
                                                         <p class="font-weight-medium mb-0"><?php echo $team_detail->team_head_name; ?> ( Team Leader )</p>
                                                         <p class="text-muted mb-0 text-small"><?php echo $team_detail->designation; ?></p>

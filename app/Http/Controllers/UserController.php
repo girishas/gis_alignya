@@ -11,6 +11,7 @@ use App\Models\Tasks;
 use App\Models\Measure;
 use App\Models\GoalCycles;
 use App\Models\Perspective;
+use App\Models\UserRoles;
 use App\Models\Department;
 use App\Models\Plans;
 use App\Models\Teams;
@@ -402,7 +403,14 @@ class UserController extends Controller
 				$tasklist[$key]['owners'] = implode(',', $owners->toArray());
 			}
 		}
-		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist','tasks_count','tasklist','members_count','transaction_count','companycount'));
+		if(Auth::User()->role_id == 2){
+			$roles = UserRoles::whereIn('id',array(2,3,4,5))->pluck('role','id');
+		}elseif(Auth::User()->role_id == 3){
+			$roles = UserRoles::whereIn('id',array(4,5))->pluck('role','id');
+		}elseif(Auth::User()->role_id == 4){
+			$roles = UserRoles::where('id',5)->pluck('role','id');
+		}
+		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist','tasks_count','tasklist','members_count','transaction_count','companycount','roles'));
 	}
 	
 	
@@ -414,10 +422,7 @@ class UserController extends Controller
 	public function admin_index(){
 		$this->request->session('rejected_arr',array());
 		$page_title  = getLabels("Members");		
-		 $data  = User::sortable()->where('users.company_id', Auth::User()->company_id)->leftjoin('countries', 'countries.id', '=', 'users.country_id');
-		 
-		
-		
+		$data  = User::sortable()->where('users.company_id', Auth::User()->company_id)->where('users.id','!=',Auth::User()->id)->leftjoin('countries', 'countries.id', '=', 'users.country_id');
 		
 		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
 			$_POST = $this->request->session()->get('usearch');
@@ -445,7 +450,13 @@ class UserController extends Controller
 		}else{
 			$this->request->session()->forget('usearch');
 		}
-		
+		if(Auth::User()->role_id == 2){
+			$roles = UserRoles::whereIn('id',array(2,3,4,5))->pluck('role','id');
+		}elseif(Auth::User()->role_id == 3){
+			$roles = UserRoles::whereIn('id',array(4,5))->pluck('role','id');
+		}elseif(Auth::User()->role_id == 4){
+			$roles = UserRoles::where('id',5)->pluck('role','id');
+		}
 		
 		$data  = $data->select('users.*', 'countries.name as country')->orderBy('users.created_at', 'desc')->paginate(config('constants.PAGINATION'));
 		
@@ -453,7 +464,7 @@ class UserController extends Controller
 			$data->appends(array('s' => $_GET['s'],'o'=>$_GET['o']))->links();
 		}
 		$page_title  = getLabels("Members");
-		return view('frontend/users/admin_index', compact('data','role_id','page_title'));
+		return view('frontend/users/admin_index', compact('data','role_id','page_title','roles'));
 	}
 
 	public function companies($role_id = null){
@@ -657,6 +668,11 @@ class UserController extends Controller
 		$page_title = getLabels("Update Member");
 		$countries  = Country::where('status', 1)->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
 		if($this->request->isMethod('post')){
+			$validator = User::validateaddmember($this->request->all(),$id);
+			
+			if ( $validator->fails() ) {
+				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
+			} else {
 			$formData              	= $this->request->except('photo');
 			
 			if ( $this->request->photo){
@@ -688,11 +704,11 @@ class UserController extends Controller
 			
 			$user  = $data->update($formData);
 			if($user){
-				return redirect()->back()->with('message', getLabels('Member Update Successfully'));
-			}else{
-				return response()->json(['type' => 'error', 'url'=> url('members'), 'message' => getLabels('something_wrong_try_again')]);
+					return response()->json(['type' => 'success', 'url'=> url('members'), 'message' => getLabels('update_member successfully')]);
+				}else{
+					return response()->json(['type' => 'error', 'url'=> url('members'), 'message' => getLabels('something_wrong_try_again')]);
+				}
 			}
-	
 		}
 		
 		return view('frontend/users/admin_edit', compact('data', 'id', 'countries', 'page_title'));
@@ -1377,6 +1393,16 @@ class UserController extends Controller
 		}
 		
 		
+	}
+
+	public function remove_member($id=null){
+		$data = User::destroy($id);
+		if($data){
+			$results = array("type" => "success", "url" => url('members'), "message" => getLabels('member_removed'));
+		}else{
+			$results = array("type" => "error", "url" => url('members'), "message" => getLabels('member_not_removed'));
+		}
+		return json_encode($results);
 	}
 	
 }

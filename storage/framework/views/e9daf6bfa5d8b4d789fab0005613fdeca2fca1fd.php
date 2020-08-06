@@ -113,7 +113,13 @@
 				<?php if(Auth::check()): ?>
 					<button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="false">
+						<?php if(Auth::User()->role_id != 1): ?>
 						<span class="name"><?php echo Auth::check()?Auth::User()->first_name." ".Auth::User()->last_name:""; ?></span>
+						<?php else: ?>
+						<span class="name"><?php echo Auth::check()?Auth::User()->first_name." ".Auth::User()->last_name:""; ?></span>
+						<?php endif; ?>
+						
+						
 						<span>
 							<?php if(Auth::check()): ?>
 								<?php echo showImage(Auth::User()->photo, "", "","", Auth::User()->first_name, 'users/profile-photo'); ?>

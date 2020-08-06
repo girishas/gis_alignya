@@ -15,7 +15,7 @@
             </div>
             <div class="modal-body">  
                     	
-                 <?php echo Form::model($data, array('url' => array($route_prefix.'/members/update/'.$data->id), 'class' =>' needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                 <?php echo Form::model($data, array('url' => array($route_prefix.'/members/update/'.$data->id), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                        
                         <div class="form-row">
@@ -38,7 +38,7 @@
                             <div class="form-group  position-relative error-l-40 col-md-6"><?php
                                 $is_disabled  = !empty($data->email)?'readonly':""; ?>
                                 <label for="inputEmail4"><?php echo getLabels('email'); ?></label>
-                                <?php echo Form::text('email', null, array('readonly' => true, 'class' => 'form-control', "id"=>"inputEmail4", 'placeholder'=> '')); ?>
+                                <?php echo Form::text('email', null, array('class' => 'form-control', "id"=>"inputEmail4", 'placeholder'=> '')); ?>
 
                                 <div class="invalid-tooltip"></div>
                             </div>
@@ -57,15 +57,16 @@
 
                                 <div class="invalid-tooltip"></div>
                             </div>
+                            <?php if(Auth::User()->role_id == 2): ?>
                             <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputMobile"><?php echo getLabels('user_type'); ?></label>
                                 <?php echo Form::select('role_id', config('constants.USER_TYPES'),null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> '')); ?>
 
                                 <div class="invalid-tooltip"></div>
                             </div>
-                            
+                            <?php endif; ?>
                         </div>
-                         <!-- <div class="form-row">
+                         <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for=""><?php echo getLabels('profile_picture'); ?></label>
                                 <div class="slim" data-ratio="1:1" data-instant-edit="true" data-will-remove="profileimageWillBeRemoved">
@@ -76,7 +77,7 @@
                                     <input type="file" name="photo"/>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
                         <div class="form-group ">
                         <button type="submit" class="btn btn-primary"><?php echo getLabels('update'); ?></button>&nbsp;&nbsp;
                         <a href="<?php echo url($route_prefix, 'users'); ?>" class="btn btn-dark steamerst_link"><?php echo getLabels('back'); ?></a>
@@ -87,6 +88,7 @@
         </div>
     </div>
 </div>
+<?php echo $__env->make('Element/js/includejs', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
 <script type="text/javascript">
     $("#updatememberhide").click(function(){
         $("#updatemember").modal("hide");

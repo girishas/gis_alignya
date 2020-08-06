@@ -114,9 +114,17 @@
 													</td>
 													<td class="text-center">{!!config('constants.STATUS.'.$val->status)!!}</td>
 													<td>
+														@if($val->role_id > Auth::User()->role_id)
 														<a href="javascript:void(0);" onclick="updatemember({!!$val->id!!})"><i class="heading-icon simple-icon-pencil"></i></a>
+														@endif
 																<a href="javascript:void(0);" onclick="viewmember({!!$val->id!!})"><i class="heading-icon iconsminds-information"></i></a>
-																
+													<?php
+													$remove_msg = "Are You Sure";
+													$remove_url = url('member/remove/'.$val->id);
+													 ?>
+														@if(Auth::User()->role_id == 2)
+														<a  onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+														@endif		
 													</td>
 												</tr>
 											@endforeach

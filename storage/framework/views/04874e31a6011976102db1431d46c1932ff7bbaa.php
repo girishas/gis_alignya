@@ -1,7 +1,7 @@
 <?php use App\Traits\SortableTrait;  ?>
 
 <?php $__env->startSection('content'); ?>
-<?php echo HTML::script('public/balkangraph/OrgChart.js'); ?>
+<?php echo HTML::script('public/balkangraph/orgchart.js'); ?>
 
  
  <main>

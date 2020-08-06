@@ -13,19 +13,14 @@
                         
                         <div class="form-row">
                                 
-                            <div class="form-group  position-relative error-l-100 col-md-4">
+                            <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputFirstname"><?php echo getLabels('company_name'); ?></label>
                                 <?php echo Form::text('company_name', $company_details->company_name, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>
 
                                 <div class="invalid-tooltip"></div>
                             </div>
-                            <div class="form-group  position-relative error-l-40 col-md-4">
-                                <label for="inputEmail4"><?php echo getLabels('email'); ?></label>
-                                <?php echo Form::text('email', $company_details->email, array( 'class' => 'form-control', "id"=>"inputEmail4", 'placeholder'=> '')); ?>
-
-                                <div class="invalid-tooltip"></div>
-                            </div>
-                             <div class="form-group  position-relative error-l-100 col-md-4">
+                            
+                             <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputMobile"><?php echo getLabels('contact_number'); ?></label>
                                 <?php echo Form::text('mobile', $company_details->mobile, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> '')); ?>
 
@@ -36,19 +31,19 @@
                         </div>
                         
                         <div class="form-row">
-                            <div class="form-group  position-relative error-l-100 col-md-4">
+                            <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputFirstname"><?php echo getLabels('company_licence'); ?></label>
                                 <?php echo Form::text('comp_licence', $company_details->comp_licence, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>
 
                                 <div class="invalid-tooltip"></div>
                             </div>
-                            <div class="form-group  position-relative error-l-100 col-md-4">
+                            <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputFirstname"><?php echo getLabels('company_currency'); ?></label>
                                 <?php echo Form::text('company_currency', $company_details->company_currency, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>
 
                                 <div class="invalid-tooltip"></div>
                             </div>
-                            <div class="form-group  position-relative error-l-100 col-md-4">
+                            <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputFirstname"><?php echo getLabels('fiscal_start_month'); ?></label>
                                 <?php echo Form::select('fiscal_start_month', config('constants.COMPANY_FISCAL_MONTH'),$company_details->fiscal_start_month, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>
 

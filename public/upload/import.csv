@@ -1,3 +1,2 @@
-First Name,Last Name,Email,Password,"Type(3-HOD,4-Team Lead,5-Memeber)",Desgination,Mobile
-Gaurav ,Jain,gjsadda50@gmail.com,123456,5,PHP Developer,9950789641
-Harshita,Shrama,sharmaji@test.cm,123654,4,Designer,5846
+First Name,Last Name,Email,Password,"Type(2- CEO, Company,3-HOD,4-Team Lead,5-Memeber)",Desgination,Mobile
+Abc,,abc@test.com,123123,3,Head of XYZ,+91-2342342342

@@ -157,6 +157,12 @@
 	        });
     	}
 
+    	$(document).ready(function(){
+    		$("#addscorecardhide").click(function(){
+    			window.location.reload();
+    		})
+    	})
+
     </script>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('frontend/layouts/default', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>

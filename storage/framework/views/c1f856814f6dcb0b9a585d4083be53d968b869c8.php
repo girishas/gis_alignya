@@ -120,9 +120,17 @@
 													</td>
 													<td class="text-center"><?php echo config('constants.STATUS.'.$val->status); ?></td>
 													<td>
+														<?php if($val->role_id > Auth::User()->role_id): ?>
 														<a href="javascript:void(0);" onclick="updatemember(<?php echo $val->id; ?>)"><i class="heading-icon simple-icon-pencil"></i></a>
+														<?php endif; ?>
 																<a href="javascript:void(0);" onclick="viewmember(<?php echo $val->id; ?>)"><i class="heading-icon iconsminds-information"></i></a>
-																
+													<?php
+													$remove_msg = "Are You Sure";
+													$remove_url = url('member/remove/'.$val->id);
+													 ?>
+														<?php if(Auth::User()->role_id == 2): ?>
+														<a  onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+														<?php endif; ?>		
 													</td>
 												</tr>
 											<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

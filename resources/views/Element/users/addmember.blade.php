@@ -57,16 +57,16 @@
                         <div class="form-row">
                             <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputMobile">{!! getLabels('user_type') !!}</label>
-                                {!! Form::select('role_id', config('constants.USER_TYPES'),null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
+                                {!! Form::select('role_id', $roles,null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
                                 
                             </div>
-                            <!-- <div class="form-group col-md-3">
+                            <div class="form-group col-md-3">
                                 <label for="">{!! getLabels('profile_picture') !!}</label>
                                 <div class="slim" data-ratio="1:1" data-instant-edit="true">
                                     <input type="file" name="photo"/>
                                 </div>
-                            </div> -->                          
+                            </div>                          
                         </div>
                         
                         <div class="form-group  position-relative error-l-100">

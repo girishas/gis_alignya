@@ -25,7 +25,7 @@
                         {!! Form::text('department_name',null, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
                          @if($errors->first('department_name'))<div class="error">{!!$errors->first('department_name')!!}</div>@endif
                     </div>
-                    @if(isset($departments))
+                    @if(isset($departments) && count($departments)>0)
                     <div class="form-group ">
                           <label>Choose Parent Department</label>
                           {!! Form::select('parent_department_id', $departments,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}

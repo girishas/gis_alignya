@@ -39,7 +39,15 @@
 		}
 		return $is_following;
 	}
-	
+	function Contributers(){
+		
+		$contributers = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," ")," (",al_users_role.role,")") as first_name'),'users.id')
+		->leftjoin('al_users_role','al_users_role.id','=','users.role_id')
+		->where('users.company_id',Auth::User()->company_id)
+		->pluck('first_name','users.id');
+		 
+		return $contributers;
+	}
 	
 	function getGroupNotificationURL($group_id, $user_id, $to_user_id){
 		$route_prefix  = (Auth::check() and Auth::User()->role_id == 1)?env('ADMIN_PREFIX'):"";

@@ -25,7 +25,7 @@ $("body").on('submit', ".alignya_form", function(e) {
     
     var form_action = $(this).attr('action');
     data = $(this).serialize();
-    
+	
    
     $.ajax({
         type:"POST",
@@ -35,6 +35,7 @@ $("body").on('submit', ".alignya_form", function(e) {
             $('body').addClass('show-spinner');
         },
         success: function (response) {
+			 
             if(response.type == 'error'){
                 errors = response.error;
                 $.each(errors, function(key,value) {
@@ -67,6 +68,8 @@ $("body").on('submit', ".alignya_form", function(e) {
                 $('#addMilestoneMeasureView').modal('hide');
                 $('#myModal2').modal('hide');
                 
+				
+				
                 $("form").trigger("reset");
                 if(pageUrl == "close_modal"){
 
@@ -78,8 +81,8 @@ $("body").on('submit', ".alignya_form", function(e) {
                         view_initiativepop(localStorage.getItem('popup_id'));
                     }
                     e.preventDefault();
-                    alert("here")
-                    showNotificationApp('top', 'right', 'primary', 'Success', 'Saved Success');
+                    
+                    
                     return false;
                 }else{
                     window.location.reload();
@@ -193,8 +196,10 @@ function viewMeasure(id){
               }
             // }
             var taskli = response.tasklist;
+            var remove_msg = "Are you sure";
             for (var i = 0; i < taskli.length; i++) {
-                $("#addtaskmeasureview").append('<tr><td>'+taskli[i].task_name+'</td><td>'+taskli[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+taskli[i].bg_color+'">'+taskli[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+taskli[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a>&nbsp;&nbsp;&nbsp; <i class="simple-icon-trash" style="font-size: initial;cursor: pointer;"></i></td></tr>');
+              var remove_url = '{!!url("tasks/remove/'+taskli[i].id+'")!!}';
+                $("#addtaskmeasureview").append('<tr><td>'+taskli[i].task_name+'</td><td>'+taskli[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+taskli[i].bg_color+'">'+taskli[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+taskli[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i></a>&nbsp;&nbsp;&nbsp; <a onclick = \'showDeleteConfirmationModal("Remove", "'+ remove_msg +'", "'+ remove_url +'");\' href="javascript:void(0);"><i class="heading-icon simple-icon-trash"></i></a></td></tr>');
             }
             $("#viewLargePlot").html('<a href="javascript:void(0);" onclick="viewLargeGraph('+measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data)+')"><i class="iconsminds-maximize heading-icon"></i></a>');
 
@@ -728,6 +733,10 @@ $("body").on('click', ".alignya_status", function(e) {
         if(data.type == 'error') return false;
         if(data.popup_name == 'initiative'){
           view_initiativepop(localStorage.getItem('popup_id'))
+        }else if(data.popup_name == 'measure'){
+          viewMeasure(localStorage.getItem('popup_id'));
+        }else if(data.popup_name == 'objective'){
+          viewobjective(localStorage.getItem('popup_id'));
         }
         
       }
@@ -812,8 +821,12 @@ function viewobjective(id){
                 for (var i = 0; i < response.initiativeList.length; i++) {
                     $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="view_initiativepop('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateinitiative('+response.initiativeList[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
+                var remove_msg = "Are You Sure";
+                
                 for (var i = 0; i < response.tasklist.length; i++) {
-                   $("#tasklistid").append('<tr><td><i class="'+response.tasklist[i].status_icon+' heading-icon" style="color:'+response.tasklist[i].bg_color+';"></i> '+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; </td></tr>'); 
+
+                var remove_url = '{!!url("tasks/remove/'+response.tasklist[i].id+'")!!}';
+                   $("#tasklistid").append('<tr><td><i class="'+response.tasklist[i].status_icon+' heading-icon" style="color:'+response.tasklist[i].bg_color+';"></i> '+response.tasklist[i].task_name+'</td><td>'+response.tasklist[i].owners+'</td><td><span class="badge badge-pill badge-danger" style="background:'+response.tasklist[i].bg_color+'">'+response.tasklist[i].status_name+'</span></td><td><a href="javascript:void(0);" onclick="updateTask('+response.tasklist[i].id+')"><i class="simple-icon-pencil" style="font-size: initial;cursor: pointer;"></i>&nbsp;&nbsp;&nbsp; <a onclick = \'showDeleteConfirmationModal("Remove", "'+ remove_msg +'", "'+ remove_url +'");\' href="javascript:void(0);"><i class="heading-icon simple-icon-trash"></i></a></td></tr>'); 
                 }
             }  
         });

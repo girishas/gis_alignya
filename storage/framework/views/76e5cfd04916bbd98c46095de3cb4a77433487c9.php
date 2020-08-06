@@ -24,7 +24,7 @@
                     	<div class="col-lg-12">
                     		<div class="form-group">
                             <label>Title</label>
-                            <?php echo Form::text('task_name',null,array('class'=>'form-control','id'=>'task_name_update_id')); ?>
+                            <?php echo Form::text('task_name',null,array('required'=>'required','class'=>'form-control','id'=>'task_name_update_id')); ?>
 
                             <?php if($errors->first('task_name')): ?><div class="error"><?php echo $errors->first('task_name'); ?></div><?php endif; ?>
                             <input type="hidden" name="task_id" id="update_task_id">
@@ -32,8 +32,12 @@
                         </div>
                         <div class="form-group">
                             <label>Owners</label>
-                            <select class="form-control select2-single" name="owners[]" multiple="multiple" id="owners_update_id">
-                            </select>                        
+							<?php   $contributers = Contributers();
+									print_r($contributers);
+							?>
+							<?php echo Form::select('owners[]',$contributers,null,array('class'=>'form-control select2-multiple','multiple'=>'multiple','id'=>'contributer_id')); ?>
+
+                                                  
                         </div>
                         <div class="form-group">
                             <label for="inputAboutYou"><?php echo getLabels('summary'); ?></label>
@@ -56,5 +60,12 @@
                 
             </div>
         </div>
+		<?php echo HTML::style('public/css/vendor/select2.min.css'); ?>
+
+			<?php echo HTML::style('public/css/vendor/select2-bootstrap.min.css'); ?>
+
+			<?php echo HTML::script('public/js/vendor/select2.full.js'); ?>
+
+			
     </div>
     

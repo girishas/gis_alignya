@@ -23,7 +23,7 @@
                         
                         <div class="form-group  position-relative error-l-100">
                         <button type="submit" class="btn btn-primary"><?php echo getLabels('Submit'); ?></button>&nbsp;&nbsp;
-                        <a href="<?php echo url($route_prefix, 'scorecards'); ?>" class="btn btn-dark steamerst_link"><?php echo getLabels('back'); ?></a>
+                        <a href="<?php echo url($route_prefix, 'scorecards'); ?>" class="btn btn-dark "><?php echo getLabels('back'); ?></a>
                         </div>
                     <?php echo Form::close(); ?>
 
