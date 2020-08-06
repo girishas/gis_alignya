@@ -294,7 +294,7 @@ function showNotificationApp(placementFrom, placementAlign, type, title, message
         },
         {
           element: "body",
-          position: null,
+          position:null,
           type: type,
           allow_dismiss: true,
           newest_on_top: false,
@@ -305,7 +305,7 @@ function showNotificationApp(placementFrom, placementAlign, type, title, message
           },
           offset: 20,
           spacing: 10,
-          z_index: 1031,
+          z_index: 9999999999999999999999999999999999999999999999999999999999,
           delay: 4000,
           timer: 2000,
           url_target: "_blank",

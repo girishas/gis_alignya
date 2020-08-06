@@ -55,6 +55,10 @@ Route::any('getmilestonedetails', array('as'=>'users.getmilestonedetails', 'uses
 Route::any('updatemilestonemeasure', array('as'=>'users.updatemilestonemeasure', 'uses'=>'MeasureController@updatemilestonemeasure'));
 
 Route::any('ideas', array('as'=>'users.ideas', 'uses'=>'TeamController@ideas'));
+Route::any('idealike', array('as'=>'users.idealike', 'uses'=>'TeamController@idealike'));
+Route::any('ideadislike', array('as'=>'users.ideadislike', 'uses'=>'TeamController@ideadislike'));
+Route::any('ideacommentlike', array('as'=>'users.ideacommentlike', 'uses'=>'TeamController@ideacommentlike'));
+Route::any('ideacommentdislike', array('as'=>'users.ideacommentdislike', 'uses'=>'TeamController@ideacommentdislike'));
 
 Route::any('idea-categories', array('as'=>'users.idea_categories', 'uses'=>'DepartmentController@idea_categories'));
 Route::any('idea-categories/new', array('as'=>'users.idea_categories_add', 'uses'=>'DepartmentController@idea_categories_add'));

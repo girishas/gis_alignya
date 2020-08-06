@@ -69,6 +69,7 @@ $("body").on('submit', ".alignya_form", function(e) {
                 
                 $("form").trigger("reset");
                 if(pageUrl == "close_modal"){
+
                     if(response.popup_name == "objective"){
                         viewobjective(localStorage.getItem('popup_id'));
                     }else if(response.popup_name == "measures"){
@@ -76,6 +77,9 @@ $("body").on('submit', ".alignya_form", function(e) {
                     }else if(response.popup_name == "initiative"){
                         view_initiativepop(localStorage.getItem('popup_id'));
                     }
+                    e.preventDefault();
+                    alert("here")
+                    showNotificationApp('top', 'right', 'primary', 'Success', 'Saved Success');
                     return false;
                 }else{
                     window.location.reload();

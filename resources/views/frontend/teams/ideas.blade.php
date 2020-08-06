@@ -98,7 +98,7 @@
                                     <div class="w-15 w-xs-100">
                                        {!!$value->status_name!!}
                                     </div> <div class="w-15 w-xs-100">
-                                      <i class="simple-icon-bubbles"></i> {!!ideacommentscount($value->id)!!} &nbsp; <i class="simple-icon-like"></i> {!!idealikescount($value->id)!!}
+                                      <i class="simple-icon-bubbles"></i> {!!ideacommentscount($value->id)!!} &nbsp; <i class="simple-icon-like"></i> {!!idealikescount($value->id)!!} &nbsp; <i class="simple-icon-dislike"></i> {!!ideadislikescount($value->id)!!}
                                     </div>
                                 </div>
                             </div>
@@ -132,9 +132,12 @@
                             <div class="d-block d-md-inline-block">
                                 
                                 <div class="form-group">
-                                    {!! Form::text('title', isset($_POST['title'])?trim($_POST['title']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_name')))!!}
+                                    {!! Form::text('title', isset($_POST['title'])?trim($_POST['title']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_idea')))!!}
                                 </div>
                                  <div class="form-group">
+                                   {!! Form::select('category_id', array('' => getLabels('all_categories')) + $categories, isset($_POST['category_id'])?$_POST['category_id']:null, array('class'=>'form-control'))!!}
+                                </div>
+                                <div class="form-group">
                                    {!! Form::select('status', array('' => getLabels('all_status')) + $status, isset($_POST['status'])?$_POST['status']:null, array('class'=>'form-control'))!!}
                                 </div>
                                 <br>

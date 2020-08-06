@@ -89,6 +89,10 @@ Website: http://www.mosaddek.com
 			.show-spinner{
 				color: black !important;
 			}
+			.modal-content{
+				height: 500px;
+				overflow: scroll;
+			}
 		</style>
 		
 		<!-- BEGIN BODY -->

@@ -1097,7 +1097,7 @@ class DepartmentController extends Controller
 		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id');
 		$perspectives = Perspective::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('name','id');
 
-		$contributers = User::select(DB::raw('CONCAT(first_name," ",IFNULL(last_name," ")," (",role_id,")") as first_name'),'id')->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$contributers = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," ")," (",al_users_role.role,")") as first_name'),'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',Auth::User()->company_id)->pluck('first_name','users.id');
 		//pr($contributers);
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$status = Status::where('is_obj',1)->pluck('name','id');

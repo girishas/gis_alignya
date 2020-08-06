@@ -692,7 +692,19 @@
 	}
 
 	function idealikescount($idea_id=null){
-		$idealikes = IdeaLikes::where('idea_id',$idea_id)->count();
+		$idealikes = IdeaLikes::where('idea_id',$idea_id)->where('is_like',1)->whereNull('idea_comment_id')->count();
+		return $idealikes;
+	}
+	function ideacommentlikecount($idea_comment_id=null){
+		$idealikes = IdeaLikes::where('is_like',1)->where('idea_comment_id',$idea_comment_id)->count();
+		return $idealikes;
+	}
+	function ideacommentdislikecount($idea_comment_id=null){
+		$idealikes = IdeaLikes::where('is_like',0)->where('idea_comment_id',$idea_comment_id)->count();
+		return $idealikes;
+	}
+	function ideadislikescount($idea_id=null){
+		$idealikes = IdeaLikes::where('idea_id',$idea_id)->where('is_like',0)->whereNull('idea_comment_id')->count();
 		return $idealikes;
 	}
 	function ideacommentscount($idea_id=null){

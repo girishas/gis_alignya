@@ -16,6 +16,7 @@ use App\Models\Status;
 use App\Models\Milestones;
 use App\Models\Theme;
 use App\Models\Ideas;
+use App\Models\IdeaLikes;
 use App\Models\Perspective;
 use App\Models\Post;
 use App\Models\Notification;
@@ -395,6 +396,11 @@ class TeamController extends Controller
 				$this->request->session()->put('usearch.title', $title);
 				$ideas = $ideas->whereRaw('al_ideas.title like ?', "%{$title}%");
 			}
+			if(isset($_POST['category_id']) and $_POST['category_id'] !=''){
+				$category_id = $_POST['category_id'];
+				$this->request->session()->put('usearch.category_id', $category_id);
+				$ideas = $ideas->where('al_ideas.category_id', $category_id);
+			}
 			if(isset($_POST['status']) and $_POST['status'] !=''){
 				$status = $_POST['status'];
 				$this->request->session()->put('usearch.status', $status);
@@ -572,7 +578,7 @@ class TeamController extends Controller
 		$goal_cycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('cycle_name','id');
 		$perspectives = Perspective::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('name','id');
 
-		$contributers = User::select(DB::raw('CONCAT(first_name," ",IFNULL(last_name," ")," (",role_id,")") as first_name'),'id')->where('company_id',Auth::User()->company_id)->pluck('first_name','id');
+		$contributers = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," ")," (",al_users_role.role,")") as first_name'),'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',Auth::User()->company_id)->pluck('first_name','users.id');
 		//pr($contributers);
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$status = Status::where('is_obj',1)->pluck('name','id');
@@ -625,12 +631,14 @@ class TeamController extends Controller
 			if(isset($formData['id']) && !empty($formData['id'])){
 				$theme = Ideas::where('id',$formData['id'])->update($formData);
 				$message  = getLabels('idea_updated_successfully');
+				$url = url('idea-details/'.$formData['id']);
 			}else{
 				$theme  = Ideas::create($formData);
 				$message  = getLabels('idea_add_successfully');
+				$url = url('ideas');
 			}
 			if($theme){
-				return response()->json(['type' => 'success', 'url'=> url('ideas'), 'message' => $message]);
+				return response()->json(['type' => 'success', 'url'=> $url, 'message' => $message]);
 			}else{
 				return response()->json(['type' => 'error', 'url'=> url('ideas'), 'message' => getLabels('something_wrong_try_again')]);
 			}
@@ -653,9 +661,99 @@ class TeamController extends Controller
 		}
 		$page_title = "Idea Detail";
 		$idea_details = Ideas::select('al_ideas.*','al_idea_categories.name as category_name','al_comp_departments.department_name','al_master_status.name as status_name',DB::raw('CONCAT(users.first_name, " ", IFNULL(users.last_name," ")) as created_by'))->leftjoin('users','users.id','=','al_ideas.user_id')->leftjoin('al_idea_categories','al_idea_categories.id','=','al_ideas.category_id')->leftjoin('al_comp_departments','al_comp_departments.id','=','al_ideas.department_id')->leftjoin('al_master_status','al_master_status.id','=','al_ideas.status')->where('al_ideas.id',$id)->first();
-		$comments = IdeaComments::select('al_idea_comments.*',DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name, " ")) as commented_by'))->leftjoin('users','users.id','=','al_idea_comments.user_id')->where('idea_id',$id)->get();
+		$comments = IdeaComments::select('al_idea_comments.*',DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name, " ")) as commented_by'))->leftjoin('users','users.id','=','al_idea_comments.user_id')->where('al_idea_comments.idea_id',$id)->orderBy('al_idea_comments.id','desc')->get();
 		$popular_ideas = Ideas::where('company_id',Auth::User()->company_id)->where('is_popular',1)->get();
-		return view('frontend/teams/ideas_details',compact('page_title','idea_details','comments','id','popular_ideas'));
+		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
+		$status = Status::where('is_idea',1)->where('status',1)->pluck('name','id');
+		if(!empty($status)){
+			$status = $status->toArray();
+		}else{
+			$status = array();
+		}
+		$categories = IdeaCategory::pluck('name','id');
+		if(!empty($categories)){
+			$categories = $categories->toArray();
+		}else{
+			$categories = array();
+		}
+		if(!empty($departments))
+		{
+			$departments = $departments->toArray();
+		}else{
+			$departments = array();
+		}
+		return view('frontend/teams/ideas_details',compact('page_title','idea_details','comments','id','popular_ideas','departments','status','categories'));
+	}
+
+	public function idealike(){
+		$input = $this->request->all();
+		//pr($input);
+		$input['user_id'] = Auth::User()->id;
+		$check = IdeaLikes::where('user_id',Auth::User()->id)->where('idea_id',$this->request->get('idea_id'))->whereNull('idea_comment_id')->first();
+		if(!empty($check)){
+			if($check->is_like == 0){
+				$ucheck = $check->update(array('is_like'=>1));
+			}
+		}else{
+			$input['is_like'] = 1;
+			$clike = IdeaLikes::create($input);
+		}
+		$data = array();
+		$data['total_like'] = IdeaLikes::where('idea_id',$input['idea_id'])->where('is_like',1)->whereNull('idea_comment_id')->count();
+		$data['total_dislike'] = IdeaLikes::where('idea_id',$input['idea_id'])->where('is_like',0)->whereNull('idea_comment_id')->count();
+		return json_encode($data);
+	}
+	public function ideadislike(){
+		$input = $this->request->all();
+		$input['user_id'] = Auth::User()->id;
+		$check = IdeaLikes::where('user_id',Auth::User()->id)->where('idea_id',$this->request->get('idea_id'))->whereNull('idea_comment_id')->first();
+		if(!empty($check)){
+			if($check->is_like == 1){
+				$ucheck = $check->update(array('is_like'=>0));
+			}
+		}else{
+			$input['is_like'] = 0;
+			$clike = IdeaLikes::create($input);
+		}
+		$data = array();
+		$data['total_like'] = IdeaLikes::where('idea_id',$input['idea_id'])->where('is_like',1)->whereNull('idea_comment_id')->count();
+		$data['total_dislike'] = IdeaLikes::where('idea_id',$input['idea_id'])->where('is_like',0)->whereNull('idea_comment_id')->count();
+		return json_encode($data);
+	}
+
+	public function ideacommentlike(){
+		$input = $this->request->all();
+		$input['user_id'] = Auth::User()->id;
+		$check = IdeaLikes::where('user_id',Auth::User()->id)->where('idea_id',$this->request->get('idea_id'))->where('idea_comment_id',$this->request->get('idea_comment_id'))->first();
+		if(!empty($check)){
+			if($check->is_like == 0){
+				$ucheck = $check->update(array('is_like'=>1));
+			}
+		}else{
+			$input['is_like'] = 1;
+			$clike = IdeaLikes::create($input);
+		}
+		$data = array();
+		$data['total_like'] = IdeaLikes::where('idea_id',$input['idea_id'])->where('is_like',1)->where('idea_comment_id',$this->request->get('idea_comment_id'))->count();
+		$data['total_dislike'] = IdeaLikes::where('idea_id',$input['idea_id'])->where('is_like',0)->where('idea_comment_id',$this->request->get('idea_comment_id'))->count();
+		return json_encode($data);
+	}
+	public function ideacommentdislike(){
+		$input = $this->request->all();
+		$input['user_id'] = Auth::User()->id;
+		$check = IdeaLikes::where('user_id',Auth::User()->id)->where('idea_id',$this->request->get('idea_id'))->where('idea_comment_id',$this->request->get('idea_comment_id'))->first();
+		if(!empty($check)){
+			if($check->is_like == 1){
+				$ucheck = $check->update(array('is_like'=>0));
+			}
+		}else{
+			$input['is_like'] = 0;
+			$clike = IdeaLikes::create($input);
+		}
+		$data = array();
+		$data['total_like'] = IdeaLikes::where('idea_id',$input['idea_id'])->where('is_like',1)->where('idea_comment_id',$this->request->get('idea_comment_id'))->count();
+		$data['total_dislike'] = IdeaLikes::where('idea_id',$input['idea_id'])->where('is_like',0)->where('idea_comment_id',$this->request->get('idea_comment_id'))->count();
+		return json_encode($data);
 	}
 
 }
