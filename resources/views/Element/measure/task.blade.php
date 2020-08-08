@@ -26,8 +26,8 @@
                             <input type="hidden" name="is_popup" class="is_popup">
                             
                         </div>
-                        <div class="form-group">
-                            <label>Owners <br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                        <div class="form-group mt-2">
+                            <label>Owners <br> <span style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</span></label>
 							<?php $contributers = Contributers();
 //print_r($contributers);
 							?>

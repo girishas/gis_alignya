@@ -100,13 +100,12 @@
                                         </a>
                                 </div>
                                 <div class="col-md-3 col-lg-2 col-sm-4 col-6 mb-4">
-                                        <a href="#" class="card">
                                             <div class="card-body text-center">
                                                 <i class="simple-icon-list"></i>
                                                 <p class="card-text mb-0">Tasks</p>
                                                 <p class="lead text-center"><?php echo $tasks_count; ?></p>
                                             </div>
-                                        </a>
+                                        
                                     </div>
                                      
                                 

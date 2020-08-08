@@ -149,6 +149,7 @@
         });
         $("#view_kpimodal_hide").click(function(){
             $("#viewkpimodal").modal("hide");
+            window.location.reload();
         })
     });
 function filter(){
@@ -286,7 +287,7 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data,a
                 var projection_color = all_response.projection_color != "" ? all_response.projection_color : "yellow";
                 measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data,actual_color,target_color,projection_color);
                 
-                $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+' <a href="javascript:void(0);" onclick="updateKPI('+all_response.id+')"><i class="simple-icon-pencil"></i></a><p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
+                $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+' <a href="javascript:void(0);" onclick="updateKPI('+all_response.id+')"><i class="simple-icon-pencil"></i></a><p class="text-muted mb-0 text-small" style="margin: 10px 7px 0;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
                 $("#kpi_name_graph_side").html('<p class="mb-0 truncate">'+all_response.heading+'</p><p class="text-muted mb-0 text-small"> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'</p>');
                 var milstonesli = response.milestones;
                 for (var i = 0; i < milstonesli.length; i++) {
@@ -439,6 +440,9 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data,a
                 var taskdetails = response.task_details;
                 $("#task_name_update_id").val(taskdetails.task_name);
                 $("#task_description_update_id").val(taskdetails.description);
+				  // $("#task_status_id").val(taskdetails.status);
+					//alert(taskdetails.status);
+					$("#task_status_id option[value='"+taskdetails.status+"']").attr("selected", "selected");
                 var owners = response.owners;
                 for (var own in owners) {
                     if (owners.hasOwnProperty(own)) {

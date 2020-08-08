@@ -69,8 +69,8 @@
 						<div class="invalid-tooltip"></div>
 					</div>
 
-						<div class="form-group ">
-                        <label>Choose scorecards <br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+						<div class="form-group mt-2">
+                        <label>Choose scorecards <a href="{!!url('scorecards')!!}" class="hidebuscrcrd"><button type="button" class="btn"><i class="heading-icon simple-icon-plus btn-group-icon"></i></button></a> <br> <span style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</span></label>
                        <select class="form-control" multiple="multiple" name="scorecard_id[]" data-width="100%" id="scorecardsliupdate">
                            
                        </select>                    
@@ -82,7 +82,7 @@
                     </div>
                     <div class="col-lg-6">
                        <div class="form-group ">
-                            <label>Select Theme</label>
+                            <label>Select Theme <a href="{!!url('themes')!!}" class="hidebutheme"><button type="button" class="btn"><i class="heading-icon simple-icon-plus btn-group-icon"></i></button></a></label>
                            <select class="form-control" name="theme_id" data-width="100%" id="themelistupdate">
                                
                            </select>                    
@@ -90,8 +90,8 @@
                         </div>
                    
                     
-                    <div class="form-group ">
-                        <label>Contributers <br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                    <div class="form-group mt-2">
+                        <label>Contributers  <br> <span style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</span></label>
                        <select class="form-control" multiple="multiple" name="contributers[]" data-width="100%" id="contributersupdate">
                            
                        </select>                    

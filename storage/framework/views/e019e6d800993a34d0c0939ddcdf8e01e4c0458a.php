@@ -110,35 +110,35 @@
 <?php echo $__env->make('Element/js/includejs', array_except(get_defined_vars(), array('__data', '__path')))->render(); ?>
   <script>
     
-    function updateTask(id){
-        $("#update_task_id").val(id);
-        var token = "<?php echo csrf_token(); ?>";
-        var company_id = "<?php echo Auth::User()->company_id; ?>";
-        $.ajax({
-            type:"POST",
-            url: "<?php echo url('getTaskDetails'); ?>",
-            data:'_token='+token+'&company_id='+company_id+'&task_id='+id,
-            dataType:'JSON',
-            success: function (response) {
-                var taskdetails = response.task_details;
-                $("#task_name_update_id").val(taskdetails.task_name);
-                $("#task_description_update_id").val(taskdetails.description);
-                 $("#task_status_id").val(taskdetails.status);
-                var owners = response.owners;
-                for (var own in owners) {
-                    if (owners.hasOwnProperty(own)) {
-                        var owner = owners[own];
-                        if(taskdetails.owners.indexOf(own) != -1){
-                            $("#owners_update_id").append('<option value = "'+own+'" selected="selected">'+owner+'</option>');
-                        }else{
-                            $("#owners_update_id").append('<option value = "'+own+'">'+owner+'</option>');
-                        }
-                      }
-                    }
-                }  
-        });
-        $("#myModalUpdateTask").modal("show");
-    }
+    // function updateTask(id){
+    //     $("#update_task_id").val(id);
+    //     var token = "<?php echo csrf_token(); ?>";
+    //     var company_id = "<?php echo Auth::User()->company_id; ?>";
+    //     $.ajax({
+    //         type:"POST",
+    //         url: "<?php echo url('getTaskDetails'); ?>",
+    //         data:'_token='+token+'&company_id='+company_id+'&task_id='+id,
+    //         dataType:'JSON',
+    //         success: function (response) {
+    //             var taskdetails = response.task_details;
+    //             $("#task_name_update_id").val(taskdetails.task_name);
+    //             $("#task_description_update_id").val(taskdetails.description);
+    //              $("#task_status_id").val(taskdetails.status);
+    //             var owners = response.owners;
+    //             for (var own in owners) {
+    //                 if (owners.hasOwnProperty(own)) {
+    //                     var owner = owners[own];
+    //                     if(taskdetails.owners.indexOf(own) != -1){
+    //                         $("#owners_update_id").append('<option value = "'+own+'" selected="selected">'+owner+'</option>');
+    //                     }else{
+    //                         $("#owners_update_id").append('<option value = "'+own+'">'+owner+'</option>');
+    //                     }
+    //                   }
+    //                 }
+    //             }  
+    //     });
+    //     $("#myModalUpdateTask").modal("show");
+    // }
     function filter(){
         $("#filterPop").modal("show");
     }

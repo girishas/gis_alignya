@@ -76,6 +76,8 @@ $("body").on('submit', ".alignya_form", function(e) {
                       viewMeasure(localStorage.getItem('popup_id'));
                     }else if(response.popup_name == "initiative"){
                         view_initiativepop(localStorage.getItem('popup_id'));
+                    }else if(response.popup_name == "kpi"){
+                        viewMeasure(localStorage.getItem('popup_id'));
                     }
                     e.preventDefault();
                     
@@ -177,9 +179,9 @@ function viewMeasure(id){
             
             var all_response = response.measures;
             // if(window.location.href.indexOf('objective') !== -1){
-            //    $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
+            //    $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+'<p class="text-muted mb-0 text-small" style="margin: 10px 7px 0;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
             // }else{
-               $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+' <a href="javascript:void(0);" onclick="updateMeasure('+all_response.id+')"><i class="simple-icon-pencil"></i></a><p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
+               $("#view_measure_heading").html('<i class="'+all_response.status_icon+' heading-icon" style="color:'+all_response.bg_color+';"></i>'+all_response.heading+' <a href="javascript:void(0);" onclick="updateMeasure('+all_response.id+')"><i class="simple-icon-pencil"></i></a><p class="text-muted mb-0 text-small" style="margin: 10px 7px 0;"><i class="simple-icon-clock"></i> FF'+all_response.measure_cycle_year+'-'+getQuarter(all_response.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+all_response.owner_name );
             // }
            
             var milstonesli = response.milestones;
@@ -520,7 +522,7 @@ function updateMeasure(id){
             dataType:'JSON',
             success: function (response) {
                 var initiative =response.initiatives; 
-                $("#initiativeheading").html('<i class="'+initiative.status_icon+' heading-icon" style="color:'+initiative.bg_color+';"></i>'+initiative.heading+'<p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> FF'+initiative.measure_cycle_year+'-'+getQuarter(initiative.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+initiative.owner_name )
+                $("#initiativeheading").html('<i class="'+initiative.status_icon+' heading-icon" style="color:'+initiative.bg_color+';"></i>'+initiative.heading+'<p class="text-muted mb-0 text-small" style="margin: 10px 7px 0;"><i class="simple-icon-clock"></i> FF'+initiative.measure_cycle_year+'-'+getQuarter(initiative.measure_cycle_quarter)+'  <i class="simple-icon-people"></i> '+initiative.owner_name )
                 chartload(response.milestones);
 				        remove_msg = 'Are you sure?';
                 for(var i = 0; i < response.milestones.length; i++){
@@ -798,7 +800,7 @@ function viewobjective(id){
                 if(numberofmeasure > 0){
                     $("#thisdivshoworhide").show();
                     var firstmeasure = response.measuresList[0];
-                    $('#graphtitleobjmeasure').html('<p class="mb-0 truncate"><i class="'+response.measuresList[0].status_icon+' heading-icon" style="color:'+response.measuresList[0].bg_color+';"></i>'+response.measuresList[0].heading+'</p><p class="text-muted mb-0 text-small" style="margin-left: 35px">FY'+response.measuresList[0].measure_cycle_year+'-'+getQuarter(response.measuresList[0].measure_cycle_quarter)+'</p>');
+                    $('#graphtitleobjmeasure').html('<p class="mb-0 truncate"><i class="'+response.measuresList[0].status_icon+' heading-icon" style="color:'+response.measuresList[0].bg_color+';"></i>'+response.measuresList[0].heading+'</p><p class="text-muted mb-0 text-small" style="margin: 10px 7px 0">FY'+response.measuresList[0].measure_cycle_year+'-'+getQuarter(response.measuresList[0].measure_cycle_quarter)+'</p>');
                         measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
                          $("#viewLargePlotObj").html('<a href="javascript:void(0);" onclick="viewLargeGraph('+measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data)+')"><i class="iconsminds-maximize heading-icon"></i></a>');
                 }else{
@@ -806,17 +808,17 @@ function viewobjective(id){
 
                 }
                 var secondpara = 1;
-                $("#objective_name_view").html('<i class="'+response.objectiveinfo.status_icon+' heading-icon" style="color:'+response.objectiveinfo.bg_color+';"></i>'+response.objectiveinfo.heading+' <a href="javascript:void(0);" onclick = "updateObjective('+response.objectiveinfo.id+','+secondpara+')"><i class="simple-icon-pencil heading-icon"></i></a> <p class="text-muted mb-0 text-small" style="margin-left: 35px;"><i class="simple-icon-clock"></i> '+response.objectiveinfo.cycle_name+'  <i class="simple-icon-people"></i> '+response.objectiveinfo.owner_name );
+                $("#objective_name_view").html('<i class="'+response.objectiveinfo.status_icon+' heading-icon" style="color:'+response.objectiveinfo.bg_color+';"></i>'+response.objectiveinfo.heading+' <a href="javascript:void(0);" onclick = "updateObjective('+response.objectiveinfo.id+','+secondpara+')"><i class="simple-icon-pencil heading-icon"></i></a> <p class="text-muted mb-0 text-small" style="margin: 10px 7px 0;"><i class="simple-icon-clock"></i> '+response.objectiveinfo.cycle_name+'  <i class="simple-icon-people"></i> '+response.objectiveinfo.owner_name+' <i class="iconsminds-bell "></i>'+ response.objectiveinfo.confidence_level);
                 $("#objective_idview").val(id);
 
                 for (var i = 0; i < response.measuresList.length; i++) {
-                    $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick = "viewmeasureGraph('+response.measuresList[i].id+')"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.measuresList[i].percentage)>100?100:Math.round(response.measuresList[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.measuresList[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewMeasure('+response.measuresList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = updateMeasure('+response.measuresList[i].id+')><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
+                    $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick = "viewmeasureGraph('+response.measuresList[i].id+')"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin: 10px 7px 0;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.measuresList[i].percentage)>100?100:Math.round(response.measuresList[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.measuresList[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewMeasure('+response.measuresList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = updateMeasure('+response.measuresList[i].id+')><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
                 for (var i = 0; i < response.subobjective.length; i++) {
-                    $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="viewobjective('+response.subobjective[i].id+')"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.subobjective[i].percentage)>100?100:Math.round(response.subobjective[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.subobjective[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewobjective('+response.subobjective[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateObjective('+response.subobjective[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
+                    $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="viewobjective('+response.subobjective[i].id+')"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin: 10px 7px 0;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.subobjective[i].percentage)>100?100:Math.round(response.subobjective[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.subobjective[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewobjective('+response.subobjective[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateObjective('+response.subobjective[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
                 for (var i = 0; i < response.initiativeList.length; i++) {
-                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="view_initiativepop('+response.initiativeList[i].id+')"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="view_initiativepop('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateinitiative('+response.initiativeList[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
+                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="view_initiativepop('+response.initiativeList[i].id+')"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin: 10px 7px 0;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="view_initiativepop('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateinitiative('+response.initiativeList[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
                 var remove_msg = "Are You Sure";
                 
@@ -919,6 +921,9 @@ function viewobjective(id){
                     data:'_token='+token+'&company_id='+company_id,
                     dataType:'JSON',
                     success: function (scorecards) {
+                      if(scorecards != ""){
+                        $(".hidebuscrcrd").hide();
+                      }
               for (var scs in scorecards) {
                           console.log(scorecards);
                     
@@ -945,6 +950,9 @@ function viewobjective(id){
                     data:'_token='+token+'&company_id='+company_id,
                     dataType:'JSON',
                     success: function (themes) {
+                      if(themes != ""){
+                        $(".hidebutheme").hide();
+                      }
                         for (var the in themes) {
                           if (themes.hasOwnProperty(the)) {
                             var thes = themes[the];
@@ -1001,8 +1009,8 @@ function viewobjective(id){
                 var taskdetails = response.task_details;
                 $("#task_name_update_id").val(taskdetails.task_name);
                 $("#task_description_update_id").val(taskdetails.description);
-
-				        
+				$("#task_status_id option[value='"+taskdetails.status+"']").attr("selected", "selected");
+				     
                 var ownerss = response.owners;
 					for (var own in ownerss) {
 						if (ownerss.hasOwnProperty(own)) {
@@ -1014,7 +1022,8 @@ function viewobjective(id){
 							}
 						}
                     }
-                    $("#task_status_id").val(taskdetails.status);
+                    // $("#task_status_id").val(taskdetails.status);
+					
                 }  
         });
         $("#myModalUpdateTask").modal("show");
@@ -1031,7 +1040,7 @@ function viewobjective(id){
           dataType:'JSON',
           success: function (response) {
               measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
-              $('#graphtitleobjmeasure').html('<p class="mb-0 truncate"><i class="'+response.measures.status_icon+' heading-icon" style="color:'+response.measures.bg_color+';"></i>'+response.measures.heading+'</p><p class="text-muted mb-0 text-small" style="margin-left: 35px">FY'+response.measures.measure_cycle_year+'-'+getQuarter(response.measures.measure_cycle_quarter)+'</p>');
+              $('#graphtitleobjmeasure').html('<p class="mb-0 truncate"><i class="'+response.measures.status_icon+' heading-icon" style="color:'+response.measures.bg_color+';"></i>'+response.measures.heading+'</p><p class="text-muted mb-0 text-small" style="margin: 10px 7px 0">FY'+response.measures.measure_cycle_year+'-'+getQuarter(response.measures.measure_cycle_quarter)+'</p>');
               $("#viewLargePlotObj").html('<a href="javascript:void(0);" onclick="viewLargeGraph('+measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data)+')"><i class="iconsminds-maximize heading-icon"></i></a>');
             }
       });    

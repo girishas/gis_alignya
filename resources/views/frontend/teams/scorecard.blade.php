@@ -62,7 +62,7 @@
 						<div class="col-md-2">
                          
                    <button type="submit" style="width:100%;" class="btn btn-primary">Search</button>
-                <a class="btn btn-dark mb-1 steamerst_link" style="width:100%;" href="{!!url('scorecard')!!}">Show All</a>
+                <a class="btn btn-dark mb-1 steamerst_link mt-2" style="width:100%;" href="{!!url('scorecard')!!}">Show All</a>
 
 							
                         </div>

@@ -904,7 +904,14 @@ class KPIController extends Controller
 			$milestone = array();
 		}
 		$data['milestones'] = $milestone;
-		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',1)->where('al_tasks.measure_id',$inputs['measure_id'])->select('al_master_status.name as status_name','al_master_status.bg_color','al_tasks.*')->get();
+		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',1)->where('al_tasks.measure_id',$inputs['measure_id']):
+		if(Auth::User()->role_id != 2){
+			$tasklist = $tasklist->where(function($queryW){
+				$queryW->whereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_tasks.owners) > 0'))
+				->orWhere('al_tasks.user_id',Auth::User()->id);
+			});
+		}
+		$tasklist = $tasklist->select('al_master_status.name as status_name','al_master_status.bg_color','al_tasks.*')->get();
 		if (!empty($tasklist)) {
 			$tasklist = $tasklist->toArray();
 			foreach ($tasklist as $key => $value) {

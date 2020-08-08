@@ -190,7 +190,7 @@ class UserController extends Controller
 						    $mail->Username   = 'alignya@outlook.com';                     // SMTP username
 						    $mail->Password   = 'Gisllp@123';                               // SMTP password
 						    $mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
-
+							$mail->SMTPSecure = 'tls';
 						    //Recipients
 						    $mail->setFrom('alignya@outlook.com', 'Alignya');
 						    $mail->addAddress($email, $usr_name);     // Add a recipient
@@ -260,7 +260,7 @@ class UserController extends Controller
 						    $mail->Username   = 'alignya@outlook.com';                     // SMTP username
 						    $mail->Password   = 'Gisllp@123';                               // SMTP password
 						    $mail->Port       = 587;                                    // TCP port to connect to, use 465 for `PHPMailer::ENCRYPTION_SMTPS` above
-
+							$mail->SMTPSecure = 'tls';
 						    //Recipients
 						    $mail->setFrom('alignya@outlook.com', 'Alignya');
 						    $mail->addAddress($email, $usr_name);     // Add a recipient

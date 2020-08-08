@@ -56,8 +56,7 @@
                         <?php if(Auth::User()->enable_subscription == 0): ?>
                            Please choose subscription for membership plan!!
                         <?php else: ?>
-                        Your current <?php echo config('constants.PLAN_PERIOD.'.getPlanDetailsByID(Auth::User()->current_membership_plan)->period); ?> Plan <?php echo getPlanDetailsByID(Auth::User()->current_membership_plan)->heading; ?> will be renew on <?php echo date('d F Y', strtotime(Auth::User()->trial_expiry_date)); ?>
-
+                        Your current <?php echo config('constants.PLAN_PERIOD.'.getPlanDetailsByID(Auth::User()->current_membership_plan)->period); ?> Plan <strong><?php echo getPlanDetailsByID(Auth::User()->current_membership_plan)->heading; ?></strong> will be renew on <strong><?php echo date('d F Y', strtotime(Auth::User()->trial_expiry_date)); ?></strong>
                         <?php endif; ?>
                         </div>
                         <?php echo Form::open(array('url' => url('upgrade-membership') ,'class'=>'steamerstudio_form cssformflex')); ?>
@@ -71,7 +70,13 @@
                                 <div
                                     class="card-body pt-5 pb-5 d-flex flex-lg-column flex-md-row flex-sm-row flex-column">
                                     <div class="price-top-part">
+                                        <?php if($value->id == 3): ?>
+                                         <i class="iconsminds-business-mens large-icon"></i>
+                                        <?php elseif($value->id == 2): ?>
+                                        <i class="iconsminds-administrator large-icon"></i>
+                                        <?php else: ?>
                                         <i class="iconsminds-male large-icon"></i>
+                                        <?php endif; ?>
                                         <h5 class="mb-0 font-weight-semibold color-theme-1 mb-4"><strong><?php echo $value->heading; ?></strong></h5>
                                         <p class="text-large mb-2 text-default">$<?php echo $value->plan_fee; ?></p>
                                         <p class="text-muted text-small">Upto <?php echo $value->emp_limit; ?> Members</p>
@@ -138,7 +143,13 @@
                                 <div
                                     class="card-body pt-5 pb-5 d-flex flex-lg-column flex-md-row flex-sm-row flex-column">
                                     <div class="price-top-part">
+                                        <?php if($value->id == 6): ?>
+                                         <i class="iconsminds-business-mens large-icon"></i>
+                                        <?php elseif($value->id == 5): ?>
+                                        <i class="iconsminds-administrator large-icon"></i>
+                                        <?php else: ?>
                                         <i class="iconsminds-male large-icon"></i>
+                                        <?php endif; ?>
                                         <h5 class="mb-0 font-weight-semibold color-theme-1 mb-4"><strong><?php echo $value->heading; ?></strong></h5>
                                         <p class="text-large mb-2 text-default">$<?php echo $value->plan_fee; ?></p>
                                         <p class="text-muted text-small">Upto <?php echo $value->emp_limit; ?> Members</p>

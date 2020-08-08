@@ -144,6 +144,7 @@ Route::any('/alignya-process', array('as'=>'users.alignya_process', 'uses'=>'Use
 Route::any('/blog', array('as'=>'users.blog', 'uses'=>'UserController@blog'));
 Route::any('/contact', array('as'=>'users.contact', 'uses'=>'UserController@contact'));
 
+Route::any('/admin', array('as'=>'users.login', 'uses'=>'UserController@login'));
 Route::any('/login', array('as'=>'users.login', 'uses'=>'UserController@login'));
 Route::any('/register', array('as'=>'users.login', 'uses'=>'UserController@register'));
 Route::any('/forgot-password', array('as'=>'users.forgot_password', 'uses'=>'UserController@forgot_password'));

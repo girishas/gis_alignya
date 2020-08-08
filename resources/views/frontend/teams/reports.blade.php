@@ -252,7 +252,7 @@
 								</div>
                                  @endforeach
                                  @else
-                                 <p style="text-align: center;width: 100%">No Record Found</p>
+                                 <p style="text-align: center;width: 100%">Please select objective to view detailed report and graphs</p>
                                 @endif
                             <!-- <div class="col-lg-8 mb-5">
                                     <h6 class="mb-4">Sales Objective Measure 1</h6>

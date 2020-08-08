@@ -9,6 +9,7 @@
                 <div class="col-12 col-md-10 mx-auto my-auto">
 				
                     <div class="card auth-card">
+                    	@if($route_prefix != env('ADMIN_PREFIX'))
                         <div class="position-relative image-side ">
 
                             <p class=" text-white h2">Let's Get Started</p>
@@ -21,7 +22,12 @@
 								@endif
 							
                         </div>
+                        @endif
+                        @if($route_prefix == env('ADMIN_PREFIX'))
+                        <div class="form-side" style=" margin-left: 20%;">
+                        	@else
                         <div class="form-side">
+                        	@endif
 							<a class="steamerst_link" href="{!! url($route_prefix, 'login') !!}">
 								{!! HTML::image("public/img/logo.png", "Logo", array("class"=>"", 'style'=>"width:250px;margin-bottom:40px;")) !!}
 							</a>

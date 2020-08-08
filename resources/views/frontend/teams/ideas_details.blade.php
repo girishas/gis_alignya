@@ -368,11 +368,11 @@
                     <ul class="list-unstyled mb-5">
                         @if(!empty($popular_ideas))
                         @foreach($popular_ideas as $key => $popular)
-                        <li class="active">
+                        <li class="">
                             <a href="{!!url('idea-details/'.$popular->id)!!}">
-                                <i class="heading-icon iconsminds-idea"></i>
-                                @if(strlen($popular->title)>20)
-                                {!!substr($popular->title,0,20)!!}
+                                <i class="heading-icon iconsminds-idea mr-0"></i>
+                                @if(strlen($popular->title)>25)
+                                {!!substr($popular->title,0,25)!!}
                                 @else
                                 {!!$popular->title!!}
                                 @endif

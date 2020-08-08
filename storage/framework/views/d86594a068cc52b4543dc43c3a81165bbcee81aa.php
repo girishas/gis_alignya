@@ -80,8 +80,8 @@
                             <div class="invalid-tooltip"></div>
                         </div>
                     </div>
-                        <div class="form-group">
-                            <label>Contributers (optional) <br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                        <div class="form-group mt-2">
+                            <label>Contributers (optional) <br> <span style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</span></label>
                             <?php echo Form::select('contributers[]',$contributers,null,array('class'=>'form-control','id'=>'contriiniupdate','multiple'=>'multiple')); ?>
 
                             

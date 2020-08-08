@@ -353,7 +353,14 @@ class InitiativeController extends Controller
 		$initiatives = Measure::leftjoin('al_master_status','al_master_status.id','=','al_measures.status')->leftjoin('users','users.id','=','al_measures.owner_user_id')->where('al_measures.id',$inputs['id'])->select('al_measures.*','al_master_status.name as status_name','al_master_status.bg_color','al_master_status.icons as status_icon',DB::raw('CONCAT_WS(" ",users.first_name,users.last_name) as owner_name'))->first();
 		$data['initiatives'] = $initiatives;
 		$milestones = Milestones::leftjoin('al_master_status','al_master_status.id','=','al_project_milestones.mile_status')->where('al_project_milestones.initiative_id',$id)->select('al_project_milestones.milestone_name as name','al_project_milestones.start_date as fromDate','al_project_milestones.end_date as toDate','al_master_status.bg_color as color','al_project_milestones.id')->get();
-		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',2)->where('al_tasks.measure_id',$id)->select('al_tasks.*','al_master_status.bg_color','al_master_status.icons as status_icon','al_master_status.name as status_name')->get();
+		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',2)->where('al_tasks.measure_id',$id);
+		if(Auth::User()->role_id != 2){
+			$tasklist = $tasklist->where(function($queryW){
+				$queryW->whereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_tasks.owners) > 0'))
+				->orWhere('al_tasks.user_id',Auth::User()->id);
+			});
+		}
+		$tasklist = $tasklist->select('al_tasks.*','al_master_status.bg_color','al_master_status.icons as status_icon','al_master_status.name as status_name')->get();
 		if(!empty($tasklist)){
 			$tasklist = $tasklist->toArray();
 			foreach ($tasklist as $key => $value) {

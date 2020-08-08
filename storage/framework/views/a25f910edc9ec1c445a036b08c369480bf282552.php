@@ -75,8 +75,8 @@
         			<div class="invalid-tooltip"></div>
         		</div>
 
-        		 <div class="form-group ">
-                        <label>Contributers<br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+        		 <div class="form-group mt-2">
+                        <label>Contributers<br> <span style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</span></label>
                        <select class="form-control" multiple="multiple" name="contributers[]" data-width="100%" id="contributersadd">
                            
                        </select>                    

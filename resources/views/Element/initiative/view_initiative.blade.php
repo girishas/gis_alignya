@@ -116,4 +116,4 @@
         $("#typetaskid").val(2);
         $("#myModalAddTask").modal("show");
     }
-</script>>
+</script>

@@ -56,7 +56,7 @@
                                 <div class="col-md-3 col-lg-2 col-sm-4 col-6 mb-4">
                                         <a href="" class="card">
                                             <div class="card-body text-center">
-                                                <i class="iconsminds-money-bag"></i>
+                                                <i class="iconsminds-statistic"></i>
                                                 <p class="card-text mb-0">Transactions</p>
                                                 <p class="lead text-center">{!!$transaction_count!!}</p>
                                             </div>
@@ -102,7 +102,7 @@
                                         </a>
                                 </div>
                                 <div class="col-md-3 col-lg-2 col-sm-4 col-6 mb-4">
-                                        <a href="#" class="card">
+                                        <a href="javascript:void(0);" style="cursor: auto;" class="card">
                                             <div class="card-body text-center">
                                                 <i class="simple-icon-list"></i>
                                                 <p class="card-text mb-0">Tasks</p>

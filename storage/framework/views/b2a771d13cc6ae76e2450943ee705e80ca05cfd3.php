@@ -384,9 +384,9 @@
                     <ul class="list-unstyled mb-5">
                         <?php if(!empty($popular_ideas)): ?>
                         <?php $__currentLoopData = $popular_ideas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $key => $popular): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <li class="active">
+                        <li class="">
                             <a href="<?php echo url('idea-details/'.$popular->id); ?>">
-                                <i class="heading-icon iconsminds-idea"></i>
+                                <i class="heading-icon iconsminds-idea mr-0"></i>
                                 <?php if(strlen($popular->title)>20): ?>
                                 <?php echo substr($popular->title,0,20); ?>
 

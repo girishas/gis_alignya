@@ -328,7 +328,14 @@ class ObjectiveController extends Controller
 		}else{
 			$subobjective = array();
 		}
-		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',0)->where('al_tasks.objective_id',$input['id'])->select('al_master_status.name as status_name','al_master_status.icons as status_icon','al_master_status.bg_color','al_tasks.*')->orderBy('al_tasks.id','desc')->get();
+		$tasklist = Tasks::leftjoin('al_master_status','al_master_status.id','=','al_tasks.status')->where('al_tasks.type',0)->where('al_tasks.objective_id',$input['id']);
+		if(Auth::User()->role_id != 2){
+			$tasklist = $tasklist->where(function($queryW){
+				$queryW->whereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_tasks.owners) > 0'))
+				->orWhere('al_tasks.user_id',Auth::User()->id);
+			});
+		}
+		$tasklist = $tasklist->select('al_master_status.name as status_name','al_master_status.icons as status_icon','al_master_status.bg_color','al_tasks.*')->orderBy('al_tasks.id','desc')->get();
 		if (!empty($tasklist)) {
 			$tasklist = $tasklist->toArray();
 			foreach ($tasklist as $key => $value) {

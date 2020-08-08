@@ -68,10 +68,12 @@
                                 <div
                                     class="card-body pt-5 pb-5 d-flex flex-lg-column flex-md-row flex-sm-row flex-column">
                                     <div class="price-top-part">
-                                        @if($value->id = 2)
+                                        @if($value->id == 3)
                                          <i class="iconsminds-business-mens large-icon"></i>
-                                        @elseif($value->id = 3)
-                                        <i class="iconsminds-administrator large-icon"></i>
+                                        @elseif($value->id == 2)
+                                        <i class="iconsminds-business-man large-icon"></i>
+                                        @else
+                                        <i class="iconsminds-male large-icon"></i>
                                         @endif
                                         <h5 class="mb-0 font-weight-semibold color-theme-1 mb-4"><strong>{!!$value->heading!!}</strong></h5>
                                         <p class="text-large mb-2 text-default">${!!$value->plan_fee!!}</p>
@@ -139,7 +141,13 @@
                                 <div
                                     class="card-body pt-5 pb-5 d-flex flex-lg-column flex-md-row flex-sm-row flex-column">
                                     <div class="price-top-part">
+                                        @if($value->id == 6)
+                                         <i class="iconsminds-business-mens large-icon"></i>
+                                        @elseif($value->id == 5)
+                                        <i class="iconsminds-business-man large-icon"></i>
+                                        @else
                                         <i class="iconsminds-male large-icon"></i>
+                                        @endif
                                         <h5 class="mb-0 font-weight-semibold color-theme-1 mb-4"><strong>{!!$value->heading!!}</strong></h5>
                                         <p class="text-large mb-2 text-default">${!!$value->plan_fee!!}</p>
                                         <p class="text-muted text-small">Upto {!!$value->emp_limit!!} Members</p>
