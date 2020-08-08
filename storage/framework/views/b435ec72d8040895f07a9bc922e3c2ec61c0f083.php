@@ -76,8 +76,8 @@
                         </div>
                     </div>
                         <div class="form-group">
-                            <label>Contributers (optional)</label>
-                            <?php echo Form::select('contributers[]',$contributers,null,array('class'=>'form-control select2-multiple','multiple'=>'multiple')); ?>
+                            <label>Contributers (optional)<br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                            <?php echo Form::select('contributers[]',$contributers,null,array('class'=>'form-control','multiple'=>'multiple')); ?>
 
                             
                         </div>
@@ -91,6 +91,7 @@
                                 <label>KPI Unit</label>
                                 <?php echo Form::text('measure_unit',null,array('class'=>'form-control')); ?>
 
+								<div class="invalid-tooltip"></div>
                             </div>
                         </div>
                             
@@ -116,11 +117,13 @@
                                 <label>Revenue Target</label>
                                 <?php echo Form::text('revenue_target',null,array('class'=>'form-control')); ?>
 
+								<div class="invalid-tooltip"></div>
                             </div>
                               <div class="form-group col-md-6">
                                 <label>Revenue Actual</label>
                                 <?php echo Form::text('revenue_actual',null,array('class'=>'form-control')); ?>
 
+								<div class="invalid-tooltip"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Gross Margin Target</label>
@@ -278,8 +281,8 @@
         }
     }
 
-    function onchangeobjectivegetcycle(){
-
+    function onchangeobjectivegetcyclekpi(){
+    
         var objective_id =  $("#objectiveId").val();
         var token = "<?php echo csrf_token(); ?>";
         var company_id = "<?php echo Auth::User()->company_id; ?>";

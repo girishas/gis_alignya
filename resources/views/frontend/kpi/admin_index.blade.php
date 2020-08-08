@@ -116,7 +116,8 @@
             $("#myModal").modal('show');
         });
         $("#add_objectiveBtn").click(function(){
-              onchangeobjectivegetcycle();
+         
+              onchangeobjectivegetcyclekpi();
         $("#myModalAddKPI").modal('show');
         });
         $("#filterBtn").click(function(){

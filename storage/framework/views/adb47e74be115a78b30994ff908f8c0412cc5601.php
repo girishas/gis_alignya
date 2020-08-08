@@ -66,6 +66,16 @@
                             </div>
                             <?php endif; ?>
                         </div>
+                        <div class="form-row">
+                         
+                            <div class="form-group  position-relative error-l-100 col-md-6">
+                                <label for="inputMobile"><?php echo getLabels('status'); ?></label>
+                                <?php echo Form::select('status', config('constants.STATUS'),null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> '')); ?>
+
+                                <div class="invalid-tooltip"></div>
+                            </div>
+                           
+                        </div>
                          <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for=""><?php echo getLabels('profile_picture'); ?></label>

@@ -76,8 +76,8 @@
         		</div>
 
         		 <div class="form-group ">
-                        <label>Contributers</label>
-                       <select class="form-control select2-multiple" multiple="multiple" name="contributers[]" data-width="100%" id="contributersadd">
+                        <label>Contributers<br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                       <select class="form-control" multiple="multiple" name="contributers[]" data-width="100%" id="contributersadd">
                            
                        </select>                    
                       

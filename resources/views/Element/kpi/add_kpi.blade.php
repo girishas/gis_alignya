@@ -73,8 +73,8 @@
                         </div>
                     </div>
                         <div class="form-group">
-                            <label>Contributers (optional)</label>
-                            {!!Form::select('contributers[]',$contributers,null,array('class'=>'form-control select2-multiple','multiple'=>'multiple'))!!}
+                            <label>Contributers (optional)<br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                            {!!Form::select('contributers[]',$contributers,null,array('class'=>'form-control','multiple'=>'multiple'))!!}
                             
                         </div>
                          <div class="row">
@@ -85,6 +85,7 @@
                               <div class="form-group col-md-6 showkpiunit revenueshow" style="display: none;">
                                 <label>KPI Unit</label>
                                 {!!Form::text('measure_unit',null,array('class'=>'form-control'))!!}
+								<div class="invalid-tooltip"></div>
                             </div>
                         </div>
                             
@@ -107,10 +108,12 @@
                             <div class="form-group col-md-6">
                                 <label>Revenue Target</label>
                                 {!!Form::text('revenue_target',null,array('class'=>'form-control'))!!}
+								<div class="invalid-tooltip"></div>
                             </div>
                               <div class="form-group col-md-6">
                                 <label>Revenue Actual</label>
                                 {!!Form::text('revenue_actual',null,array('class'=>'form-control'))!!}
+								<div class="invalid-tooltip"></div>
                             </div>
                             <div class="form-group col-md-6">
                                 <label>Gross Margin Target</label>
@@ -255,8 +258,8 @@
         }
     }
 
-    function onchangeobjectivegetcycle(){
-
+    function onchangeobjectivegetcyclekpi(){
+    
         var objective_id =  $("#objectiveId").val();
         var token = "{!!csrf_token()!!}";
         var company_id = "{!!Auth::User()->company_id!!}";

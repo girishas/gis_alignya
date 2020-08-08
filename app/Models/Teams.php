@@ -20,10 +20,14 @@ class Teams extends Model
     public static function validate($input, $id = null){
 		$rules = array(		
 			'team_name' => 'required',
+			//'department_id' => 'required',
+			'team_head' => 'required',
 		);
 		
 		$messages = array(		
 			'team_name.required' => 'Team Name is required.',			
+			'department_id.required' => 'Please select or create a Department.',			
+			'team_head.required' => 'Please select Team Head.',			
 		);
 		return validator($input, $rules, $messages);
 	}

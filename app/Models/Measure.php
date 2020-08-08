@@ -55,8 +55,12 @@ public static function validate($input){
 			'objective_id'         	=> 'required',
 			'measure_cycle'    	=> 'required',
 			'ownership'    	=> 'required',
-			'measure_target' => 'required',
-			'measure_actual' => 'required'
+			'measure_target' =>'required', 
+			'measure_actual' =>'required',  
+			'revenue_target' => 'required_if:measure_type,revenue',
+			'revenue_actual' => 'required_if:measure_type,revenue',
+			'measure_unit' => 'required_if:measure_type,revenue|required_if:measure_type,value',
+			
 		);
 		
 		
@@ -97,8 +101,12 @@ public static function validateInitiative($input){
 			'heading'         	=> 'required',
 			'measure_cycle'    	=> 'required',
 			'ownership'    	=> 'required',
-			'measure_target' => 'required',
-			'measure_actual' => 'required'
+			'measure_target' =>'required', 
+			'measure_actual' =>'required',  
+			'revenue_target' => 'required_if:measure_type,revenue',
+			'revenue_actual' => 'required_if:measure_type,revenue',
+			'measure_unit' => 'required_if:measure_type,revenue|required_if:measure_type,value',
+			
 		);
 		
 		

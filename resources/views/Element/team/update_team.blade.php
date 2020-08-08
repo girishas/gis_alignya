@@ -23,12 +23,16 @@
                                                 {!! Form::select('team_head', $teamleads,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
                                             
                                 <div class="invalid-tooltip"></div>
+								@if($errors->first('team_head'))<div class="error">{!!$errors->first('team_head')!!}</div>@endif
                             </div>
+							 @if(count($departments)>0)
                                 <div class="form-group ">
                                                       <label>Choose Department</label>
                                {!! Form::select('department_id', $departments,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}                  
                                 <div class="invalid-tooltip"></div>
+								@if($errors->first('department_id'))<div class="error">{!!$errors->first('department_id')!!}</div>@endif
                             </div>
+							@endif
 
                             <div class="form-group ">
                                                       <label>Choose Members</label>

@@ -5,6 +5,9 @@
 {!! HTML::script('public/balkangraph/orgchart.js') !!}
  
  <main>
+ <div class="col-12">
+                    <h1> <span class="align-middle d-inline-block pt-1">Department Charts</span>   </h1>
+</div>	
 <div id="tree"></div>
 <style>
 [node-id] rect {

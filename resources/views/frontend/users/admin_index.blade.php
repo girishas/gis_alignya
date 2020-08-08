@@ -13,10 +13,10 @@
 							<button type="button" class="btn btn-outline-primary mb-1" onclick="importcsv()">Import Members</button>
 							@endif
 							
-							
+							@if(Auth::User()->role_id == 2 || Auth::User()->role_id == 3)
 							<a href="{!!url('department')!!}"><button type="button" class="btn btn-primary mb-1">Departments</button></a>
 							<a href="{!!url('team')!!}"><button type="button" class="btn btn-primary mb-1">Teams</button></a>
-							
+							@endif
 							
                             
                         </div>
@@ -57,12 +57,12 @@
 									<div class="row">
 										<div class="col-lg-3">
 											<div class="form-group">
-												{!! Form::text('first_name', isset($_POST['first_name'])?trim($_POST['first_name']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_name')))!!}
+												{!! Form::text('first_name', isset($_POST['first_name'])?trim($_POST['first_name']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_keyword')))!!}
 											</div>
 										</div>
 										<div class="col-lg-3">
 											<div class="form-group">
-												{!! Form::text('email', isset($_POST['email'])?trim($_POST['email']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_email')))!!}
+												{!! Form::select('role_id', array('' => getLabels('user_type')) + config('constants.USER_TYPES'), isset($_POST['role_id'])?$_POST['role_id']:null, array('class' => 'form-control'))!!}
 											</div>
 										</div>
 										
@@ -103,6 +103,10 @@
 									<tbody>
 										@if(!$data->isEmpty())
 											@foreach($data as $val)
+												<?php
+													$remove_msg = "Are You Sure";
+													$remove_url = url('member/remove/'.$val->id);
+													 ?>
 												<tr class="odd gradeX">
 													<td>{!! $val->first_name." ".$val->last_name !!}</td>
 													<td>
@@ -114,17 +118,31 @@
 													</td>
 													<td class="text-center">{!!config('constants.STATUS.'.$val->status)!!}</td>
 													<td>
-														@if($val->role_id > Auth::User()->role_id)
-														<a href="javascript:void(0);" onclick="updatemember({!!$val->id!!})"><i class="heading-icon simple-icon-pencil"></i></a>
-														@endif
-																<a href="javascript:void(0);" onclick="viewmember({!!$val->id!!})"><i class="heading-icon iconsminds-information"></i></a>
-													<?php
+														@if(Auth::User()->is_owner == 1)
+														<?php
 													$remove_msg = "Are You Sure";
 													$remove_url = url('member/remove/'.$val->id);
 													 ?>
-														@if(Auth::User()->role_id == 2)
+														<a href="javascript:void(0);" onclick="viewmember({!!$val->id!!})"><i class="heading-icon iconsminds-information"></i></a>
+														<a href="javascript:void(0);" onclick="updatemember({!!$val->id!!})"><i class="heading-icon simple-icon-pencil"></i></a>
 														<a  onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+														
+														@elseif(Auth::User()->role_id == 2)
+															<a href="javascript:void(0);" onclick="viewmember({!!$val->id!!})"><i class="heading-icon iconsminds-information"></i></a>
+															@if($val->is_owner != 1)
+														<a href="javascript:void(0);" onclick="updatemember({!!$val->id!!})"><i class="heading-icon simple-icon-pencil"></i></a>
+														<a  onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+														@endif
+														@else
+													
+														<a href="javascript:void(0);" onclick="viewmember({!!$val->id!!})"><i class="heading-icon iconsminds-information"></i></a>
+														@if($val->role_id > Auth::User()->role_id)
+														<a href="javascript:void(0);" onclick="updatemember({!!$val->id!!})"><i class="heading-icon simple-icon-pencil"></i></a>
+														<a  onclick = 'showConfirmationModal("Remove", "{!! $remove_msg !!}", "{!! $remove_url !!}");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+														@endif
 														@endif		
+													
+																
 													</td>
 												</tr>
 											@endforeach

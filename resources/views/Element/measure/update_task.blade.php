@@ -28,17 +28,21 @@
                              <input type="hidden" name="is_popup" class="is_popup">
                         </div>
                         <div class="form-group">
-                            <label>Owners</label>
-							<?php   $contributers = Contributers();
-									print_r($contributers);
-							?>
-							{!!Form::select('owners[]',$contributers,null,array('class'=>'form-control select2-multiple','multiple'=>'multiple','id'=>'contributer_id'))!!}
+                            <label>Owners <br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                            <select name="owners[]" class="form-control" multiple="multiple" id="owners_update_id"></select>
+							
+							
                                                   
                         </div>
                         <div class="form-group">
                             <label for="inputAboutYou">{!! getLabels('summary') !!}</label>
                         {!! Form::textarea('description', null, array('rows' => 2, 'class' => 'form-control', "id"=>"task_description_update_id", 'placeholder'=> ''))!!}
                         </div>
+                        
+						<div class="form-group">
+                            <label>{!! getLabels('status') !!}</label>
+                         {!!Form::select('status',$task_status,null,array('class'=>'form-control','id'=>'task_status_id'))!!}
+						 </div>
                         
     						
                         </div>
@@ -54,9 +58,6 @@
                 
             </div>
         </div>
-		{!! HTML::style('public/css/vendor/select2.min.css') !!}
-			{!! HTML::style('public/css/vendor/select2-bootstrap.min.css') !!}
-			{!! HTML::script('public/js/vendor/select2.full.js') !!}
-			
+		
     </div>
     

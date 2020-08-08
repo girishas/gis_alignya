@@ -17,20 +17,54 @@
                                 {!! Form::text('company_name', $company_details->company_name, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
                             </div>
-                            
                              <div class="form-group  position-relative error-l-100 col-md-6">
-                                <label for="inputMobile">{!! getLabels('contact_number') !!}</label>
-                                {!! Form::text('mobile', $company_details->mobile, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
+                                <label for="inputAboutYou">{!! getLabels('slogan') !!}</label>
+                                {!! Form::text('slogan', $company_details->slogan, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
+                                
+                                <div class="invalid-tooltip"></div>
+                            </div> 
+                        </div>
+                        <div class="form-row">                            
+                          
+							 <div class="form-group  position-relative error-l-100 col-md-6">
+                                <label for="inputAboutYou">{!! getLabels('mission') !!}</label>
+                                {!! Form::textarea('com_mission', $company_details->com_mission, array('rows' => 2, 'class' => 'form-control', "id"=>"inputAboutYou", 'placeholder'=> ''))!!}
+                                <div class="invalid-tooltip"></div>
+                            </div>
+							
+							
+							<div class="form-group  position-relative error-l-100 col-md-6">
+                                <label for="inputAboutYou">{!! getLabels('vision') !!}</label>
+                                {!! Form::textarea('com_vision', $company_details->com_vision, array('rows' => 2, 'class' => 'form-control', "id"=>"inputAboutYou", 'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
                             </div>
                             
+                        </div>
+						
+                       
+                        
+                        <div class="form-row">                            
+                              <div class="form-group  position-relative error-l-100 col-md-6">
+                            <label for="inputAboutYou">{!! getLabels('address') !!}</label>
+                            {!! Form::textarea('address', $company_details->address, array('rows' => 2, 'class' => 'form-control', "id"=>"inputAboutYou", 'placeholder'=> ''))!!}
+                            <div class="invalid-tooltip"></div>
+                        </div>
+                             
+							 <div class="form-group  position-relative error-l-100 col-md-6">
+                                <label for="inputAboutYou">{!! getLabels('value') !!}</label>
+                                {!! Form::textarea('com_values', $company_details->com_values, array('rows' => 2, 'class' => 'form-control', "id"=>"inputAboutYou", 'placeholder'=> ''))!!}
+                                <div class="invalid-tooltip"></div>
+                            </div>
+							
                             
                         </div>
-                        
-                        <div class="form-row">
+						
+						
+						 <div class="form-row">
+                           
                             <div class="form-group  position-relative error-l-100 col-md-6">
-                                <label for="inputFirstname">{!! getLabels('company_licence') !!}</label>
-                                {!! Form::text('comp_licence', $company_details->comp_licence, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
+                                <label for="inputFirstname">{!! getLabels('fiscal_start_month') !!}</label>
+                                {!! Form::select('fiscal_start_month', config('constants.COMPANY_FISCAL_MONTH'),$company_details->fiscal_start_month, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
                             </div>
                             <div class="form-group  position-relative error-l-100 col-md-6">
@@ -38,52 +72,18 @@
                                 {!! Form::text('company_currency', $company_details->company_currency, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
                             </div>
-                            <div class="form-group  position-relative error-l-100 col-md-6">
-                                <label for="inputFirstname">{!! getLabels('fiscal_start_month') !!}</label>
-                                {!! Form::select('fiscal_start_month', config('constants.COMPANY_FISCAL_MONTH'),$company_details->fiscal_start_month, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
+                        </div>
+                         
+                        <div class="form-row">
+						 <div class="form-group  position-relative error-l-100 col-md-6">
+                                <label for="inputMobile">{!! getLabels('contact_number') !!}</label>
+                                {!! Form::text('mobile', $company_details->mobile, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
                                 <div class="invalid-tooltip"></div>
                             </div>
                            
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group  position-relative error-l-100 col-md-6">
-                                <label for="inputFirstname">{!! getLabels('industry') !!}</label>
-                                {!! Form::select('industry_id', $industries, $company_details->industry_id, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
-                                <div class="invalid-tooltip"></div>
-                            </div>
-                            <div class="form-group  position-relative error-l-100 col-md-6">
-                                <label for="inputAboutYou">{!! getLabels('slogan') !!}</label>
-                                {!! Form::text('slogan', $company_details->slogan, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> ''))!!}
-                                
-                                <div class="invalid-tooltip"></div>
-                            </div>
-                            
-                        </div>
-                        <div class="form-row">
-                            
-                            <div class="form-group  position-relative error-l-100 col-md-6">
-                                <label for="inputAboutYou">{!! getLabels('vision') !!}</label>
-                                {!! Form::textarea('com_vision', $company_details->com_vision, array('rows' => 2, 'class' => 'form-control', "id"=>"inputAboutYou", 'placeholder'=> ''))!!}
-                                <div class="invalid-tooltip"></div>
-                            </div>
-                            <div class="form-group  position-relative error-l-100 col-md-6">
-                                <label for="inputAboutYou">{!! getLabels('value') !!}</label>
-                                {!! Form::textarea('com_values', $company_details->com_values, array('rows' => 2, 'class' => 'form-control', "id"=>"inputAboutYou", 'placeholder'=> ''))!!}
-                                <div class="invalid-tooltip"></div>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                        <div class="form-group  position-relative error-l-100 col-md-6">
-                            <label for="inputAboutYou">{!! getLabels('address') !!}</label>
-                            {!! Form::textarea('address', $company_details->address, array('rows' => 2, 'class' => 'form-control', "id"=>"inputAboutYou", 'placeholder'=> ''))!!}
-                            <div class="invalid-tooltip"></div>
-                        </div>
-                        <div class="form-group  position-relative error-l-100 col-md-6">
-                                <label for="inputAboutYou">{!! getLabels('mission') !!}</label>
-                                {!! Form::textarea('com_mission', $company_details->com_mission, array('rows' => 2, 'class' => 'form-control', "id"=>"inputAboutYou", 'placeholder'=> ''))!!}
-                                <div class="invalid-tooltip"></div>
-                            </div>
+                       
+						 
+                          
                         </div>
                         
                         <div class="form-group ">

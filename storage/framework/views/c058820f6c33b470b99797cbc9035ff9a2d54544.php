@@ -53,7 +53,7 @@
                                 <label for="inputMobile"><?php echo getLabels('contact_number'); ?></label>
                                 <?php echo Form::text('mobile', null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> '')); ?>
 
-                                
+                                 <div class="invalid-tooltip"></div>
                             </div>
                             <div class="form-group  position-relative error-l-100 col-md-6">
                                 <label for="inputMobile"><?php echo getLabels('Designation'); ?></label>

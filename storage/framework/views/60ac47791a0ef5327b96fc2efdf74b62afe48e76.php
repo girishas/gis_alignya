@@ -66,15 +66,18 @@
 
                                                    <div class="invalid-tooltip"></div>
                                                 </div>
-
+                                                <?php if(Auth::User()->role_id == 2): ?>
+                                                 <div class="form-group position-relative error-l-100">
+                                                    <div class="custom-control custom-checkbox "><input type="checkbox" class="custom-control-input" id="customCheckThis" name="is_popular"> <label class="custom-control-label" for="customCheckThis">Is Popular</label></div>
+                                                </div>
+                                                <?php endif; ?>
+                                                <button type="button" class="btn btn-outline-primary"
+                                                data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
                                                 
                                             
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-outline-primary"
-                                                data-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </div>
+                                       
                                         <?php echo Form::close(); ?>
 
                                     </div>
@@ -105,8 +108,8 @@
                                     <div class="w-15 w-xs-100">
                                        <?php echo $value->status_name; ?>
 
-                                    </div> <div class="w-15 w-xs-100">
-                                      <i class="simple-icon-bubbles"></i> <?php echo ideacommentscount($value->id); ?> &nbsp; <i class="simple-icon-like"></i> <?php echo idealikescount($value->id); ?> &nbsp; <i class="simple-icon-dislike"></i> <?php echo ideadislikescount($value->id); ?>
+                                    </div> <div class="w-20 w-xs-100">
+                                      <i class="heading-icon simple-icon-bubbles"></i> <?php echo ideacommentscount($value->id); ?> &nbsp; <i class="heading-icon simple-icon-like"></i> <?php echo idealikescount($value->id); ?> &nbsp; <i class="heading-icon simple-icon-dislike"></i> <?php echo ideadislikescount($value->id); ?>
 
                                     </div>
                                 </div>
@@ -115,11 +118,11 @@
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                 <?php else: ?>
                                <div
-                                    class="card-body align-self-center d-flex flex-column flex-md-row justify-content-between min-width-zero align-items-md-center" style="height: 50px">
-                                      <span class="align-middle d-inline-block w-50"><a href="<?php echo url('idea-details/'); ?>"></a></span>
+                                    class="card-body align-self-center d-flex flex-column flex-md-row  min-width-zero align-items-md-center" style="height: 50px">
+                                      <span class="align-middle d-inline-block"><a href="<?php echo url('idea-details/'); ?>"></a></span>
                                       
                                     
-                                    <p class="mb-0 text-muted text-small w-50">No Record Found</p>
+                                    <p class="mb-0 text-muted ">Foster Innovation and Creativity by sharing ideas in company colleagues.</p>
                                     
                                     </div>
                                 </div>
@@ -139,7 +142,7 @@
 
 
                             <div class="collapse d-md-block" id="displayOptions">
-                            <div class="d-block d-md-inline-block">
+                            <div class="">
                                 
                                 <div class="form-group">
                                     <?php echo Form::text('title', isset($_POST['title'])?trim($_POST['title']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_idea'))); ?>
@@ -153,12 +156,11 @@
                                    <?php echo Form::select('status', array('' => getLabels('all_status')) + $status, isset($_POST['status'])?$_POST['status']:null, array('class'=>'form-control')); ?>
 
                                 </div>
-                                <br>
-                                <br>
+                                
                                  <div class="form-group">
                                   
                                    <button class="btn btn-outline-dark  mb-1" type="submit"><?php echo getLabels('Search'); ?></button>
-                                   <a href="<?php echo url('ideas'); ?>"><button class="btn btn-dark  mb-1" type="button"><?php echo getLabels('show_all'); ?></button></a>
+                                   <a href="<?php echo url('ideas'); ?>"><button class="btn btn-outline-dark  mb-1" type="button"><?php echo getLabels('show_all'); ?></button></a>
                                 </div>
 
                             </div>

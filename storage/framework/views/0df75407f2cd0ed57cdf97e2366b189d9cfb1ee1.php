@@ -39,6 +39,7 @@
                                 </div>
                             </a>
                         </div>
+                        <?php if(Auth::User()->role_id == 2 || Auth::User()->role_id == 3): ?>
                        <div class="col-md-3 col-lg-4 col-sm-4 col-6 mb-4">
                             <a href="<?php echo url('team'); ?>" class="card">
                                 <div class="card-body text-center">
@@ -57,6 +58,7 @@
                                 </div>
                             </a>
                         </div>
+                        <?php endif; ?>
                     </div>
                    
 				   

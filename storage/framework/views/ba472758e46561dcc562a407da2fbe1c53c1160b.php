@@ -25,7 +25,7 @@ $("body").on('submit', ".alignya_form", function(e) {
     
     var form_action = $(this).attr('action');
     data = $(this).serialize();
-	
+    
    
     $.ajax({
         type:"POST",
@@ -35,7 +35,6 @@ $("body").on('submit', ".alignya_form", function(e) {
             $('body').addClass('show-spinner');
         },
         success: function (response) {
-			 
             if(response.type == 'error'){
                 errors = response.error;
                 $.each(errors, function(key,value) {
@@ -68,8 +67,6 @@ $("body").on('submit', ".alignya_form", function(e) {
                 $('#addMilestoneMeasureView').modal('hide');
                 $('#myModal2').modal('hide');
                 
-				
-				
                 $("form").trigger("reset");
                 if(pageUrl == "close_modal"){
 
@@ -816,10 +813,10 @@ function viewobjective(id){
                     $("#measurelistvieww").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick = "viewmeasureGraph('+response.measuresList[i].id+')"><i class="'+response.measuresList[i].status_icon+' heading-icon" style="color:'+response.measuresList[i].bg_color+';"></i> '+response.measuresList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.measuresList[i].measure_cycle_year+'-'+getQuarter(response.measuresList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.measuresList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.measuresList[i].bg_color+';margin-top: 20px;">'+response.measuresList[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.measuresList[i].percentage)>100?100:Math.round(response.measuresList[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.measuresList[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewMeasure('+response.measuresList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = updateMeasure('+response.measuresList[i].id+')><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
                 for (var i = 0; i < response.subobjective.length; i++) {
-                    $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.subobjective[i].percentage)>100?100:Math.round(response.subobjective[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.subobjective[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewobjective('+response.subobjective[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateObjective('+response.subobjective[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
+                    $("#alignedobjectivelist").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="viewobjective('+response.subobjective[i].id+')"><i class="'+response.subobjective[i].status_icon+' heading-icon" style="color:'+response.subobjective[i].bg_color+';"></i> '+response.subobjective[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">'+response.subobjective[i].cycle_name+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.subobjective[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.subobjective[i].bg_color+';margin-top: 20px;">'+response.subobjective[i].status_name+'</span></td><td><div class="c100 p'+(Math.round(response.subobjective[i].percentage)>100?100:Math.round(response.subobjective[i].percentage))+' small" style="font-size:50px"><span>'+Math.round(response.subobjective[i].percentage)+'%</span><div class="slice"><div class="bar"></div><div class="fill"></div></div></div></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="viewobjective('+response.subobjective[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateObjective('+response.subobjective[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
                 for (var i = 0; i < response.initiativeList.length; i++) {
-                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="onclickgraph()"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="view_initiativepop('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateinitiative('+response.initiativeList[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
+                    $("#initiativelistobj").append('<tr><td style="padding-top: 25px;"><a href="javascript:void(0);" onclick="view_initiativepop('+response.initiativeList[i].id+')"><i class="'+response.initiativeList[i].status_icon+' heading-icon" style="color:'+response.initiativeList[i].bg_color+';"></i> '+response.initiativeList[i].heading+' </a><p class="text-muted mb-0 text-small" style="margin-left: 35px;">FY'+response.initiativeList[i].measure_cycle_year+'-'+getQuarter(response.initiativeList[i].measure_cycle_quarter)+'</p></td><td style="padding-top: 30px;"><p class="text-semi-muted mb-2">'+response.initiativeList[i].owner_name+'</p></td><td><span class="badge badge-pill badge-success" style="background: '+response.initiativeList[i].bg_color+';margin-top: 20px;">'+response.initiativeList[i].status_name+'</span></td><td style="padding-top:20px"><a href="javascript:void(0)" onclick="view_initiativepop('+response.initiativeList[i].id+')"><i class="iconsminds-information heading-icon"></i></a><a href="javascript:void(0);" onclick = "updateinitiative('+response.initiativeList[i].id+')"><i class="simple-icon-pencil heading-icon"></i></a></td></tr>');
                 }
                 var remove_msg = "Are You Sure";
                 
@@ -853,6 +850,7 @@ function viewobjective(id){
         $("#ownership_update").html("");
         $("#contributersupdate").html("");
         $("#themelistupdate").html("");
+        
         var token = "<?php echo csrf_token(); ?>";
         var company_id = "<?php echo Auth::User()->company_id; ?>"; 
         $.ajax({
@@ -912,7 +910,7 @@ function viewobjective(id){
                     }
                     $("#ownership_update").val(response.owner_user_id);
                 }
-                //$("#scorecardsliupdate").html("");
+                $("#scorecardsliupdate").html("");
                 var selectedscorecard = response.scorecard_id;
                 $("#objective_scorecard_update").val(selectedscorecard);
                 $.ajax({
@@ -927,13 +925,13 @@ function viewobjective(id){
           if (scorecards.hasOwnProperty(scs)) {
                             var vals = scorecards[scs];
                             if(selectedscorecard && selectedscorecard.indexOf(scs) != -1){
-                var newOption = new Option(vals, scs, true, false);
-                $('#scorecardsliupdate').append(newOption).trigger('change');
-                                //$("#scorecardsliupdate").append('<option value = "'+scs+'" selected="selected">'+vals+'</option>');
+                //var newOption = new Option(vals, scs, true, false);
+                //$('#scorecardsliupdate').append(newOption).trigger('change');
+                                $("#scorecardsliupdate").append('<option value = "'+scs+'" selected="selected">'+vals+'</option>');
                             }else{
-                                var newOption = new Option(vals, scs, false, false);
-                $('#scorecardsliupdate').append(newOption).trigger('change');
-                //$("#scorecardsliupdate").append('<option value = "'+scs+'">'+vals+'</option>');
+                              //  var newOption = new Option(vals, scs, false, false);
+                //$('#scorecardsliupdate').append(newOption).trigger('change');
+                $("#scorecardsliupdate").append('<option value = "'+scs+'">'+vals+'</option>');
                 
                             }
                           }
@@ -969,7 +967,7 @@ function viewobjective(id){
                         for (var contri in contributers) {
                           if (contributers.hasOwnProperty(contri)) {
                             var con = contributers[contri];
-                            if(selectedscorecard && selectedcontributers.indexOf(contri) != -1){
+                            if(selectedcontributers && selectedcontributers.indexOf(contri) != -1){
                                 $("#contributersupdate").append('<option value = "'+contri+'" selected="selected">'+con+'</option>');
                             }else{
                                 $("#contributersupdate").append('<option value = "'+contri+'">'+con+'</option>');
@@ -993,6 +991,7 @@ function viewobjective(id){
         $("#update_task_id").val(id);
         var token = "<?php echo csrf_token(); ?>";
         var company_id = "<?php echo Auth::User()->company_id; ?>";
+        $("#owners_update_id").html("");
         $.ajax({
             type:"POST",
             url: "<?php echo url('getTaskDetails'); ?>",
@@ -1002,17 +1001,20 @@ function viewobjective(id){
                 var taskdetails = response.task_details;
                 $("#task_name_update_id").val(taskdetails.task_name);
                 $("#task_description_update_id").val(taskdetails.description);
-                var owners = response.owners;
-                for (var own in owners) {
-                    if (owners.hasOwnProperty(own)) {
-                        var owner = owners[own];
-                        if(taskdetails.owners.indexOf(own) != -1){
-                            $("#owners_update_id").append('<option value = "'+own+'" selected="selected">'+owner+'</option>');
-                        }else{
-                            $("#owners_update_id").append('<option value = "'+own+'">'+owner+'</option>');
-                        }
-                      }
+
+				        
+                var ownerss = response.owners;
+					for (var own in ownerss) {
+						if (ownerss.hasOwnProperty(own)) {
+							var owner = ownerss[own];
+							if(taskdetails && taskdetails.owners.indexOf(own) != -1){
+								$("#owners_update_id").append('<option value = "'+own+'" selected="selected">'+owner+'</option>');
+							}else{
+								$("#owners_update_id").append('<option value = "'+own+'">'+owner+'</option>');
+							}
+						}
                     }
+                    $("#task_status_id").val(taskdetails.status);
                 }  
         });
         $("#myModalUpdateTask").modal("show");
@@ -1029,6 +1031,7 @@ function viewobjective(id){
           dataType:'JSON',
           success: function (response) {
               measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data);
+              $('#graphtitleobjmeasure').html('<p class="mb-0 truncate"><i class="'+response.measures.status_icon+' heading-icon" style="color:'+response.measures.bg_color+';"></i>'+response.measures.heading+'</p><p class="text-muted mb-0 text-small" style="margin-left: 35px">FY'+response.measures.measure_cycle_year+'-'+getQuarter(response.measures.measure_cycle_quarter)+'</p>');
               $("#viewLargePlotObj").html('<a href="javascript:void(0);" onclick="viewLargeGraph('+measureGraph(response.plucked_milestone,response.graph_labels,response.actual_graph_data,response.max_mile,response.pojected_graph_data)+')"><i class="iconsminds-maximize heading-icon"></i></a>');
             }
       });    

@@ -35,10 +35,11 @@ $(document).ready(function(){
   });
 })
 </script>
-                            <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split top-right-button top-right-button-single" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          @if(count($data)>0)
+						  <button type="button" class="btn btn-sm btn-outline-primary dropdown-toggle dropdown-toggle-split top-right-button top-right-button-single" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                Choose Team
                             </button> 
-                            
+                           @endif 
                             <a href="{!!url('members')!!}"><button type="button" class="btn btn-primary mb-1">Members</button></a>
                             <a href="{!!url('department')!!}"><button type="button" class="btn btn-primary mb-1">Departments</button></a>
                             
@@ -126,9 +127,7 @@ $(document).ready(function(){
                                                         <p class="text-muted mb-0 text-small">{!!$team_detail->designation!!}</p>
                                                     </a>
                                                 </div>
-                                                <div>
-                                                    <a class="btn btn-outline-primary btn-xs" href="javascript:void(0)" onclick="getReprts('{!!$j->team_lead_id!!}')">Reports</a>
-                                                </div>
+                                                
                                             </div>
                                             @endforeach
                                             @endif
@@ -140,45 +139,47 @@ $(document).ready(function(){
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Get Insights of Team Progress</h5>
-                            <table class="data-table data-table-standard responsive nowrap"
-                                data-order="[[ 1, &quot;desc&quot; ]]">
+                            <div class="table-responsive">
+                            <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Projects</th> 
-                                        <th>Type</th> 
+                                         <th>Projects</th> 
+                                        
                                         <th>Status</th>
                                         <th>Progress</th>
                                     </tr>
                                 </thead> 
                                 
-                                <tbody id = "getinsights">
+                                
+                                
+                                
+                                <tbody>
                                     @if(!empty($objectives))
                                     @foreach($objectives as $k => $obj)
                                     <tr>
                                         <td>
                                             <a class="list-item-heading mb-0 truncate w-40 w-xs-100 mt-0" href="javascript:void(0);">
-                                                <span class="align-middle d-inline-block">{!!$obj->heading!!}</span>
+                                                <span class="align-middle d-inline-block">{!!$obj['heading']!!}</span>
                                             </a>
                                         </td>
-                                        <td> 
-                                            <p class="text-semi-muted mb-2">Objective</p>  
-                                        </td>
+                                        
                                           <td> 
-                                            <span class="badge badge-pill badge-secondary">ON HOLD</span>  
+                                            <span class="badge badge-pill badge-secondary" style="background: {!!$obj['bg_color']!!} !important">{!!$obj['status_name']!!}</span>  
                                         </td>
                                         <td>
                                             <div role="progressbar" class="progress-bar-circle position-relative"
                                                 data-color="#922c88" data-trailColor="#d7d7d7" aria-valuemax="100"
-                                                aria-valuenow="40" data-show-percent="true">
+                                                aria-valuenow="{!!$obj['percentage']!!}" data-show-percent="true">
                                             </div>
                                         </td>
                                        
                                     </tr>
                                     @endforeach
-                                    @endif
-                                     
+                                    @endif 
                                 </tbody>
                             </table>
+                            </div>
+                        </div>
                         </div>
                     </div>
                 </div>

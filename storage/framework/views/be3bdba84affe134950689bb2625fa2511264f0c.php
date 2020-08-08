@@ -22,23 +22,24 @@
                                                     
                                                 <div class="col-lg-12">
                                                     <div class="form-group">
-                                                    <label>Name</label>
-                                                    <?php echo Form::text('team_name',null, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>
+														<label>Name</label>
+														<?php echo Form::text('team_name',null, array('class' => 'form-control', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>
 
-                                                    <?php if($errors->first('team_name')): ?><div class="error"><?php echo $errors->first('team_name'); ?></div><?php endif; ?>
-                                                </div>
+														<?php if($errors->first('team_name')): ?><div class="error"><?php echo $errors->first('team_name'); ?></div><?php endif; ?>
+													</div>
                                                  <div class="form-group ">
-                                                      <label>Choose Team Lead</label>
-                                                <?php echo Form::select('team_head', $teamleads,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>
+													<label>Choose Team Lead</label>
+													<?php echo Form::select('team_head', $teamleads,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>
 
-                                            
-                                <div class="invalid-tooltip"></div>
-                            </div>
+													<div class="invalid-tooltip"></div>
+													<?php if($errors->first('team_head')): ?><div class="error"><?php echo $errors->first('team_head'); ?></div><?php endif; ?>
+												</div>
                             <?php if(count($departments)>0): ?>
                                 <div class="form-group ">
-                                                      <label>Choose Department</label>
+                                  <label>Choose Department</label>
                                <?php echo Form::select('department_id', $departments,null, array('class' => 'form-control select2-single', 'id' => 'inputFirstname',  'placeholder'=> '')); ?>                  
                                 <div class="invalid-tooltip"></div>
+								<?php if($errors->first('department_id')): ?><div class="error"><?php echo $errors->first('department_id'); ?></div><?php endif; ?>
                             </div>
                             <?php endif; ?>
                             <div class="form-group ">

@@ -104,8 +104,9 @@ class ObjectiveController extends Controller
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
 		
 		$status = Status::where('is_obj',1)->pluck('name','id');
+		$task_status = Status::where('is_task',1)->pluck('name','id');
 
-		return view('frontend/objectives/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives'));
+		return view('frontend/objectives/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives','task_status'));
 	}
 
 	public function measures($role_id = null){

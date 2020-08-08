@@ -22,7 +22,7 @@
                                     <div class="card mb-4">
                                         <div class="position-absolute card-top-buttons">
                                             <button type="button" class="btn btn-header-light icon-button top-right-button  mr-1"
-                                data-toggle="modal" data-backdrop="static" data-target="#exampleModal"><i class="simple-icon-pencil"></i></button>
+                                data-toggle="modal" data-backdrop="static" data-target="#exampleModal"><i class="heading-icon simple-icon-pencil"></i></button>
                             <div class="modal fade modal-right" id="exampleModal" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
@@ -61,7 +61,11 @@
                                                     {!!Form::select('status',array('0'=>'Select Status')+$status, $idea_details->status, array('class'=>'form-control'))!!}
                                                    <div class="invalid-tooltip"></div>
                                                 </div>
-
+                                                @if(Auth::User()->role_id == 2)
+                                                 <div class="form-group position-relative error-l-100">
+                                                    <div class="custom-control custom-checkbox "><input type="checkbox" class="custom-control-input" id="customCheckThis" name="is_popular" <?=$idea_details->is_popular == 1?"checked":""?>> <label class="custom-control-label" for="customCheckThis">Is Popular</label></div>
+                                                </div>
+                                                @endif
                                                 
                                             
                                         </div>
@@ -115,11 +119,11 @@
                                                 {!!createdat($idea_details->created_at)!!}
                                             </p>
                                              <p class="text-muted text-small mb-2">
-                                                 <i class="simple-icon-bubbles"></i>
+                                                 <i class="heading-icon simple-icon-bubbles"></i>
                                             {!!ideacommentscount($idea_details->id)!!} &nbsp;
-                                            <a href="javascript:void(0);" onclick="ideaLike('{!!$idea_details->id!!}')"> <i class="simple-icon-like"></i><span class="likecount">{!!idealikescount($idea_details->id)!!}</span>  </a>&nbsp; 
+                                            <a href="javascript:void(0);" onclick="ideaLike('{!!$idea_details->id!!}')"> <i class="heading-icon simple-icon-like"></i><span class="likecount">{!!idealikescount($idea_details->id)!!}</span>  </a>&nbsp; 
                                             <a href="javascript:void(0);" onclick="ideaDisLike('{!!$idea_details->id!!}')">
-                                            <i class="simple-icon-dislike"></i> <span class="dislikecount"> {!!ideadislikescount($idea_details->id)!!}</span>
+                                            <i class="heading-icon simple-icon-dislike"></i> <span class="dislikecount"> {!!ideadislikescount($idea_details->id)!!}</span>
                                         </a>
                                         </p>
                                         </div>
@@ -161,9 +165,9 @@
                                                             {!!date('d.m.Y - h:i a',strtotime($value->created_at))!!}</p>
                                                     <p class="text-muted text-small mb-2">
                                                         <a href="javascript:void(0);" onclick="ideaCommentLike('{!!$key!!}','{!!$id!!}','{!!$value->id!!}')">
-                                                             <i class="simple-icon-like"></i>
+                                                             <i class="heading-icon simple-icon-like"></i>
                                                              <span class="likecommentcount{!!$key!!}">
-                                                        {!!ideacommentlikecount($value->id)!!}</span></a> &nbsp; <a href="javascript:void(0);" onclick="ideaCommentDisLike('{!!$key!!}','{!!$id!!}','{!!$value->id!!}')"> <i class="simple-icon-dislike"></i> <span class="
+                                                        {!!ideacommentlikecount($value->id)!!}</span></a> &nbsp; <a href="javascript:void(0);" onclick="ideaCommentDisLike('{!!$key!!}','{!!$id!!}','{!!$value->id!!}')"> <i class="heading-icon simple-icon-dislike"></i> <span class="
                                                         dislikecommentcount{!!$key!!}">{!!ideacommentdislikecount($value->id)!!}</span>
 
 
@@ -366,7 +370,7 @@
                         @foreach($popular_ideas as $key => $popular)
                         <li class="active">
                             <a href="{!!url('idea-details/'.$popular->id)!!}">
-                                <i class="iconsminds-idea"></i>
+                                <i class="heading-icon iconsminds-idea"></i>
                                 @if(strlen($popular->title)>20)
                                 {!!substr($popular->title,0,20)!!}
                                 @else

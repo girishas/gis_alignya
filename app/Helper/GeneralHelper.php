@@ -90,7 +90,7 @@
 	
 	
 	function getPlanDetailsByID($plan_id){
-		$plan = SubscriptionPlan::where('id', $plan_id)->first();
+		$plan = Plans::where('id', $plan_id)->first();
 		return $plan;
 	}
 	

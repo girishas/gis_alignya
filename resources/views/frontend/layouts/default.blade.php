@@ -182,7 +182,7 @@ Website: http://www.mosaddek.com
 	{!! HTML::script('public/js/ch_functions.js') !!}-->
 			
 			{!! HTML::script('public/js/app.js') !!}
-			{!! HTML::script('public/hierarchy/hierarchy-select.min.js') !!}
+			<!--{!! HTML::script('public/hierarchy/hierarchy-select.min.js') !!}-->
 			@include('Element/js/custom_delete_modal')
 	
 			<div class="modal fade" id="showConfirmationModal" tabindex="-1" role="dialog" aria-hidden="true">

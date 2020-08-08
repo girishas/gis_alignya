@@ -16,7 +16,8 @@ class IdeaCategory extends Model
 	protected $table = "al_idea_categories";
     protected $fillable = [
 'name',
-'status'
+'status',
+'company_id'
 ];
 
 	public $timestamps = false;

@@ -162,6 +162,7 @@ class UserController extends Controller
 				$data['last_activity'] = date('Y-m-d h:i:s');
 				$data['current_membership_plan'] = $input['plan_id'];
 				$data['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
+				$data['is_owner'] = 1;
 				$data['trial_expiry_date'] = date('Y-m-d', strtotime(date('Y-m-d'). ' + '.config('constants.TRIAL_DAYS').' days'));
 				$user = User::create($data);
 				if($user){
@@ -379,10 +380,45 @@ class UserController extends Controller
 	
 	public function dashboard(){
 		$page_title = getLabels('Dashboard');
-		$objectives_count = Objective::where('company_id',Auth::User()->company_id)->count();
-		$measure_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',1)->count();
-		$initiative_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',2)->count();
-		$kpi_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',3)->count();
+		$objectives_count = Objective::where('company_id',Auth::User()->company_id);
+		if(Auth::User()->role_id != 2){
+			$objectives_count = $objectives_count->where(function($queryW){
+				$queryW->where("al_objectives.owner_user_id", Auth::User()->id)
+				->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',al_objectives.contributers) > 0'))
+				->orWhere('al_objectives.user_id',Auth::User()->id);
+			});	
+		}
+		$objectives_count = $objectives_count->count();
+
+		$measure_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',1);
+		if(Auth::User()->role_id != 2){
+			$measure_count = $measure_count->where(function($queryW){
+				$queryW->where("owner_user_id", Auth::User()->id)
+				->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',contributers) > 0'))
+				->orWhere('user_id',Auth::User()->id);
+			});	
+		}
+		$measure_count = $measure_count->count();
+		$initiative_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',2);
+		if(Auth::User()->role_id != 2){
+			$initiative_count = $initiative_count->where(function($queryW){
+				$queryW->where("owner_user_id", Auth::User()->id)
+				->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',contributers) > 0'))
+				->orWhere('user_id',Auth::User()->id);
+			});	
+		}
+		$initiative_count = $initiative_count->count();
+		
+		$kpi_count = Measure::where('company_id',Auth::User()->company_id)->where('category_type',3);
+		if(Auth::User()->role_id != 2){
+			$kpi_count = $kpi_count->where(function($queryW){
+				$queryW->where("owner_user_id", Auth::User()->id)
+				->orWhereRaw(DB::raw('FIND_IN_SET('.Auth::User()->id.',contributers) > 0'))
+				->orWhere('user_id',Auth::User()->id);
+			});	
+		}
+		$kpi_count = $kpi_count->count();
+		
 		$tasks_count = Tasks::where('company_id',Auth::User()->company_id)->count();
 		$all_members = User::select(DB::raw('CONCAT_WS(" ",first_name,last_name) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('role_id',5)->pluck('full_name','id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck("department_name","id");
@@ -409,6 +445,8 @@ class UserController extends Controller
 			$roles = UserRoles::whereIn('id',array(4,5))->pluck('role','id');
 		}elseif(Auth::User()->role_id == 4){
 			$roles = UserRoles::where('id',5)->pluck('role','id');
+		}elseif(Auth::User()->role_id == 1){
+			$roles = UserRoles::whereIn('id',array(2,3,4,5))->pluck('role','id');
 		}
 		return view('frontend.users.dashboard', compact('page_title','objectives_count','measure_count','initiative_count','kpi_count','all_members','departments','teamleads','goal_cycles','perspectives','contributers','objectives','objlist','tasks_count','tasklist','members_count','transaction_count','companycount','roles'));
 	}
@@ -435,12 +473,16 @@ class UserController extends Controller
 			if(isset($_POST['first_name']) and $_POST['first_name'] !=''){
 				$first_name = $_POST['first_name'];
 				$this->request->session()->put('usearch.first_name', $first_name);
-				$data = $data->whereRaw('CONCAT_WS("",users.first_name,users.last_name) like ?', "%{$first_name}%");
+				$data = $data->where(function($queryW) use($first_name){
+				$queryW->whereRaw('CONCAT_WS("",users.first_name,users.last_name) like ?', "%{$first_name}%")
+				->orWhereRaw('users.email like ?',  "%{$first_name}%");
+			});
+				
 			}
-			if(isset($_POST['email']) and $_POST['email'] !=''){
-				$email = $_POST['email'];
-				$this->request->session()->put('usearch.email', $email);
-				$data = $data->where('users.email',  $email);
+			if(isset($_POST['role_id']) and $_POST['role_id'] !=''){
+				$role_id = $_POST['role_id'];
+				$this->request->session()->put('usearch.role_id', $role_id);
+				$data = $data->where('users.role_id',  $role_id);
 			}
 			if(isset($_POST['status']) and $_POST['status'] !=''){
 				$status = $_POST['status'];
@@ -612,7 +654,9 @@ class UserController extends Controller
 		$page_title = getLabels("Add New Member");
 		$countries  = Country::where('status', 1)->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
 		if($this->request->isMethod('post')){
-			$validator = User::validateaddmember($this->request->all());
+			$inputs = $this->request->all();
+			$inputs['status'] = 1;
+			$validator = User::validateaddmember($inputs,'',Auth::User()->role_id);
 			
 			if ( $validator->fails() ) {
 				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
@@ -668,7 +712,7 @@ class UserController extends Controller
 		$page_title = getLabels("Update Member");
 		$countries  = Country::where('status', 1)->orderBy('name', 'asc')->pluck('name', 'id')->toArray();
 		if($this->request->isMethod('post')){
-			$validator = User::validateaddmember($this->request->all(),$id);
+			$validator = User::validateaddmember($this->request->all(),$id,Auth::User()->role_id);
 			
 			if ( $validator->fails() ) {
 				return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
@@ -721,7 +765,7 @@ class UserController extends Controller
 		$page_title = "Profile";
 		$company_details = getCompanyProfile(Auth::User()->company_id);
 		$plan_details = getPlanDetails(!empty($company_details)?$company_details->plan_id:"");
-		$total_members = User::where('company_id',Auth::User()->company_id)->count();
+		$total_members = User::where('company_id',Auth::User()->company_id)->where('id','!=',Auth::User()->id)->count();
 		$total_departments = Department::where('company_id',Auth::User()->company_id)->count();
 		$total_teams = Teams::where('company_id',Auth::User()->company_id)->count();
 		$industries = Industries::pluck('name','id');

@@ -56,6 +56,15 @@
                             </div>
                             @endif
                         </div>
+                        <div class="form-row">
+                         
+                            <div class="form-group  position-relative error-l-100 col-md-6">
+                                <label for="inputMobile">{!! getLabels('status') !!}</label>
+                                {!! Form::select('status', config('constants.STATUS'),null, array('class' => 'form-control', "id"=>"inputMobile", 'placeholder'=> ''))!!}
+                                <div class="invalid-tooltip"></div>
+                            </div>
+                           
+                        </div>
                          <div class="form-row">
                             <div class="form-group col-md-3">
                                 <label for="">{!! getLabels('profile_picture') !!}</label>

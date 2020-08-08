@@ -12,10 +12,10 @@
 							<button type="button" class="btn btn-outline-primary mb-1" onclick="importcsv()">Import Members</button>
 							<?php endif; ?>
 							
-							
+							<?php if(Auth::User()->role_id == 2 || Auth::User()->role_id == 3): ?>
 							<a href="<?php echo url('department'); ?>"><button type="button" class="btn btn-primary mb-1">Departments</button></a>
 							<a href="<?php echo url('team'); ?>"><button type="button" class="btn btn-primary mb-1">Teams</button></a>
-							
+							<?php endif; ?>
 							
                             
                         </div>
@@ -58,13 +58,13 @@
 									<div class="row">
 										<div class="col-lg-3">
 											<div class="form-group">
-												<?php echo Form::text('first_name', isset($_POST['first_name'])?trim($_POST['first_name']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_name'))); ?>
+												<?php echo Form::text('first_name', isset($_POST['first_name'])?trim($_POST['first_name']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_keyword'))); ?>
 
 											</div>
 										</div>
 										<div class="col-lg-3">
 											<div class="form-group">
-												<?php echo Form::text('email', isset($_POST['email'])?trim($_POST['email']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_email'))); ?>
+												<?php echo Form::select('role_id', array('' => getLabels('user_type')) + config('constants.USER_TYPES'), isset($_POST['role_id'])?$_POST['role_id']:null, array('class' => 'form-control')); ?>
 
 											</div>
 										</div>
@@ -108,6 +108,10 @@
 									<tbody>
 										<?php if(!$data->isEmpty()): ?>
 											<?php $__currentLoopData = $data; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $val): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+												<?php
+													$remove_msg = "Are You Sure";
+													$remove_url = url('member/remove/'.$val->id);
+													 ?>
 												<tr class="odd gradeX">
 													<td><?php echo $val->first_name." ".$val->last_name; ?></td>
 													<td>
@@ -120,17 +124,31 @@
 													</td>
 													<td class="text-center"><?php echo config('constants.STATUS.'.$val->status); ?></td>
 													<td>
-														<?php if($val->role_id > Auth::User()->role_id): ?>
-														<a href="javascript:void(0);" onclick="updatemember(<?php echo $val->id; ?>)"><i class="heading-icon simple-icon-pencil"></i></a>
-														<?php endif; ?>
-																<a href="javascript:void(0);" onclick="viewmember(<?php echo $val->id; ?>)"><i class="heading-icon iconsminds-information"></i></a>
-													<?php
+														<?php if(Auth::User()->is_owner == 1): ?>
+														<?php
 													$remove_msg = "Are You Sure";
 													$remove_url = url('member/remove/'.$val->id);
 													 ?>
-														<?php if(Auth::User()->role_id == 2): ?>
+														<a href="javascript:void(0);" onclick="viewmember(<?php echo $val->id; ?>)"><i class="heading-icon iconsminds-information"></i></a>
+														<a href="javascript:void(0);" onclick="updatemember(<?php echo $val->id; ?>)"><i class="heading-icon simple-icon-pencil"></i></a>
 														<a  onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+														
+														<?php elseif(Auth::User()->role_id == 2): ?>
+															<a href="javascript:void(0);" onclick="viewmember(<?php echo $val->id; ?>)"><i class="heading-icon iconsminds-information"></i></a>
+															<?php if($val->is_owner != 1): ?>
+														<a href="javascript:void(0);" onclick="updatemember(<?php echo $val->id; ?>)"><i class="heading-icon simple-icon-pencil"></i></a>
+														<a  onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+														<?php endif; ?>
+														<?php else: ?>
+													
+														<a href="javascript:void(0);" onclick="viewmember(<?php echo $val->id; ?>)"><i class="heading-icon iconsminds-information"></i></a>
+														<?php if($val->role_id > Auth::User()->role_id): ?>
+														<a href="javascript:void(0);" onclick="updatemember(<?php echo $val->id; ?>)"><i class="heading-icon simple-icon-pencil"></i></a>
+														<a  onclick = 'showConfirmationModal("Remove", "<?php echo $remove_msg; ?>", "<?php echo $remove_url; ?>");' href="javascript:void(0);" title="Remove"><i class="simple-icon-trash heading-icon"></i></a>
+														<?php endif; ?>
 														<?php endif; ?>		
+													
+																
 													</td>
 												</tr>
 											<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>

@@ -60,15 +60,18 @@
                                                     {!!Form::select('status',array('0'=>'Select Status')+$status, null, array('class'=>'form-control'))!!}
                                                    <div class="invalid-tooltip"></div>
                                                 </div>
-
+                                                @if(Auth::User()->role_id == 2)
+                                                 <div class="form-group position-relative error-l-100">
+                                                    <div class="custom-control custom-checkbox "><input type="checkbox" class="custom-control-input" id="customCheckThis" name="is_popular"> <label class="custom-control-label" for="customCheckThis">Is Popular</label></div>
+                                                </div>
+                                                @endif
+                                                <button type="button" class="btn btn-outline-primary"
+                                                data-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
                                                 
                                             
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-outline-primary"
-                                                data-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-primary">Submit</button>
-                                        </div>
+                                       
                                         {!!Form::close()!!}
                                     </div>
                                 </div>
@@ -97,8 +100,8 @@
                                     <p class="mb-0 text-muted text-small w-15 w-xs-100">Created By {!!$value->created_by!!}</p>
                                     <div class="w-15 w-xs-100">
                                        {!!$value->status_name!!}
-                                    </div> <div class="w-15 w-xs-100">
-                                      <i class="simple-icon-bubbles"></i> {!!ideacommentscount($value->id)!!} &nbsp; <i class="simple-icon-like"></i> {!!idealikescount($value->id)!!} &nbsp; <i class="simple-icon-dislike"></i> {!!ideadislikescount($value->id)!!}
+                                    </div> <div class="w-20 w-xs-100">
+                                      <i class="heading-icon simple-icon-bubbles"></i> {!!ideacommentscount($value->id)!!} &nbsp; <i class="heading-icon simple-icon-like"></i> {!!idealikescount($value->id)!!} &nbsp; <i class="heading-icon simple-icon-dislike"></i> {!!ideadislikescount($value->id)!!}
                                     </div>
                                 </div>
                             </div>
@@ -106,11 +109,11 @@
                                 @endforeach
                                 @else
                                <div
-                                    class="card-body align-self-center d-flex flex-column flex-md-row justify-content-between min-width-zero align-items-md-center" style="height: 50px">
-                                      <span class="align-middle d-inline-block w-50"><a href="{!!url('idea-details/')!!}"></a></span>
+                                    class="card-body align-self-center d-flex flex-column flex-md-row  min-width-zero align-items-md-center" style="height: 50px">
+                                      <span class="align-middle d-inline-block"><a href="{!!url('idea-details/')!!}"></a></span>
                                       
                                     
-                                    <p class="mb-0 text-muted text-small w-50">No Record Found</p>
+                                    <p class="mb-0 text-muted ">Foster Innovation and Creativity by sharing ideas in company colleagues.</p>
                                     
                                     </div>
                                 </div>
@@ -129,7 +132,7 @@
                     {!! Form::open(array('url' => array($route_prefix.'/ideas'), 'class' =>'steamerstudio_searchform', 'name'=>'Search')) !!}
 
                             <div class="collapse d-md-block" id="displayOptions">
-                            <div class="d-block d-md-inline-block">
+                            <div class="">
                                 
                                 <div class="form-group">
                                     {!! Form::text('title', isset($_POST['title'])?trim($_POST['title']):null, array('class' => 'form-control',  'placeholder'=> getLabels('search_by_idea')))!!}
@@ -140,12 +143,11 @@
                                 <div class="form-group">
                                    {!! Form::select('status', array('' => getLabels('all_status')) + $status, isset($_POST['status'])?$_POST['status']:null, array('class'=>'form-control'))!!}
                                 </div>
-                                <br>
-                                <br>
+                                
                                  <div class="form-group">
                                   
                                    <button class="btn btn-outline-dark  mb-1" type="submit">{!! getLabels('Search') !!}</button>
-                                   <a href="{!!url('ideas')!!}"><button class="btn btn-dark  mb-1" type="button">{!! getLabels('show_all') !!}</button></a>
+                                   <a href="{!!url('ideas')!!}"><button class="btn btn-outline-dark  mb-1" type="button">{!! getLabels('show_all') !!}</button></a>
                                 </div>
 
                             </div>

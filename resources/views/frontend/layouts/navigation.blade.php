@@ -219,6 +219,7 @@
 								{!! getLabels('Department Charts') !!}
 							</a>
 						</li>
+						@if(Auth::check() and Auth::User()->role_id == 2)
 						<?php $class_subnav  = ($controller == "DepartmentController" && in_array($current_action, [ 'subscription']))?"active":""; ?>
 							
 						<li class="{!! $class_subnav !!}">
@@ -227,6 +228,7 @@
 								{!! getLabels('Subscription') !!}
 							</a>
 						</li>
+						@endif
 					</ul>
 				<ul class="list-unstyled" data-link="masters">
 						<?php $class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['subscription_plans', 'subscription_plan_update']))?"active":""; ?>

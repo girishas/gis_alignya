@@ -10,7 +10,7 @@
                  
                 <div class="modal-body">
                 	 
-                    <?php echo Form::open(array('url' => array($route_prefix.'/addtask'), 'class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
+                    <?php echo Form::open(array('url' => array($route_prefix.'/addtask'), 'id'=>'addtaskId','class' =>'alignya_form needs-validation tooltip-label-right', 'name'=>'Search', 'files'=>true)); ?>
 
                                         
                     	<div class="container-fluid">
@@ -29,11 +29,11 @@
                             
                         </div>
                         <div class="form-group">
-                            <label>Owners</label>
+                            <label>Owners <br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
 							<?php $contributers = Contributers();
 //print_r($contributers);
 							?>
-                            <?php echo Form::select('owners[]',$contributers,null,array('class'=>'form-control select2-multiple','multiple'=>'multiple','id'=>'contributer_id')); ?>
+                            <?php echo Form::select('owners[]',$contributers,null,array('class'=>'form-control','multiple'=>'multiple','id'=>'contributer_id')); ?>
 
                             
                         </div>
@@ -42,6 +42,12 @@
                         <?php echo Form::textarea('description', null, array('rows' => 2, 'class' => 'form-control', "id"=>"inputAboutYouupdate", 'placeholder'=> '')); ?>
 
                         </div>
+						<div class="form-group">
+                            <label for="inputAboutYou"><?php echo getLabels('status'); ?></label>
+                         <?php echo Form::select('status',$task_status,null,array('class'=>'form-control','id'=>'task_status_id')); ?>
+
+						 </div>
+                        
                         
     						
                         </div>

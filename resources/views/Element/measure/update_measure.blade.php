@@ -70,8 +70,8 @@
                         </div>
                     </div>
                         <div class="form-group">
-                            <label>Contributers (optional)</label>
-                            {!!Form::select('contributers[]',$contributers,null,array('class'=>'form-control select2-multiple' ,'id'=>'contributersupdatemeasure','multiple'=>'multiple'))!!}
+                            <label>Contributers (optional)<br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                            {!!Form::select('contributers[]',$contributers,null,array('class'=>'form-control' ,'id'=>'contributersupdatemeasure','multiple'=>'multiple'))!!}
                             
                         </div>
                          <div class="row">

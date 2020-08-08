@@ -52,7 +52,11 @@
                             </div>
                         @endif
                         <div class="col-12 mb-4 ">
+                        @if(Auth::User()->enable_subscription == 0)
                            Please choose subscription for membership plan!!
+                        @else
+                        Your current {!!config('constants.PLAN_PERIOD.'.getPlanDetailsByID(Auth::User()->current_membership_plan)->period)!!} Plan <strong>{!!getPlanDetailsByID(Auth::User()->current_membership_plan)->heading!!}</strong> will be renew on <strong>{!!date('d F Y', strtotime(Auth::User()->trial_expiry_date))!!}</strong>
+                        @endif
                         </div>
                         {!! Form::open(array('url' => url('upgrade-membership') ,'class'=>'steamerstudio_form cssformflex'))!!}
                             <input type="hidden" name="plan_id" class="plan_id_value">
@@ -64,7 +68,11 @@
                                 <div
                                     class="card-body pt-5 pb-5 d-flex flex-lg-column flex-md-row flex-sm-row flex-column">
                                     <div class="price-top-part">
-                                        <i class="iconsminds-male large-icon"></i>
+                                        @if($value->id = 2)
+                                         <i class="iconsminds-business-mens large-icon"></i>
+                                        @elseif($value->id = 3)
+                                        <i class="iconsminds-administrator large-icon"></i>
+                                        @endif
                                         <h5 class="mb-0 font-weight-semibold color-theme-1 mb-4"><strong>{!!$value->heading!!}</strong></h5>
                                         <p class="text-large mb-2 text-default">${!!$value->plan_fee!!}</p>
                                         <p class="text-muted text-small">Upto {!!$value->emp_limit!!} Members</p>

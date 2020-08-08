@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::any('page-not-found',array('uses'=>'PageController@page_not_found'));
 Route::any('members/new', array('as'=>'users.admin_add', 'uses'=>'UserController@admin_add'));
 Route::any('members/update/{user_id?}', array('as'=>'users.admin_edit', 'uses'=>'UserController@admin_edit'))->where('user_id', '[0-9]+');
 Route::any('members', array('as'=>'users.admin_index', 'uses'=>'UserController@admin_index'));
@@ -21,6 +22,10 @@ Route::any('teams', array('as'=>'admin.users', function(){
 Route::any('department/new/{id?}', array('as'=>'department.admin_add', 'uses'=>'DepartmentController@admin_add'));
 Route::any('department/update/{id?}', array('as'=>'department.admin_edit', 'uses'=>'DepartmentController@admin_edit'))->where('id', '[0-9]+');
 Route::any('departments/{id?}', array('as'=>'admin.admin_index', 'uses'=>'DepartmentController@admin_index'));
+
+Route::any('addnewtask', array('as'=>'measure.addnewtask', 'uses'=>'MeasureController@addnewtask'));
+
+
 
 Route::any('objectives', array('as'=>'users.admin_index', 'uses' => 'ObjectiveController@admin_index'));
 Route::any('setuserdatasession', array('as'=>'users.setuserdatasession', 'uses'=>'UserController@setuserdatasession'));

@@ -92,8 +92,10 @@ class KPIController extends Controller
 		$contributers = User::where('company_id',Auth::User()->company_id)->pluck('first_name','id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$status = Status::where('is_obj',1)->pluck('name','id');
+		$task_status = Status::where('is_task',1)->pluck('name','id');
+
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
-		return view('frontend/kpi/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives'));
+		return view('frontend/kpi/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives','task_status'));
 	}
 
 	public function measures($role_id = null){
@@ -240,7 +242,9 @@ class KPIController extends Controller
 			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
 		}else{
 			$input = $this->request->except('contributers','objective_id');
-			
+			if($input['measure_target'] < $input['measure_actual']){
+				return response()->json(['type' => 'error', 'error'=>'', 'message' => getLabels('Target value should be greater than actual.')]);
+			}
 			if($input['measure_type'] == "revenue"){
 				$input['measure_target'] = $input['revenue_target'];
 				$input['measure_actual'] = $input['revenue_actual']; 

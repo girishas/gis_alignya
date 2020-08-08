@@ -117,7 +117,8 @@
             $("#myModal").modal('show');
         });
         $("#add_objectiveBtn").click(function(){
-              onchangeobjectivegetcycle();
+         
+              onchangeobjectivegetcyclekpi();
         $("#myModalAddKPI").modal('show');
         });
         $("#filterBtn").click(function(){
@@ -384,7 +385,7 @@ function measureGraph(target_data,labels,actual_data,max_value,projection_data,a
                         for (var contri in contributers) {
                           if (contributers.hasOwnProperty(contri)) {
                             var con = contributers[contri];
-                            if(selectedcontributers.indexOf(contri) != -1){
+                            if(selectedcontributers && selectedcontributers.indexOf(contri) != -1){
                                 $("#contributersupdatemeasure").append('<option value = "'+contri+'" selected="selected">'+con+'</option>');
                             }else{
                                 $("#contributersupdatemeasure").append('<option value = "'+contri+'">'+con+'</option>');

@@ -53,7 +53,12 @@
                             </div>
                         <?php endif; ?>
                         <div class="col-12 mb-4 ">
+                        <?php if(Auth::User()->enable_subscription == 0): ?>
                            Please choose subscription for membership plan!!
+                        <?php else: ?>
+                        Your current <?php echo config('constants.PLAN_PERIOD.'.getPlanDetailsByID(Auth::User()->current_membership_plan)->period); ?> Plan <?php echo getPlanDetailsByID(Auth::User()->current_membership_plan)->heading; ?> will be renew on <?php echo date('d F Y', strtotime(Auth::User()->trial_expiry_date)); ?>
+
+                        <?php endif; ?>
                         </div>
                         <?php echo Form::open(array('url' => url('upgrade-membership') ,'class'=>'steamerstudio_form cssformflex')); ?>
 

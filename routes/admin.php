@@ -13,7 +13,7 @@
 
 
 
-Route::any('/', array('as'=>'users.login', 'uses'=>'UserController@login'));
+Route::any('/', array('as'=>'admin.login', 'uses'=>'UserController@login'));
 Route::any('page-not-found',array('uses'=>'PageController@page_not_found'));
 Route::any('/login', array('as'=>'users.login', 'uses'=>'UserController@login'));
 Route::any('/register', array('as'=>'users.login', 'uses'=>'UserController@register'));

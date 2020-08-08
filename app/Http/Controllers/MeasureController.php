@@ -94,8 +94,10 @@ class MeasureController extends Controller
 		$contributers = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," ")," ( ",al_users_role.role," )") as first_name'), 'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',Auth::User()->company_id)->pluck('first_name','users.id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$status = Status::where('is_obj',1)->pluck('name','id');
+		$task_status = Status::where('is_task',1)->pluck('name','id');
+
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
-		return view('frontend/measures/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives'));
+		return view('frontend/measures/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives','task_status'));
 	}
 
 	public function measures($role_id = null){
@@ -253,7 +255,9 @@ class MeasureController extends Controller
 		if($validator->fails()){
 			return response()->json(['type' => 'error', 'error'=>$validator->errors(), 'message' => getLabels('please_correct_errors')]);
 		}else{
-			
+			if($input['measure_target'] < $input['measure_actual']){
+				return response()->json(['type' => 'error', 'error'=>'', 'message' => getLabels('Target value should be greater than actual.')]);
+			}
 			
 			
 			  
@@ -463,18 +467,18 @@ class MeasureController extends Controller
 	                  $RevenuesArr['projection_net'] = $target_net;  
 	                  $RevenuesArr['projection_ebitda'] = $target_ebitda;
 	               }else{ // Fixed calculate value
-	                $RevenuesArr['target_gm'] = $input['target_gm'];
-	                $RevenuesArr['target_mm'] = $input['target_mm'];
-	                $RevenuesArr['target_nm'] = $input['target_nm'];
-	                $RevenuesArr['target_expense'] = $input['target_expense'];  
-	                $RevenuesArr['target_net'] = $input['target_net']; 
-	                $RevenuesArr['target_ebitda'] = $input['target_ebitda'];
-	                $RevenuesArr['projection_gm'] = $input['target_gm'];
-	                $RevenuesArr['projection_mm'] = $input['target_mm'];
-	                $RevenuesArr['projection_nm'] = $input['target_nm'];
-	                $RevenuesArr['projection_expense'] = $input['target_expense'];  
-	                $RevenuesArr['projection_net'] = $input['target_net']; 
-	                $RevenuesArr['projection_ebitda'] = $input['target_ebitda)'];
+	                $RevenuesArr['target_gm'] = isset($input['target_gm'])?$input['target_gm']:0;
+	                $RevenuesArr['target_mm'] = isset($input['target_mm'])?$input['target_mm']:0;
+	                $RevenuesArr['target_nm'] = isset($input['target_nm'])?$input['target_nm']:0;
+	                $RevenuesArr['target_expense'] = isset($input['target_expense'])?$input['target_expense']:0;
+	                $RevenuesArr['target_net'] = isset($input['target_net'])?$input['target_net']:0;
+	                $RevenuesArr['target_ebitda'] = isset($input['target_ebitda'])?$input['target_ebitda']:0;
+	                $RevenuesArr['projection_gm'] = isset($input['target_gm'])?$input['target_gm']:0;
+	                $RevenuesArr['projection_mm'] = isset($input['target_mm'])?$input['target_mm']:0;
+	                $RevenuesArr['projection_nm'] = isset($input['target_nm'])?$input['target_nm']:0;
+	                $RevenuesArr['projection_expense'] = isset($input['target_expense'])?$input['target_expense']:0;
+	                $RevenuesArr['projection_net'] = isset($input['target_net'])?$input['target_net']:0;
+	                $RevenuesArr['projection_ebitda'] = isset($input['target_ebitda'])?$input['target_ebitda']:0;
 	            }
 	              MilestoneRevenue::create($RevenuesArr);
 
@@ -834,6 +838,14 @@ class MeasureController extends Controller
 		return floor($differenceInWeeks);
 }
 
+	public function addnewtask(){
+			 $contributers = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," ")," (",al_users_role.role,")") as first_name'),'users.id')
+		->leftjoin('al_users_role','al_users_role.id','=','users.role_id')
+		->where('users.company_id',Auth::User()->company_id)
+		->pluck('first_name','users.id');
+		return json_encode($contributers) ;
+	
+	}
 	public function getMeasureCycles(){
 		$input = $this->request->all();
 
@@ -868,11 +880,18 @@ class MeasureController extends Controller
 		}
 		$inputs['user_id'] = Auth::User()->id;
 		$inputs['company_id'] = Auth::User()->company_id;
-		$inputs['status'] = 1;
+		//$inputs['status'] = 1;
 		if($this->request->get('owners')){
 			$inputs['owners'] = implode(',', $this->request->get('owners'));
 		}
-		$inputs['type'] = isset($inputs['type'])?$inputs['type']:0;
+		if(isset($inputs['task_id'])){
+			$inputs['type'] = $data->type;
+		}else{
+			$inputs['type'] = isset($inputs['type'])?$inputs['type']:0;
+
+		}
+		//pr($inputs);
+		//$inputs['type'] = isset($inputs['type'])?$inputs['type']:0;
 		if($inputs['type'] == 0){
 			$popup_name = "objective";
 		}else if($inputs['type'] == 1){

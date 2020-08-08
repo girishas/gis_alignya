@@ -73,8 +73,8 @@
 					</div>
 
 						<div class="form-group ">
-                        <label>Choose scorecards</label>
-                       <select class="form-control select2-multiple" multiple="multiple" name="scorecard_id[]" data-width="100%" id="scorecardsliupdate">
+                        <label>Choose scorecards <br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                       <select class="form-control" multiple="multiple" name="scorecard_id[]" data-width="100%" id="scorecardsliupdate">
                            
                        </select>                    
                         <div class="invalid-tooltip"></div>
@@ -94,8 +94,8 @@
                    
                     
                     <div class="form-group ">
-                        <label>Contributers</label>
-                       <select class="form-control select2-multiple" multiple="multiple" name="contributers[]" data-width="100%" id="contributersupdate">
+                        <label>Contributers <br> <b style="font-size: 12px">(Hold down the Ctrl (windows) or Command (Mac) button to select multiple options.)</b></label>
+                       <select class="form-control" multiple="multiple" name="contributers[]" data-width="100%" id="contributersupdate">
                            
                        </select>                    
                         <div class="invalid-tooltip"></div>

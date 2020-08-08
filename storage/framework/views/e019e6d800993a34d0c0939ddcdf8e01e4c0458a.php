@@ -123,6 +123,7 @@
                 var taskdetails = response.task_details;
                 $("#task_name_update_id").val(taskdetails.task_name);
                 $("#task_description_update_id").val(taskdetails.description);
+                 $("#task_status_id").val(taskdetails.status);
                 var owners = response.owners;
                 for (var own in owners) {
                     if (owners.hasOwnProperty(own)) {

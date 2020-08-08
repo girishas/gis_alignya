@@ -142,7 +142,17 @@ class TeamController extends Controller
 			return redirect()->back()->with('message',$message);
 		}
 		if(isset($team_detail)){
-			$objectives = Objective::where('company_id',Auth::User()->company_id)->where('owner_user_id',$team_detail->team_lead_id)->get();
+			$objectives = Objective::select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color')->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.company_id',Auth::User()->company_id)->where('al_objectives.owner_user_id',$team_detail->team_lead_id)->get();
+			if(!empty($objectives)){
+				$objectives = $objectives->toArray();
+				foreach ($objectives as $key => $value) {
+					$avg = Milestones::where('objective_id',$value['id'])->avg('sys_progress');
+					$objectives[$key]['percentage'] = (!empty($avg))?$avg:0;
+				}
+			}else{
+				$objectives = array();
+			}
+			
 		}else{
 			$objectives = array();
 		}
@@ -417,7 +427,7 @@ class TeamController extends Controller
 		}else{
 			$status = array();
 		}
-		$categories = IdeaCategory::pluck('name','id');
+		$categories = IdeaCategory::where('company_id',Auth::User()->company_id)->pluck('name','id');
 		if(!empty($categories)){
 			$categories = $categories->toArray();
 		}else{
@@ -551,7 +561,8 @@ class TeamController extends Controller
 		$all_perspective = Perspective::where('status',1)->where('company_id',Auth::User()->company_id)->pluck('name','id')->toArray();
 		$all_department = Department::where('company_id',Auth::User()->company_id)->where('status',1)->pluck('department_name','id')->toArray();
 		$all_users = User::select(DB::Raw('CONCAT(COALESCE(`first_name`,"")," ",COALESCE(`last_name`,"")) as full_name'),'id')->where('company_id',Auth::User()->company_id)->where('status',1)->get()->pluck('full_name','id')->toArray();
-		
+		$task_status = Status::where('is_task',1)->pluck('name','id')->toArray();
+
 		if(!empty($perspective_id)){
 			$perspective_data = Perspective::where('id',$perspective_id)->where('status',1)->get();
 		}else{
@@ -583,7 +594,7 @@ class TeamController extends Controller
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$status = Status::where('is_obj',1)->pluck('name','id');
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
-		return view('frontend/teams/strategic_map',compact('page_title','perspective_data','strategic_data','al_goal_cycles','all_perspective','al_themes','all_department','all_users','goal_cycles','perspectives','contributers','departments','status','objectives'));
+		return view('frontend/teams/strategic_map',compact('page_title','perspective_data','strategic_data','al_goal_cycles','all_perspective','al_themes','all_department','all_users','goal_cycles','perspectives','contributers','departments','status','objectives','task_status'));
 	}
 
 	public function add_teampopup(){
@@ -628,6 +639,11 @@ class TeamController extends Controller
 			$formData              	= $this->request->except('_token');
 			$formData['company_id']	= Auth::User()->company_id;
 			$formData['user_id']	= Auth::User()->id;
+			if($this->request->get('is_popular')){
+				$formData['is_popular'] = 1;
+			}else{
+				$formData['is_popular'] = 0;	
+			}
 			if(isset($formData['id']) && !empty($formData['id'])){
 				$theme = Ideas::where('id',$formData['id'])->update($formData);
 				$message  = getLabels('idea_updated_successfully');
@@ -670,7 +686,7 @@ class TeamController extends Controller
 		}else{
 			$status = array();
 		}
-		$categories = IdeaCategory::pluck('name','id');
+		$categories = IdeaCategory::where('company_id',Auth::User()->company_id)->pluck('name','id');
 		if(!empty($categories)){
 			$categories = $categories->toArray();
 		}else{

@@ -38,7 +38,7 @@ class User extends Authenticatable
 		'reddit_profile_link','discordapp_profile_link','tumblr_profile_link','google_plus_profile_link','vk_profile_link','meetup_profile_link',
 		'youtube_profile_link','pinterest_profile_link','ask_fm_profile_link','flicker_profile_link','classmates_profile_link',
 		'referral_code','referral_by','block_ip_start','block_ip_end','full_name','image_name','is_validate','active_status','payout_email','enable_subscription_admin',
-		'enable_subscription','domain_name_id','designation','stripe_customer_id','token_code','company_id','user_agent','last_activity','emp_code','trial_expiry_date','current_membership_plan','user_ip'
+		'enable_subscription','domain_name_id','designation','stripe_customer_id','token_code','company_id','user_agent','last_activity','emp_code','trial_expiry_date','current_membership_plan','user_ip','is_owner'
     ];
 
     /**
@@ -159,17 +159,28 @@ class User extends Authenticatable
 		);
 		return validator($input, $rules, $messages);
 	}
-	public static function validateaddmember($input, $id = null){
-		$rules = array(
+	public static function validateaddmember($input, $id = null,$role_id=null){
+		if($role_id == 2){
+				$rules = array(
+			
+				'email'         	=> 'required|email|unique:users,email,'.$id,
+				'first_name'    	=> 'required',
+				'status'			=>'required',
+				'password' 	        =>'required'.$id,
+				'role_id'			=>'required',
+			);
+			}else{
+				$rules = array(
 		
-			'email'         	=> 'required|email|unique:users,email,'.$id,
-			'first_name'    	=> 'required',
-			//'dob'	            => 'required',
-			//'gender' 	        =>'required',
-			//'mobile'             => 'required|min:6|numeric',
-			'password' 	        =>'required'.$id,
-			'role_id'       =>'required',
-		);
+					'email'         	=> 'required|email|unique:users,email,'.$id,
+					'first_name'    	=> 'required',
+					'status' 			=>	'required',
+					'password' 	        =>'required'.$id,
+					
+				);
+			}
+		
+		
 		
 		
 		$messages = array(
@@ -178,12 +189,9 @@ class User extends Authenticatable
 			'email.unique' 		 	 	=> getLabels('email_is_already_exist'),
 			'email.required' 			=> getLabels('email_is_required'),
 			'first_name.required' 		=> getLabels('first_name_required'),
-			'dob.required' 				=> getLabels('dob_is_required'),
 			'gender.required'			=> getLabels('please_select_gender'),
 			'password.required'			=> getLabels('password_is_required'),
-			'mobile.required'			=> getLabels('phone_number_required'),
-			'mobile.numeric'		    => getLabels('invalid_phone_format'),
-			'mobile.min'			    => getLabels('invalid_phone'),
+			'status.required' 			=> getLabels('status_is_required'),
 			'role_id.required'				=> getLabels('select_user_type'),
 		);
 		return validator($input, $rules, $messages);

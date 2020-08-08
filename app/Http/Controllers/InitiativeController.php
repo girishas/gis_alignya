@@ -95,8 +95,10 @@ class InitiativeController extends Controller
 		$contributers = User::select(DB::raw('CONCAT(users.first_name," ",IFNULL(users.last_name," ")," ( ",al_users_role.role," )") as first_name'), 'users.id')->leftjoin('al_users_role','al_users_role.id','=','users.role_id')->where('users.company_id',Auth::User()->company_id)->pluck('first_name','users.id');
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$status = Status::where('is_obj',1)->pluck('name','id')->toArray();
+		$task_status = Status::where('is_task',1)->pluck('name','id')->toArray();
+
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
-		return view('frontend/initiative/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives','goal_cycles'));
+		return view('frontend/initiative/admin_index', compact('data','role_id','page_title','goal_cycles','perspectives','contributers','departments','status','objectives','goal_cycles','task_status'));
 	}
 
 	public function measures($role_id = null){

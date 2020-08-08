@@ -235,6 +235,7 @@
 
 							</a>
 						</li>
+						<?php if(Auth::check() and Auth::User()->role_id == 2): ?>
 						<?php $class_subnav  = ($controller == "DepartmentController" && in_array($current_action, [ 'subscription']))?"active":""; ?>
 							
 						<li class="<?php echo $class_subnav; ?>">
@@ -244,6 +245,7 @@
 
 							</a>
 						</li>
+						<?php endif; ?>
 					</ul>
 				<ul class="list-unstyled" data-link="masters">
 						<?php $class_subnav  = ($controller == "DepartmentController" && in_array($current_action, ['subscription_plans', 'subscription_plan_update']))?"active":""; ?>

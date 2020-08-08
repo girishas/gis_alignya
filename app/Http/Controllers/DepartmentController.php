@@ -10,6 +10,7 @@ use App\Models\Department;
 use App\Models\TeamsMembers;
 use App\Models\GoalCycles;
 use App\Models\Objective;
+use App\Models\Milestones;
 use App\Models\Plans;
 use App\Models\Theme;
 use App\Models\Status;
@@ -133,10 +134,20 @@ class DepartmentController extends Controller
 		$departments = Department::where('status',1)->where('company_id',Auth::User()->company_id)->pluck("department_name","id");
 		$data  = Department::where('company_id',Auth::User()->company_id)->where('parent_department_id',null)->get();
 		if(isset($hod)){
-			$objectives = Objective::where('company_id',Auth::User()->company_id)->where('owner_user_id',$hod->selected_user_id)->get();
+			$objectives = Objective::select('al_objectives.*','al_master_status.name as status_name','al_master_status.bg_color')->leftjoin('al_master_status','al_master_status.id','=','al_objectives.status')->where('al_objectives.company_id',Auth::User()->company_id)->where('al_objectives.owner_user_id',$hod->selected_user_id)->get();
+			if(!empty($objectives)){
+				$objectives = $objectives->toArray();
+				foreach ($objectives as $key => $value) {
+					$avg = Milestones::where('objective_id',$value['id'])->avg('sys_progress');
+					$objectives[$key]['percentage'] = (!empty($avg))?$avg:0;
+				}
+			}else{
+				$objectives = array();
+			}
 		}else{
 			$objectives = array();
 		}
+		
 		$page_title  = getLabels("Departments");
 		return view('frontend/departments/department', compact('data','role_id','page_title','parent_department','hod','members','departments','all_members','id','members_pluck','department_head','objectives'));
 	}
@@ -964,47 +975,48 @@ class DepartmentController extends Controller
 		$jsonData = array();
 		$i=1;
 		foreach($objective_data as $dkey => $dvalue){
-			$jsonData[] = array('id'=>$i,'name'=>$dvalue->heading,'title'=>'Objective','description'=>$dvalue->summary,'period'=>$dvalue->cycle_name,'img'=>"{!!url('public/img/75.png')!!}");
+			// $jsonData[] = array('id'=>$i,'name'=>$dvalue->heading,'title'=>'Objective','description'=>$dvalue->summary,'period'=>$dvalue->cycle_name,'img'=>"https://alignya.com/public/img/bar.png");
+			$jsonData[] = array('id'=>$i,'name'=>$dvalue->heading,'title'=>'Objective','description'=>$dvalue->summary,'period'=>$dvalue->cycle_name);
 			$j=$i;
 			$i++;	
 				
 			foreach($dvalue->subObjectives as $sdkey => $sdvalue){
-				$jsonData[] = array('id'=>$i,'pid'=>$j,'name'=>$sdvalue->heading,'title'=>'Sub Objective','description'=>$sdvalue->summary,'period'=>$sdvalue->cycle_name,'img'=>"{!!url('public/img/75.png')!!}");
+				$jsonData[] = array('id'=>$i,'pid'=>$j,'name'=>$sdvalue->heading,'title'=>'Sub Objective','description'=>$sdvalue->summary,'period'=>$sdvalue->cycle_name);
 				$k = $i;
 				$i++;			
 				foreach($sdvalue->subObjectives as $sd1key => $sd1value){
-					$jsonData[] = array('id'=>$i,'pid'=>$k,'name'=>$sd1value->heading,'title'=>'Sub Objective','description'=>$sd1value->summary,'period'=>$sd1value->cycle_name,'img'=>"{!!url('public/img/75.png')!!}");
+					$jsonData[] = array('id'=>$i,'pid'=>$k,'name'=>$sd1value->heading,'title'=>'Sub Objective','description'=>$sd1value->summary,'period'=>$sd1value->cycle_name);
 					$n = $i;
 					$i++;			
 					foreach($sd1value->getMeasures as $sdtkey => $sdtvalue){
-						$jsonData[] = array('id'=>$i,'pid'=>$n,'name'=>$sdtvalue->heading,'title'=>'Measure','description'=>$sdtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+						$jsonData[] = array('id'=>$i,'pid'=>$n,'name'=>$sdtvalue->heading,'title'=>'Measure','description'=>$sdtvalue->summary,'period'=>'');
 						$p = $i;
 						$i++;
 					}
 					foreach($sd1value->getInitiatives as $sdtkey => $sdtvalue){
-						$jsonData[] = array('id'=>$i,'pid'=>$n,'name'=>$sdtvalue->heading,'title'=>'Initiative','description'=>$sdtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+						$jsonData[] = array('id'=>$i,'pid'=>$n,'name'=>$sdtvalue->heading,'title'=>'Initiative','description'=>$sdtvalue->summary,'period'=>'');
 						$q = $i;
 						$i++;
 					}
 				}
 				foreach($sdvalue->getMeasures as $sdtkey => $sdtvalue){
-					$jsonData[] = array('id'=>$i,'pid'=>$k,'name'=>$sdtvalue->heading,'title'=>'Measure','description'=>$sdtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+					$jsonData[] = array('id'=>$i,'pid'=>$k,'name'=>$sdtvalue->heading,'title'=>'Measure','description'=>$sdtvalue->summary,'period'=>'');
 					$l = $i;
 					$i++;
 				}
 				foreach($sdvalue->getInitiatives as $sdtkey => $sdtvalue){
-					$jsonData[] = array('id'=>$i,'pid'=>$k,'name'=>$sdtvalue->heading,'title'=>'Measure','description'=>$sdtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+					$jsonData[] = array('id'=>$i,'pid'=>$k,'name'=>$sdtvalue->heading,'title'=>'Measure','description'=>$sdtvalue->summary,'period'=>'');
 					$m = $i;
 					$i++;
 				}
 			}
 			foreach($dvalue->getMeasures as $dtkey => $dtvalue){
-				$jsonData[] = array('id'=>$i,'pid'=>$j,'name'=>$dtvalue->heading,'title'=>'Measure','description'=>$dtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+				$jsonData[] = array('id'=>$i,'pid'=>$j,'name'=>$dtvalue->heading,'title'=>'Measure','description'=>$dtvalue->summary,'period'=>'');
 				$n = $i;
 				$i++;
 			}
 			foreach($dvalue->getInitiatives as $dtkey => $dtvalue){
-				$jsonData[] = array('id'=>$i,'pid'=>$j,'name'=>$dtvalue->heading,'title'=>'Measure','description'=>$dtvalue->summary,'period'=>'','img'=>"{!!url('public/img/75.png')!!}");
+				$jsonData[] = array('id'=>$i,'pid'=>$j,'name'=>$dtvalue->heading,'title'=>'Measure','description'=>$dtvalue->summary,'period'=>'');
 				$o = $i;
 				$i++;
 			}
@@ -1074,7 +1086,8 @@ class DepartmentController extends Controller
 			$GoalCycles = GoalCycles::where('company_id',Auth::User()->company_id)->where('status',1)->get();
 		
 		}
-		
+		$task_status = Status::where('is_task',1)->pluck('name','id')->toArray();
+
 		//echo "<pre>"; print_r(Auth::User()); die;
 		$timemap_data = array();
 		foreach($GoalCycles as $val){
@@ -1102,7 +1115,7 @@ class DepartmentController extends Controller
 		$departments = Department::where('company_id',Auth::User()->company_id)->pluck('department_name','id');
 		$status = Status::where('is_obj',1)->pluck('name','id');
 		$objectives = Objective::where('company_id',Auth::User()->company_id)->pluck('heading','id');
-		return view("/frontend/departments/timemap",compact('page_title','timemap_data','al_goal_cycles','all_perspective','al_themes','all_department','all_users','goal_cycles','perspectives','contributers','departments','status','objectives'));
+		return view("/frontend/departments/timemap",compact('page_title','timemap_data','al_goal_cycles','all_perspective','al_themes','all_department','all_users','goal_cycles','perspectives','contributers','departments','status','objectives','task_status'));
 	}
 	public function departmental(){
 		$page_title = "Departmental View";
@@ -1311,7 +1324,7 @@ class DepartmentController extends Controller
 
 	public function idea_categories(){
 		$page_title = "Idea Category";
-		$data  = IdeaCategory::sortable();
+		$data  = IdeaCategory::sortable()->where('company_id',Auth::User()->company_id);
 		
 		if($this->request->session()->has('usearch') and (isset($_GET['page']) and $_GET['page']>=1) OR (isset($_GET['s']) and $_GET['s'])) {
 			$_POST = $this->request->session()->get('usearch');
@@ -1430,6 +1443,7 @@ class DepartmentController extends Controller
 				$scorecard = IdeaCategory::where('id',$formData['id'])->update($formData);
 				$message  = getLabels('update_idea_category_successfully');
 			}else{
+				$formData['company_id'] = Auth::User()->company_id;
 				$scorecard  = IdeaCategory::create($formData);
 				$message  = getLabels('add_idea_category_successfully');
 			}
